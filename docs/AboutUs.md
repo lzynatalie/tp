@@ -11,6 +11,14 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
+### Niik Seah
+
+<img src="images/niikseah.png" width="200px">
+
+[[github](https://github.com/niikseah)]
+
+* Role: Team Member
+
 ### Nigel Gabriel Morais
 
 <img src="images/nigelgm.png" width="200px">

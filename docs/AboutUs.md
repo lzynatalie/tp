@@ -18,3 +18,11 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[github](https://github.com/lzynatalie)]
 
 * Role: Team Member
+
+### Randy Lim
+
+<img src="images/e1384467.png" width="200px">
+
+[[github](https://github.com/e1384467)]
+[[portfolio](team/randylim.md)]
+

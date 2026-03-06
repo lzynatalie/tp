@@ -274,56 +274,201 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
+* has a need to manage a significant number of patient contacts
 * prefer desktop apps over other types
 * can type fast
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
-
+**Value proposition**: This product eliminates the administrative friction of navigating complex, full-scale medical 
+record systems during time-sensitive triage. By providing a streamlined, high-speed CLI interface for tracking patient 
+updates and doctor assignments, this reduces coordinators' cognitive load, ensuring faster patient throughput and more 
+accurate prioritisation in fast-paced, high-workload clinical environments.
 
 ### User stories
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
-|----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
+| Priority | As a …​            | I want to …​                                                   | So that I can…​                                                                 |
+|----------|--------------------|----------------------------------------------------------------|---------------------------------------------------------------------------------|
+| `* * *`  | beginner user      | list all patients in the system                                | verify that the data I just entered was saved correctly.                        |
+| `* * *`  | beginner user      | exit the app safely                                            | be assured that the data entered into the app is saved when I end my shift.     |                                                                    |
+| `* * *`  | user               | add patient details                                            | start tracking those patients.                                                  |
+| `* * *`  | user               | remove patients                                                | remove duplicates or wrongly created records to keep it accurate.               |
+| `* *`    | expert user        | use my up/down keyboard keys                                   | conveniently access previously entered commands in my history to execute again. |
+| `* *`    | expert user        | update specific details of the patient                         | quickly keep records current as the patients move through the triage process.   |
+| `* *`    | expert user        | archive old patient records                                    | focus on the relevant patient records.                                          |
+| `* *`    | triage coordinator | search for records using different criteria                    | easily find specifiy groups of patients.                                        |
+| `* *`    | beginner user      | see a confirmation message after adding a patient              | be assured that a patient has been added to my contacts.                        |
+| `* *`    | beginner user      | use a help command                                             | easily understand the capabilities of ClinicConnect.                            |
+| `* *`    | beginner user      | reset the app to its initial state                             | safely experiment with the app.                                                 |
+| `* *`    | beginner user      | see instructions to help me correct my mistakes                | easily correct mistakes.                                                        |
+| `* *`    | user               | sort patients based on their urgency level                     | quickly identify which patient requires immediate care.                         |
+| `* *`    | expert user        | chain commands together in a single line (e.g., add … && list) | execute multiple actions without waiting for intermediate prompts.              |
+| `* *`    | user               | attach notes to patient contacts                               | capture contextual information.                                                 |
+| `* *`    | triage coordinator | perform batch edits or deletions                               | manage multiple patients efficiently.                                           |
+| `* *`    | user               | use shorter prefixes                                           | get things done quickly.                                                        |
+| `* *`    | user               | add an urgency level to each patient                           | know which patient requires immediate attention first.                          |
+| `* *`    | expert user        | use a one-line command format (e.g., add n/ p/ ic/ cond/)      | enter a patient's full clinical profile quickly in seconds.                     |
+| `*`      | beginner user      | undo a mistaken deletion from an entered command               | recover accidentally deleted data without re-entering everything.               |
+| `*`      | beginner user      | skip onboarding steps                                          | explore the application freely.                                                 |
+| `*`      | beginner user      | see the app populated with sample data                         | easily see how the app will look when it is in use.                             |
+| `*`      | beginner user      | cancel an action midway                                        | stay in control.                                                                |
+| `*`      | beginner user      | view a brief onboarding walkthrough                            | know what the app can do.                                                       |
+| `*`      | beginner user      | search for a patient by name or identifier                     | quickly find an existing contact.                                               |
+| `*`      | beginner user      | undo recent actions                                            | feel safe exploring the app.                                                    |
+| `*`      | expert user        | organize patients using tags                                   | categorise patients based on clinical priority or special needs.                |
+| `*`      | beginner user      | view what actions I have recently made                         | understand the current state of the database more accurately.                   |
+| `*`      | expert user        | use command shortcuts or aliases when entering patient details | maximize my efficiency in typing during peak hours.                             |
+| `*`      | expert user        | customise views or defaults                                    | the app matches my working habits.                                              |
+| `*`      | user               | manually save my data at any point                             | be assured that I saved my data.                                                |
 
-*{More to be added}*
+*Use this [link](https://docs.google.com/spreadsheets/d/1rFhnT22PNdGMJaEn7YMBqhdyV8b7M9sdSiOgtJ5c6J8/edit?gid=1121925862#gid=1121925862) for the most updated user stories.*
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `ClinicConnect` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC1 - Add a patient record**
+
+**Preconditions**:
+* User has launched the app and is at the main window.
+
+**Guarantees**:
+* The patient will be added only if the user enters the format correctly, there is no duplicate patient record or there is no error with the save file.
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1. User enters in a patient’s details using this format: add pn/PATIENT NAME ic/IC NUMBER p/PATIENT PHONE NUMBER s/SYMPTOMS u/URGENCY LEVEL d/DOCTOR NAME nk/NEXT-OF-KIN NAME nkp/NEXT-OF-KIN PHONE NUMBER [n/NOTES].
+2. ClinicConnect validates the input.
+3. ClinicConnect adds the patient.
+4. ClinicConnect saves the new data.
+5. ClinicConnect displays a successful message.
 
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 2a. ClinicConnect detects an error with the user’s input.
+  * 2a1. ClinicConnects display an unsuccessful message. 
+        
+    Use case resumes from step 1.
 
-  Use case ends.
+* 2b. 	ClinicConnect detects a duplicate patient record. 
+  * 2b1. ClinicConnects display an unsuccessful message. 
+    
+    Use case resumes from step 1.
 
-* 3a. The given index is invalid.
+* 3a. ClinicConnect detects an error with the save file.
+  * 3a1. ClinicConnects display an unsuccessful message. 
+    
+    Use case ends. (Note: Since there is an issue with the save file, the use case should end here rather than retrying)
 
-    * 3a1. AddressBook shows an error message.
 
-      Use case resumes at step 2.
+**Use case: UC2 - Delete a patient record**
+
+**Preconditions**:
+* User has launched the app and is at the main window.
+
+**Guarantees**:
+* The patient will be deleted only if the user enters the format correctly, the list of patient records is not empty already or there is no error with the save file.
+
+**MSS**
+
+1. User enters in a patient’s details using this format: delete INDEX.
+2. ClinicConnect validates the input.
+3. ClinicConnect deletes the patient.
+4. ClinicConnect saves the new data.
+5. ClinicConnect displays a successful message.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. ClinicConnect detects an error with the user’s input.
+    * 2a1. ClinicConnects display an unsuccessful message.
+
+      Use case resumes from step 1.
+
+* 2b. 	ClinicConnect detects that the list is already empty.
+    * 2b1. ClinicConnects display an unsuccessful message.
+
+      Use case ends. (Note: Since the list is empty, the use case should end here rather than retrying)
+
+* 3a. ClinicConnect detects an error with the save file.
+    * 3a1. ClinicConnects display an unsuccessful message.
+
+      Use case ends. (Note: Since there is an issue with the save file, the use case should end here rather than retrying)
+
+**Use case: UC3 - Delete a group of selected patient record**
+
+**Preconditions**:
+* User has launched the app and is at the main window.
+
+**Guarantees**:
+* The patients will be deleted only if the user enters the format correctly, the list of patient records is not empty already or there is no error with the save file.
+
+**MSS**
+
+1. User enters in a patient’s details using this format: delete INDEX1, INDEX2, INDEX3, ….
+2. ClinicConnect validates the input.
+3. ClinicConnect deletes the patient.
+4. ClinicConnect saves the new data.
+5. ClinicConnect displays a successful message.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. ClinicConnect detects an error with the user’s input.
+    * 2a1. ClinicConnects display an unsuccessful message.
+
+      Use case resumes from step 1.
+
+* 2b. 	ClinicConnect detects that the list is already empty.
+    * 2b1. ClinicConnects display an unsuccessful message.
+
+      Use case ends. (Note: Since the list is empty, the use case should end here rather than retrying)
+
+* 3a. ClinicConnect detects an error with the save file.
+    * 3a1. ClinicConnects display an unsuccessful message.
+
+      Use case ends. (Note: Since there is an issue with the save file, the use case should end here rather than retrying)
+
+**Use case: UC4 -  Delete a range of selected patient record**
+
+**Preconditions**:
+* User has launched the app and is at the main window.
+
+**Guarantees**:
+* The patients will be deleted only if the user enters the format correctly, the list of patient records is not empty already or there is no error with the save file.
+
+**MSS**
+
+1. User enters in a patient’s details using this format: delete INDEX - INDEX.
+2. ClinicConnect validates the input.
+3. ClinicConnect deletes the patient.
+4. ClinicConnect saves the new data.
+5. ClinicConnect displays a successful message.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. ClinicConnect detects an error with the user’s input.
+    * 2a1. ClinicConnects display an unsuccessful message.
+
+      Use case resumes from step 1.
+
+* 2b. 	ClinicConnect detects that the list is already empty.
+    * 2b1. ClinicConnects display an unsuccessful message.
+
+      Use case ends. (Note: Since the list is empty, the use case should end here rather than retrying)
+
+* 3a. ClinicConnect detects an error with the save file.
+    * 3a1. ClinicConnects display an unsuccessful message.
+
+      Use case ends. (Note: Since there is an issue with the save file, the use case should end here rather than retrying)
 
 *{More to be added}*
 

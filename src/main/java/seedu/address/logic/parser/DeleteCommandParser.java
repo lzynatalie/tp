@@ -67,4 +67,32 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         }
         return new DeleteCommand(indices);
     }
+
+    private DeleteCommand parseRangeIndices(String args) throws ParseException {
+        Matcher matcher = RANGE_ARGUMENT_FORMAT.matcher(args.trim());
+        if (!matcher.matches()) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE_RANGE_INDICES));
+        }
+
+        Index startIndex, endIndex;
+        try {
+            startIndex = ParserUtil.parseIndex(matcher.group("start").trim());
+            endIndex = ParserUtil.parseIndex(matcher.group("end").trim());
+        } catch (ParseException pe) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE_RANGE_INDICES), pe);
+        }
+
+        if (startIndex.getZeroBased() >= endIndex.getZeroBased()) {
+            throw new ParseException(Messages.MESSAGE_INVALID_PERSON_INDEX_RANGE);
+        }
+
+        int numIndices = endIndex.getZeroBased() - startIndex.getZeroBased() + 1;
+        Index[] indices = new Index[numIndices];
+        for (int i = 0; i < numIndices; i++) {
+            indices[i] = Index.fromZeroBased(startIndex.getZeroBased() + i);
+        }
+        return new DeleteCommand(indices);
+    }
 }

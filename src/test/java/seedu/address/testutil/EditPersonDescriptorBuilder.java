@@ -37,6 +37,7 @@ public class EditPersonDescriptorBuilder {
         descriptor.setEmail(person.getEmail());
         descriptor.setAddress(person.getAddress());
         descriptor.setTags(person.getTags());
+        descriptor.setUrgencyLevel(person.getUrgencyLevel());
     }
 
     /**
@@ -78,6 +79,11 @@ public class EditPersonDescriptorBuilder {
     public EditPersonDescriptorBuilder withTags(String... tags) {
         Set<Tag> tagSet = Stream.of(tags).map(Tag::new).collect(Collectors.toSet());
         descriptor.setTags(tagSet);
+        return this;
+    }
+
+    public EditPersonDescriptorBuilder withUrgencyLevel(String urgencyLevel) {
+        descriptor.setUrgencyLevel(new seedu.address.model.person.UrgencyLevel(urgencyLevel));
         return this;
     }
 

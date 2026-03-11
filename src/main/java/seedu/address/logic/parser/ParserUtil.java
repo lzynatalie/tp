@@ -129,6 +129,6 @@ public class ParserUtil {
         if (!UrgencyLevel.isValidUrgencyLevel(trimmedUrgencyLevel)) {
             throw new ParseException(UrgencyLevel.MESSAGE_CONSTRAINTS);
         }
-        return new UrgencyLevel(urgencyLevel);
+        return new UrgencyLevel(trimmedUrgencyLevel);
     }
 }

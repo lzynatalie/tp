@@ -27,7 +27,7 @@ public class ParserUtilTest {
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_TAG = "#friend";
-    private static final String INVALID_LEVEL = "urgent";
+    private static final String INVALID_URGENCY_LEVEL = "urgent";
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_PHONE = "123456";
@@ -35,7 +35,7 @@ public class ParserUtilTest {
     private static final String VALID_EMAIL = "rachel@example.com";
     private static final String VALID_TAG_1 = "friend";
     private static final String VALID_TAG_2 = "neighbour";
-    private static final String VALID_LEVEL = "high";
+    private static final String VALID_URGENCY_LEVEL = "high";
 
     private static final String WHITESPACE = " \t\r\n";
 
@@ -204,19 +204,19 @@ public class ParserUtilTest {
 
     @Test
     public void parseUrgencyLevel_invalidValue_throwsParseException() {
-        assertThrows(ParseException.class, () -> ParserUtil.parseUrgencyLevel(INVALID_LEVEL));
+        assertThrows(ParseException.class, () -> ParserUtil.parseUrgencyLevel(INVALID_URGENCY_LEVEL));
     }
 
     @Test
     public void parseUrgencyLevel_validValueWithoutWhiteSpace_returnsUrgencyLevel() throws Exception {
-        UrgencyLevel expectedUrgencyLevel = new UrgencyLevel(VALID_LEVEL);
-        assertEquals(expectedUrgencyLevel, ParserUtil.parseUrgencyLevel(VALID_LEVEL));
+        UrgencyLevel expectedUrgencyLevel = new UrgencyLevel(VALID_URGENCY_LEVEL);
+        assertEquals(expectedUrgencyLevel, ParserUtil.parseUrgencyLevel(VALID_URGENCY_LEVEL));
     }
 
     @Test
     public void parseUrgencyLevel_validValueWithWhiteSpace_returnsTrimmedUrgencyLevel() throws Exception {
-        String urgencyLevelWithWhitespace = WHITESPACE + VALID_LEVEL + WHITESPACE;
-        UrgencyLevel expectedUrgencyLevel = new UrgencyLevel(VALID_LEVEL);
+        String urgencyLevelWithWhitespace = WHITESPACE + VALID_URGENCY_LEVEL + WHITESPACE;
+        UrgencyLevel expectedUrgencyLevel = new UrgencyLevel(VALID_URGENCY_LEVEL);
         assertEquals(expectedUrgencyLevel, ParserUtil.parseUrgencyLevel(urgencyLevelWithWhitespace));
     }
 }

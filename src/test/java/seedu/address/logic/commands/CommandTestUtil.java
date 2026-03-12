@@ -111,6 +111,7 @@ public class CommandTestUtil {
         assertEquals(expectedAddressBook, actualModel.getAddressBook());
         assertEquals(expectedFilteredList, actualModel.getFilteredPersonList());
     }
+
     /**
      * Updates {@code model}'s filtered list to show only the person at the given {@code targetIndex} in the
      * {@code model}'s address book.
@@ -125,4 +126,25 @@ public class CommandTestUtil {
         assertEquals(1, model.getFilteredPersonList().size());
     }
 
+    /**
+     * Updates {@code model}'s filtered list to show only the persons in the given index range in the
+     * {@code model}'s address book.
+     */
+    public static void showPersonsInIndexRange(Model model, Index startIndex, Index endIndex) {
+        assertTrue(startIndex.getZeroBased() < model.getFilteredPersonList().size());
+        assertTrue(endIndex.getZeroBased() < model.getFilteredPersonList().size());
+        assertTrue(startIndex.getZeroBased() <= endIndex.getZeroBased());
+
+        List<String> expectedKeywords = new ArrayList<>();
+        for (int i = startIndex.getZeroBased(); i <= endIndex.getZeroBased(); i++) {
+            Person person = model.getFilteredPersonList().get(i);
+            final String[] splitName = person.getName().fullName.split("\\s+");
+            expectedKeywords.add(splitName[0]);
+        }
+
+        model.updateFilteredPersonList(new NameContainsKeywordsPredicate(expectedKeywords));
+
+        int expectedSize = endIndex.getZeroBased() - startIndex.getZeroBased() + 1;
+        assertEquals(expectedSize, model.getFilteredPersonList().size());
+    }
 }

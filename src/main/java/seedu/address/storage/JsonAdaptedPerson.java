@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -30,6 +31,7 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
+    private final String ic;
     private final String urgencyLevel;
 
     /**
@@ -38,7 +40,8 @@ class JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("urgencyLevel") String urgencyLevel) {
+            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("ic") String ic,
+            @JsonProperty("urgencyLevel") String urgencyLevel) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -46,6 +49,7 @@ class JsonAdaptedPerson {
         if (tags != null) {
             this.tags.addAll(tags);
         }
+        this.ic = ic;
         this.urgencyLevel = urgencyLevel;
     }
 
@@ -60,6 +64,7 @@ class JsonAdaptedPerson {
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
+        ic = source.getIc().value;
         urgencyLevel = source.getUrgencyLevel().toString();
     }
 
@@ -106,6 +111,14 @@ class JsonAdaptedPerson {
         }
         final Address modelAddress = new Address(address);
 
+        if (ic == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Ic.class.getSimpleName()));
+        }
+        if (!Ic.isValidIc(ic)) {
+            throw new IllegalValueException(Ic.MESSAGE_CONSTRAINTS);
+        }
+        final Ic modelIc = new Ic(ic);
+
         if (urgencyLevel == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     UrgencyLevel.class.getSimpleName()));
@@ -116,7 +129,7 @@ class JsonAdaptedPerson {
         final UrgencyLevel modelUrgencyLevel = new UrgencyLevel(urgencyLevel);
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelUrgencyLevel);
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelIc, modelUrgencyLevel);
     }
 
 }

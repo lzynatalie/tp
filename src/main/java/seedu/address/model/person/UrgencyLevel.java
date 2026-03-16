@@ -10,17 +10,28 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class UrgencyLevel {
 
     /**
-     * Defines the urgency levels that a person can have. The levels are ordered from least urgent to most urgent.
+     * Defines the urgency levels with associated priority values for sorting.
      */
     public enum Level {
-        LOW,
-        MODERATE,
-        HIGH,
-        EXTREME;
+        LOW(1),
+        MODERATE(2),
+        HIGH(3),
+        EXTREME(4);
+
+        private final int priority;
+
+        Level(int priority) {
+            this.priority = priority;
+        }
+
+        public int getPriority() {
+            return priority;
+        }
     }
 
     public static final String MESSAGE_CONSTRAINTS =
             "Urgency levels should be one of the following: low, moderate, high, extreme.";
+
     public static final String VALIDATION_REGEX = "(?i)^(" + Level.LOW + "|"
             + Level.MODERATE + "|"
             + Level.HIGH + "|"
@@ -39,6 +50,13 @@ public class UrgencyLevel {
         this.level = Level.valueOf(level.toUpperCase());
     }
 
+    /**
+     * Returns the priority integer for sorting purposes.
+     */
+    public int getPriorityValue() {
+        return level.getPriority();
+    }
+
     public static boolean isValidUrgencyLevel(String test) {
         return test.matches(VALIDATION_REGEX);
     }
@@ -54,12 +72,16 @@ public class UrgencyLevel {
             return true;
         }
 
-        // instanceof handles nulls
         if (!(other instanceof UrgencyLevel)) {
             return false;
         }
 
         UrgencyLevel otherUrgencyLevel = (UrgencyLevel) other;
         return level.equals(otherUrgencyLevel.level);
+    }
+
+    @Override
+    public int hashCode() {
+        return level.hashCode();
     }
 }

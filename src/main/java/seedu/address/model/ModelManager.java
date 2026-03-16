@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
@@ -22,6 +23,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final SortedList<Person> sortedPersons; // The sorting "lens" for the UI
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -33,7 +35,22 @@ public class ModelManager implements Model {
 
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
+
+        // 1. Initialize FilteredList
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+
+        // 2. Wrap FilteredList in SortedList
+        sortedPersons = new SortedList<>(filteredPersons);
+
+        // 3. Set sorting: Higher priorityValue (Extreme) goes to index 0
+        sortedPersons.setComparator((p1, p2) -> {
+            int priority1 = p1.getUrgencyLevel().getPriorityValue();
+            int priority2 = p2.getUrgencyLevel().getPriorityValue();
+            if (priority1 != priority2) {
+                return Integer.compare(priority2, priority1);
+            }
+            return p1.getName().fullName.compareToIgnoreCase(p2.getName().fullName);
+        });
     }
 
     public ModelManager() {
@@ -107,19 +124,18 @@ public class ModelManager implements Model {
     @Override
     public void setPerson(Person target, Person editedPerson) {
         requireAllNonNull(target, editedPerson);
-
         addressBook.setPerson(target, editedPerson);
     }
 
     //=========== Filtered Person List Accessors =============================================================
 
     /**
-     * Returns an unmodifiable view of the list of {@code Person} backed by the internal list of
-     * {@code versionedAddressBook}
+     * Returns an unmodifiable view of the list of {@code Person}.
+     * Returning sortedPersons ensures the UI always shows the triage order.
      */
     @Override
     public ObservableList<Person> getFilteredPersonList() {
-        return filteredPersons;
+        return sortedPersons;
     }
 
     @Override
@@ -134,7 +150,6 @@ public class ModelManager implements Model {
             return true;
         }
 
-        // instanceof handles nulls
         if (!(other instanceof ModelManager)) {
             return false;
         }
@@ -144,5 +159,4 @@ public class ModelManager implements Model {
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons);
     }
-
 }

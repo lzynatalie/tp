@@ -25,7 +25,6 @@ public class Person {
     // Data fields
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
-    private final Symptoms symptoms;
     private final UrgencyLevel urgencyLevel;
 
     /**
@@ -37,15 +36,13 @@ public class Person {
                   Address address,
                   Set<Tag> tags,
                   Ic ic,
-                  UrgencyLevel urgencyLevel,
-                  Symptoms symptoms) {
+                  UrgencyLevel urgencyLevel) {
         requireAllNonNull(name, phone, email, address, tags, ic, urgencyLevel);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
-        this.symptoms = symptoms;
         this.ic = ic;
         this.urgencyLevel = urgencyLevel;
     }
@@ -80,10 +77,6 @@ public class Person {
 
     public UrgencyLevel getUrgencyLevel() {
         return urgencyLevel;
-    }
-
-    public Symptoms getSymptoms() {
-        return symptoms;
     }
 
     /**
@@ -121,14 +114,13 @@ public class Person {
                 && address.equals(otherPerson.address)
                 && tags.equals(otherPerson.tags)
                 && ic.equals(otherPerson.ic)
-                && urgencyLevel.equals(otherPerson.urgencyLevel)
-                && symptoms.equals(otherPerson.symptoms);
+                && urgencyLevel.equals(otherPerson.urgencyLevel);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, ic, urgencyLevel, symptoms);
+        return Objects.hash(name, phone, email, address, tags, ic, urgencyLevel);
     }
 
     @Override
@@ -141,7 +133,6 @@ public class Person {
                 .add("tags", tags)
                 .add("ic", ic)
                 .add("urgencyLevel", urgencyLevel)
-                .add("symptoms", symptoms)
                 .toString();
     }
 

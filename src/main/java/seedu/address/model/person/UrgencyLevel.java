@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
 /**
- * Represents a Person's urgency level in the address book.
+ * Represents a Person's urgency level in the clinical address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidUrgencyLevel(String)}
  */
 public class UrgencyLevel implements Comparable<UrgencyLevel> {
@@ -26,6 +26,7 @@ public class UrgencyLevel implements Comparable<UrgencyLevel> {
 
         /**
          * Returns the numerical priority of the urgency level.
+         *
          * @return An integer representing the sorting priority.
          */
         public int getPriority() {
@@ -56,6 +57,7 @@ public class UrgencyLevel implements Comparable<UrgencyLevel> {
 
     /**
      * Returns true if a given string is a valid urgency level.
+     *
      * @param test The string to validate.
      * @return True if the string matches one of the defined urgency levels.
      */
@@ -66,6 +68,7 @@ public class UrgencyLevel implements Comparable<UrgencyLevel> {
     /**
      * Returns the CSS style class name associated with this urgency level.
      * This is used by JavaFX to apply color-coding to the UI components.
+     *
      * @return A string in the format "urgency-[level]" (e.g., "urgency-high").
      */
     public String getStyleClass() {
@@ -79,7 +82,7 @@ public class UrgencyLevel implements Comparable<UrgencyLevel> {
 
     /**
      * Compares this UrgencyLevel with another based on their priority values.
-     * Higher priority values (e.g. EXTREME) come before lower ones.
+     * Higher priority values (e.g. EXTREME) come before lower ones in the list.
      */
     @Override
     public int compareTo(UrgencyLevel other) {

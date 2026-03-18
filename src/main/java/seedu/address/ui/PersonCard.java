@@ -45,7 +45,7 @@ public class PersonCard extends UiPart<Region> {
 
     /**
      * Creates a {@code PersonCard} with the given {@code Person} and index to display.
-     * * @param person The person object containing clinical and personal data.
+     * @param person The person object containing clinical and personal data.
      * @param displayedIndex The index of the person in the filtered list.
      */
     public PersonCard(Person person, int displayedIndex) {
@@ -72,7 +72,7 @@ public class PersonCard extends UiPart<Region> {
      * Sets the text and dynamic CSS styling for the urgency level label.
      * This method follows the "Single Responsibility" principle by taking only the
      * specific data strings needed for styling.
-     * * @param styleClass The CSS class to apply (e.g., "urgency-high").
+     * @param styleClass The CSS class to apply (e.g., "urgency-high").
      * @param displayText The raw level string to display (e.g., "HIGH").
      */
     private void setUrgencyStyle(String styleClass, String displayText) {

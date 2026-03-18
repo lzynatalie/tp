@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_URGENCY;
@@ -43,8 +43,8 @@ public class CommandTestUtil {
     public static final String VALID_URGENCY_LEVEL_AMY = "high";
     public static final String VALID_URGENCY_LEVEL_BOB = "low";
 
-    public static final String NAME_DESC_AMY = " " + PREFIX_NAME + VALID_NAME_AMY;
-    public static final String NAME_DESC_BOB = " " + PREFIX_NAME + VALID_NAME_BOB;
+    public static final String NAME_DESC_AMY = " " + PREFIX_PATIENT_NAME + VALID_NAME_AMY;
+    public static final String NAME_DESC_BOB = " " + PREFIX_PATIENT_NAME + VALID_NAME_BOB;
     public static final String PHONE_DESC_AMY = " " + PREFIX_PATIENT_PHONE + VALID_PHONE_AMY;
     public static final String PHONE_DESC_BOB = " " + PREFIX_PATIENT_PHONE + VALID_PHONE_BOB;
     public static final String EMAIL_DESC_AMY = " " + PREFIX_EMAIL + VALID_EMAIL_AMY;
@@ -58,7 +58,7 @@ public class CommandTestUtil {
     public static final String URGENCY_LEVEL_DESC_AMY = " " + PREFIX_URGENCY + VALID_URGENCY_LEVEL_AMY;
     public static final String URGENCY_LEVEL_DESC_BOB = " " + PREFIX_URGENCY + VALID_URGENCY_LEVEL_BOB;
 
-    public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "James&"; // '&' not allowed in names
+    public static final String INVALID_NAME_DESC = " " + PREFIX_PATIENT_NAME + "James&"; // '&' not allowed in names
     public static final String INVALID_PHONE_DESC = " " + PREFIX_PATIENT_PHONE + "911a"; // 'a' not allowed in phones
     public static final String INVALID_EMAIL_DESC = " " + PREFIX_EMAIL + "bob!yahoo"; // missing '@' symbol
     public static final String INVALID_ADDRESS_DESC = " " + PREFIX_ADDRESS; // empty string not allowed for addresses

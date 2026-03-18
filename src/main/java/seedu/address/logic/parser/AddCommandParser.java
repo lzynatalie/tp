@@ -4,7 +4,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_URGENCY;
@@ -36,7 +36,7 @@ public class AddCommandParser implements Parser<AddCommand> {
     public AddCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args,
-                        PREFIX_NAME,
+                        PREFIX_PATIENT_NAME,
                         PREFIX_PATIENT_PHONE,
                         PREFIX_EMAIL,
                         PREFIX_ADDRESS,
@@ -46,7 +46,7 @@ public class AddCommandParser implements Parser<AddCommand> {
                 );
 
         if (!arePrefixesPresent(argMultimap,
-                PREFIX_NAME,
+                PREFIX_PATIENT_NAME,
                 PREFIX_ADDRESS,
                 PREFIX_PATIENT_PHONE,
                 PREFIX_EMAIL,
@@ -56,13 +56,13 @@ public class AddCommandParser implements Parser<AddCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME,
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_PATIENT_NAME,
                 PREFIX_PATIENT_PHONE,
                 PREFIX_EMAIL,
                 PREFIX_ADDRESS,
                 PREFIX_IC,
                 PREFIX_URGENCY);
-        Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
+        Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_PATIENT_NAME).get());
         Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PATIENT_PHONE).get());
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());

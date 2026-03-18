@@ -5,7 +5,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_URGENCY;
@@ -35,7 +35,7 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
         requireNonNull(args);
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args,
-                        PREFIX_NAME,
+                        PREFIX_PATIENT_NAME,
                         PREFIX_PATIENT_PHONE,
                         PREFIX_EMAIL,
                         PREFIX_ADDRESS,
@@ -52,7 +52,7 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, UpdateCommand.MESSAGE_USAGE), pe);
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME,
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_PATIENT_NAME,
                 PREFIX_PATIENT_PHONE,
                 PREFIX_EMAIL,
                 PREFIX_ADDRESS,
@@ -61,8 +61,8 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
 
         UpdatePersonDescriptor updatePersonDescriptor = new UpdatePersonDescriptor();
 
-        if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
-            updatePersonDescriptor.setName(ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get()));
+        if (argMultimap.getValue(PREFIX_PATIENT_NAME).isPresent()) {
+            updatePersonDescriptor.setName(ParserUtil.parseName(argMultimap.getValue(PREFIX_PATIENT_NAME).get()));
         }
         if (argMultimap.getValue(PREFIX_PATIENT_PHONE).isPresent()) {
             updatePersonDescriptor.setPhone(ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PATIENT_PHONE).get()));

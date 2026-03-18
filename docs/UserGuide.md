@@ -120,16 +120,16 @@ Permanently removes patient records from ClinicConnect. Deletion is irreversible
 
 **Format:**
 * **Single deletion:** `delete <INDEX>`
-* **Multiple deletion:** `delete <INDEX>, <INDEX>, <INDEX>`
+* **Multiple deletion:** `delete <INDEX>,<INDEX>,<INDEX>`
 * **Range deletion:** `delete <START_INDEX>-<END_INDEX>`
 
 * The index **must be a positive integer**.
-* For multiple deletions, use a comma (`,`) delimiter. Duplicated indices (e.g., `delete 2, 2`) will be rejected.
+* For multiple deletions, use a comma (`,`) delimiter. Duplicated indices (e.g., `delete 2,2`) will be rejected.
 * For range deletions, use a hyphen (`-`) delimiter. The start index must be less than or equal to the end index.
 
 **Examples:**
 * `delete 2` deletes the 2nd person in the patient records.
-* `delete 1, 3, 5` deletes the 1st, 3rd, and 5th persons.
+* `delete 1,3,5` deletes the 1st, 3rd, and 5th persons.
 * `delete 1-4` deletes the 1st through 4th persons.
 
 ### Clearing all entries : `clear`
@@ -194,12 +194,12 @@ _Details coming soon ..._
 
 ## Command Summary
 
-| Action | Format | Examples |
-| :--- | :--- | :--- |
+| Action | Format                                                                                     | Examples                                                                   |
+| :--- |:-------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------|
 | **Add** | `add pn/NAME ic/IC p/PHONE u/URGENCY d/DOCTOR nk/NOK nkp/NOK_PHONE [s/SYMPTOMS] [n/NOTES]` | `add pn/John ic/S1234567A p/98765432 u/high d/Dr Tan nk/Mary nkp/87654321` |
-| **Update** | `update INDEX [prefix/VALUE]...` | `update 1 u/extreme n/Immediate surgery required` |
-| **Search** | `find [pn/NAME] [ic/IC] [p/PHONE] [u/URGENCY]` | `find u/high`, `find ic/S1234567A` |
-| **Delete** | `delete INDEX` <br> `delete INDEX, INDEX` <br> `delete START-END` | `delete 3` <br> `delete 1, 4` <br> `delete 2-5` |
-| **List** | `list` | `list` |
-| **Clear** | `clear` | `clear` |
-| **Exit** | `exit` | `exit` |
+| **Update** | `update INDEX [prefix/VALUE]...`                                                           | `update 1 u/extreme n/Immediate surgery required`                          |
+| **Search** | `find [pn/NAME] [ic/IC] [p/PHONE] [u/URGENCY]`                                             | `find u/high`, `find ic/S1234567A`                                         |
+| **Delete** | `delete INDEX` <br> `delete INDEX,INDEX` <br> `delete START-END`                           | `delete 3` <br> `delete 1,4` <br> `delete 2-5`                             |
+| **List** | `list`                                                                                     | `list`                                                                     |
+| **Clear** | `clear`                                                                                    | `clear`                                                                    |
+| **Exit** | `exit`                                                                                     | `exit`                                                                     |

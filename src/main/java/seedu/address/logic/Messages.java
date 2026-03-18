@@ -18,6 +18,7 @@ public class Messages {
     public static final String MESSAGE_INVALID_PERSON_INDICES = "One or more person indices provided are invalid";
     public static final String MESSAGE_INVALID_PERSON_INDEX_RANGE = "The person index range provided is invalid";
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
+    public static final String MESSAGE_PERSONS_SEARCHED = "Found %1$d patients matching the criteria  persons listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
 

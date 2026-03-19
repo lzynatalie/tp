@@ -14,6 +14,8 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_AMY
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_PHONE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_PHONE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_FRIEND;
@@ -42,6 +44,7 @@ public class TypicalPersons {
             .withNextOfKinPhone("91234567")
             .withDoctorName("Ben Leong")
             .withNextOfKin("Benny Blanco")
+            .withNotes("Keeps saying hi")
             .build();
     public static final Person BENSON = new PersonBuilder().withName("Benson Meier")
             .withAddress("311, Clementi Ave 2, #02-25")
@@ -53,6 +56,7 @@ public class TypicalPersons {
             .withNextOfKinPhone("92345678")
             .withDoctorName("Colin")
             .withNextOfKin("Selena Gomez")
+            .withNotes("Cannot sit down")
             .build();
     public static final Person CARL = new PersonBuilder().withName("Carl Kurz")
             .withPhone("95352563")
@@ -63,6 +67,7 @@ public class TypicalPersons {
             .withNextOfKinPhone("93456789")
             .withDoctorName("Tzer Bin")
             .withNextOfKin("Justin Bieber")
+            .withNotes("Funny guy")
             .build();
     public static final Person DANIEL = new PersonBuilder().withName("Daniel Meier")
             .withPhone("87652533")
@@ -74,6 +79,7 @@ public class TypicalPersons {
             .withNextOfKinPhone("94567890")
             .withDoctorName("Lady Gaga")
             .withNextOfKin("Hailey Bieber")
+            .withNotes("Arrested for harrassment")
             .build();
     public static final Person ELLE = new PersonBuilder().withName("Elle Meyer")
             .withPhone("94822244")
@@ -84,6 +90,7 @@ public class TypicalPersons {
             .withNextOfKinPhone("95678901")
             .withDoctorName("Spiderman")
             .withNextOfKin("Kendall Jenner")
+            .withNotes("Cannot stand up")
             .build();
     public static final Person FIONA = new PersonBuilder().withName("Fiona Kunz")
             .withPhone("94824275")
@@ -94,6 +101,7 @@ public class TypicalPersons {
             .withNextOfKinPhone("96789012")
             .withDoctorName("Ironman")
             .withNextOfKin("Kylie Jenner")
+            .withNotes("Hates walking")
             .build();
     public static final Person GEORGE = new PersonBuilder().withName("George Best")
             .withPhone("94824426")
@@ -104,6 +112,7 @@ public class TypicalPersons {
             .withNextOfKinPhone("97890123")
             .withDoctorName("Choong")
             .withNextOfKin("Kris Jenner")
+            .withNotes("Handsome man")
             .build();
 
     // Manually added
@@ -139,6 +148,7 @@ public class TypicalPersons {
             .withNextOfKinPhone(VALID_NEXT_OF_KIN_PHONE_AMY)
             .withDoctorName(VALID_DOCTOR_NAME_AMY)
             .withNextOfKin(VALID_NEXT_OF_KIN_AMY)
+            .withNotes(VALID_NOTES_AMY)
             .build();
     public static final Person BOB = new PersonBuilder().withName(VALID_NAME_BOB)
             .withPhone(VALID_PHONE_BOB)
@@ -150,6 +160,7 @@ public class TypicalPersons {
             .withNextOfKinPhone(VALID_NEXT_OF_KIN_PHONE_BOB)
             .withDoctorName(VALID_DOCTOR_NAME_BOB)
             .withNextOfKin(VALID_NEXT_OF_KIN_BOB)
+            .withNotes(VALID_NOTES_BOB)
             .build();
 
     public static final String KEYWORD_MATCHING_MEIER = "Meier"; // A keyword that matches MEIER

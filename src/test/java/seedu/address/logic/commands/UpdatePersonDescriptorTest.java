@@ -11,6 +11,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_IC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_PHONE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_HUSBAND;
 
@@ -70,6 +71,10 @@ public class UpdatePersonDescriptorTest {
         // different nextOfKin -> returns false
         editedAmy = new UpdatePersonDescriptorBuilder(DESC_AMY).withNextOfKin(VALID_NEXT_OF_KIN_BOB).build();
         assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different notes -> returns false
+        editedAmy = new UpdatePersonDescriptorBuilder(DESC_AMY).withNotes(VALID_NOTES_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
     }
 
     @Test
@@ -85,7 +90,8 @@ public class UpdatePersonDescriptorTest {
                 + updatePersonDescriptor.getUrgencyLevel().orElse(null) + ", nextOfKinPhone="
                 + updatePersonDescriptor.getNextOfKinPhone().orElse(null) + ", doctorName="
                 + updatePersonDescriptor.getDoctorName().orElse(null) + ", nextOfKin="
-                + updatePersonDescriptor.getNextOfKin().orElse(null)
+                + updatePersonDescriptor.getNextOfKin().orElse(null) + ", notes="
+                + updatePersonDescriptor.getUrgencyLevel().orElse(null)
                 + "}";
         assertEquals(expected, updatePersonDescriptor.toString());
     }

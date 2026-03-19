@@ -17,6 +17,7 @@ import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.NextOfKin;
 import seedu.address.model.person.NextOfKinPhone;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
@@ -39,6 +40,7 @@ class JsonAdaptedPerson {
     private final String nextOfKinPhone;
     private final String doctorName;
     private final String nextOfKin;
+    private final String notes;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -53,7 +55,8 @@ class JsonAdaptedPerson {
                              @JsonProperty("urgencyLevel") String urgencyLevel,
                              @JsonProperty("doctorName") String doctorName,
                              @JsonProperty("nextOfKinPhone") String nextOfKinPhone,
-                             @JsonProperty("nextOfKin") String nextOfKin) {
+                             @JsonProperty("nextOfKin") String nextOfKin,
+                             @JsonProperty("notes") String notes) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -66,6 +69,7 @@ class JsonAdaptedPerson {
         this.nextOfKinPhone = nextOfKinPhone;
         this.doctorName = doctorName;
         this.nextOfKin = nextOfKin;
+        this.notes = notes;
     }
 
     /**
@@ -76,6 +80,7 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().value;
         address = source.getAddress().value;
+        notes = source.getNotes().getValue();
         symptoms.addAll(source.getSymptoms().stream()
                 .map(JsonAdaptedSymptom::new)
                 .collect(Collectors.toList()));
@@ -173,9 +178,19 @@ class JsonAdaptedPerson {
         }
         final DoctorName modelDoctorName = new DoctorName(doctorName);
 
+        final Notes modelNotes;
+        if (notes == null) {
+            modelNotes = new Notes("");
+        } else {
+            if (notes.length() > Notes.MAX_LENGTH) {
+                throw new IllegalValueException(Notes.MESSAGE_CONSTRAINTS);
+            }
+            modelNotes = new Notes(notes);
+        }
+
         final Set<Symptom> modelSymptoms = new HashSet<>(personSymptoms);
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelSymptoms, modelIc, modelUrgencyLevel,
-                modelNextOfKinPhone, modelDoctorName, modelNextOfKin);
+                modelNextOfKinPhone, modelDoctorName, modelNextOfKin, modelNotes);
     }
 
 }

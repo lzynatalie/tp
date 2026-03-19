@@ -9,7 +9,8 @@
     "urgencyLevel": "low",
     "nextOfKinPhone": "91748274",
     "doctorName": "Ben Leong",
-    "nextOfKin" : "Johnny"
+    "nextOfKin" : "Johnny",
+    "notes": "cannot stop talking"
   }, {
     "name": "Alice Pauline",
     "phone": "94351253",
@@ -19,6 +20,7 @@
     "urgencyLevel": "low",
     "nextOfKinPhone": "92846294",
     "doctorName": "Ben Leong",
-    "nextOfKin" : "John"
+    "nextOfKin" : "John",
+    "notes": "Christian"
   } ]
 }

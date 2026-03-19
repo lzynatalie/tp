@@ -10,6 +10,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_IC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_PHONE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_HUSBAND;
 import static seedu.address.testutil.TypicalPersons.ALICE;
@@ -91,6 +92,10 @@ public class PersonTest {
         // different symptoms -> returns false
         editedAlice = new PersonBuilder(ALICE).withSymptoms(VALID_SYMPTOM_HUSBAND).build();
         assertFalse(ALICE.equals(editedAlice));
+
+        // different notes -> returns false
+        editedAlice = new PersonBuilder(ALICE).withNotes(VALID_NOTES_BOB).build();
+        assertFalse(ALICE.equals(editedAlice));
     }
 
     @Test
@@ -106,6 +111,7 @@ public class PersonTest {
                 + ", nextOfKinPhone=" + ALICE.getNextOfKinPhone()
                 + ", doctorName=" + ALICE.getDoctorName()
                 + ", nextOfKin=" + ALICE.getNextOfKin()
+                + ", notes=" + ALICE.getNotes()
                 + "}";
         assertEquals(expected, ALICE.toString());
     }
@@ -140,6 +146,17 @@ public class PersonTest {
 
         // different NameOfKin -> different hashCode
         Person editedAlice = new PersonBuilder(ALICE).withNextOfKin("John Doe").build();
+        assertNotEquals(ALICE.hashCode(), editedAlice.hashCode());
+    }
+
+    @Test
+    public void hashCode_includingNotes() {
+        // same values -> equal hashCode
+        Person aliceCopy = new PersonBuilder(ALICE).build();
+        assertEquals(ALICE.hashCode(), aliceCopy.hashCode());
+
+        // different doctorName -> different hashCode
+        Person editedAlice = new PersonBuilder(ALICE).withNotes("An aspiring dentist").build();
         assertNotEquals(ALICE.hashCode(), editedAlice.hashCode());
     }
 }

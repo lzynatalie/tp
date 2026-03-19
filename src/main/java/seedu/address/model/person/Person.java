@@ -29,6 +29,7 @@ public class Person {
     private final NextOfKinPhone nextOfKinPhone;
     private final DoctorName doctorName;
     private final NextOfKin nextOfKin;
+    private final Notes notes;
 
     /**
      * Every field must be present and not null.
@@ -42,9 +43,10 @@ public class Person {
                   UrgencyLevel urgencyLevel,
                   NextOfKinPhone nextOfKinPhone,
                   DoctorName doctorName,
-                  NextOfKin nextOfKin) {
+                  NextOfKin nextOfKin,
+                  Notes notes) {
         requireAllNonNull(name, phone, email, address, symptoms, ic,
-                urgencyLevel, doctorName, nextOfKinPhone, nextOfKin);
+                urgencyLevel, doctorName, nextOfKinPhone, nextOfKin, notes);
 
         this.name = name;
         this.phone = phone;
@@ -56,6 +58,7 @@ public class Person {
         this.nextOfKinPhone = nextOfKinPhone;
         this.doctorName = doctorName;
         this.nextOfKin = nextOfKin;
+        this.notes = notes;
     }
 
     public Name getName() {
@@ -102,6 +105,10 @@ public class Person {
         return nextOfKin;
     }
 
+    public Notes getNotes() {
+        return notes;
+    }
+
     /**
      * Returns true if both persons have the same ic.
      * This defines a weaker notion of equality between two persons.
@@ -140,14 +147,15 @@ public class Person {
                 && urgencyLevel.equals(otherPerson.urgencyLevel)
                 && nextOfKinPhone.equals(otherPerson.nextOfKinPhone)
                 && doctorName.equals(otherPerson.doctorName)
-                && nextOfKin.equals(otherPerson.nextOfKin);
+                && nextOfKin.equals(otherPerson.nextOfKin)
+                && notes.equals(otherPerson.notes);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
         return Objects.hash(name, phone, email, address, symptoms,
-                ic, urgencyLevel, doctorName, nextOfKinPhone, nextOfKin);
+                ic, urgencyLevel, doctorName, nextOfKinPhone, nextOfKin, notes);
     }
 
     @Override
@@ -163,6 +171,7 @@ public class Person {
                 .add("nextOfKinPhone", nextOfKinPhone)
                 .add("doctorName", doctorName)
                 .add("nextOfKin", nextOfKin)
+                .add("notes", notes)
                 .toString();
     }
 

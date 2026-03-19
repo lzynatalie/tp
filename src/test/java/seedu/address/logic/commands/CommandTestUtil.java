@@ -8,6 +8,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
@@ -23,6 +24,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.UpdatePersonDescriptorBuilder;
 
@@ -51,6 +53,8 @@ public class CommandTestUtil {
     public static final String VALID_NEXT_OF_KIN_PHONE_BOB = "91274567";
     public static final String VALID_DOCTOR_NAME_AMY = "Suess";
     public static final String VALID_DOCTOR_NAME_BOB = "Choong";
+    public static final String VALID_NOTES_AMY = "dab";
+    public static final String VALID_NOTES_BOB = "Eats chips";
 
     public static final String NAME_DESC_AMY = " " + PREFIX_PATIENT_NAME + VALID_NAME_AMY;
     public static final String NAME_DESC_BOB = " " + PREFIX_PATIENT_NAME + VALID_NAME_BOB;
@@ -74,6 +78,8 @@ public class CommandTestUtil {
     public static final String DOCTOR_NAME_DESC_BOB = " " + PREFIX_DOCTOR + VALID_DOCTOR_NAME_BOB;
     public static final String NEXT_OF_KIN_DESC_AMY = " " + PREFIX_NEXT_OF_KIN + VALID_NEXT_OF_KIN_AMY;
     public static final String NEXT_OF_KIN_DESC_BOB = " " + PREFIX_NEXT_OF_KIN + VALID_NEXT_OF_KIN_BOB;
+    public static final String NOTES_DESC_AMY = " " + PREFIX_NOTES + VALID_NOTES_AMY;
+    public static final String NOTES_DESC_BOB = " " + PREFIX_NOTES + VALID_NOTES_BOB;
 
     public static final String INVALID_NAME_DESC = " " + PREFIX_PATIENT_NAME + "James&"; // '&' not allowed in names
     public static final String INVALID_PHONE_DESC = " " + PREFIX_PATIENT_PHONE + "911a"; // 'a' not allowed in phones
@@ -85,7 +91,8 @@ public class CommandTestUtil {
     public static final String INVALID_NEXT_OF_KIN_PHONE = " " + PREFIX_NEXT_OF_KIN_PHONE + "913vb";
     public static final String INVALID_DOCTOR_NAME_DESC = " " + PREFIX_DOCTOR + "Dr*Who"; // invalid doctor name
     public static final String INVALID_NEXT_OF_KIN_DESC = " " + PREFIX_NEXT_OF_KIN + "J@mmy"; // invalid next-of-kin
-
+    public static final String INVALID_NOTES_DESC = " " + PREFIX_NOTES
+            + "a".repeat(Notes.MAX_LENGTH + 10); // invalid notes
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";
 
@@ -103,6 +110,7 @@ public class CommandTestUtil {
                 .withNextOfKinPhone(VALID_NEXT_OF_KIN_PHONE_AMY)
                 .withDoctorName(VALID_DOCTOR_NAME_AMY)
                 .withNextOfKin(VALID_NEXT_OF_KIN_AMY)
+                .withNotes(VALID_NOTES_AMY)
                 .build();
         DESC_BOB = new UpdatePersonDescriptorBuilder().withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB)
@@ -114,6 +122,7 @@ public class CommandTestUtil {
                 .withNextOfKinPhone(VALID_NEXT_OF_KIN_PHONE_BOB)
                 .withDoctorName(VALID_DOCTOR_NAME_AMY)
                 .withNextOfKin(VALID_NEXT_OF_KIN_BOB)
+                .withNotes(VALID_NOTES_BOB)
                 .build();
     }
 

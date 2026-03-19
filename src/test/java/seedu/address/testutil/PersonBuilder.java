@@ -10,6 +10,7 @@ import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.NextOfKin;
 import seedu.address.model.person.NextOfKinPhone;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
@@ -30,6 +31,7 @@ public class PersonBuilder {
     public static final String DEFAULT_NEXT_OF_KIN_PHONE = "81234567";
     public static final String DEFAULT_DOCTOR_NAME = "Seuss";
     public static final String DEFAULT_NEXT_OF_KIN = "Ms Jane";
+    public static final String DEFAULT_NOTES = "Goes to gym";
 
     private Name name;
     private Phone phone;
@@ -41,6 +43,7 @@ public class PersonBuilder {
     private NextOfKinPhone nextOfKinPhone;
     private DoctorName doctorName;
     private NextOfKin nextOfKin;
+    private Notes notes;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -56,6 +59,7 @@ public class PersonBuilder {
         nextOfKinPhone = new NextOfKinPhone(DEFAULT_NEXT_OF_KIN_PHONE);
         doctorName = new DoctorName(DEFAULT_DOCTOR_NAME);
         nextOfKin = new NextOfKin(DEFAULT_NEXT_OF_KIN);
+        notes = new Notes(DEFAULT_NOTES);
     }
 
     /**
@@ -72,6 +76,7 @@ public class PersonBuilder {
         nextOfKinPhone = personToCopy.getNextOfKinPhone();
         doctorName = personToCopy.getDoctorName();
         nextOfKin = personToCopy.getNextOfKin();
+        notes = personToCopy.getNotes();
     }
 
     /**
@@ -155,10 +160,20 @@ public class PersonBuilder {
     }
 
     /**
+     * Sets the {@code Notes} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withNotes(String notes) {
+        this.notes = new Notes(notes);
+        return this;
+    }
+
+    /**
      * Builds and returns the {@code Person} object that we are building.
      */
     public Person build() {
         return new Person(name, phone, email, address, symptoms, ic, urgencyLevel,
-                nextOfKinPhone, doctorName, nextOfKin);
+                nextOfKinPhone, doctorName, nextOfKin, notes);
     }
+
+
 }

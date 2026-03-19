@@ -16,6 +16,7 @@ import static seedu.address.logic.commands.CommandTestUtil.INVALID_IC_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NEXT_OF_KIN_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NEXT_OF_KIN_PHONE;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_NOTES_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_SYMPTOM_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_URGENCY_LEVEL_DESC;
@@ -25,6 +26,8 @@ import static seedu.address.logic.commands.CommandTestUtil.NEXT_OF_KIN_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NEXT_OF_KIN_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.NEXT_OF_KIN_PHONE_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NEXT_OF_KIN_PHONE_DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.NOTES_DESC_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.NOTES_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_NON_EMPTY;
@@ -50,6 +53,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_URGENCY;
@@ -69,6 +73,7 @@ import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.NextOfKin;
 import seedu.address.model.person.NextOfKinPhone;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
@@ -89,7 +94,8 @@ public class AddCommandParserTest {
                 + URGENCY_LEVEL_DESC_BOB
                 + NEXT_OF_KIN_DESC_BOB
                 + NEXT_OF_KIN_PHONE_DESC_BOB
-                + DOCTOR_NAME_DESC_BOB, new AddCommand(expectedPerson));
+                + DOCTOR_NAME_DESC_BOB
+                + NOTES_DESC_BOB, new AddCommand(expectedPerson));
 
 
         // multiple symptoms - all accepted
@@ -107,7 +113,8 @@ public class AddCommandParserTest {
                         + URGENCY_LEVEL_DESC_BOB
                         + NEXT_OF_KIN_DESC_BOB
                         + NEXT_OF_KIN_PHONE_DESC_BOB
-                        + DOCTOR_NAME_DESC_BOB,
+                        + DOCTOR_NAME_DESC_BOB
+                        + NOTES_DESC_BOB,
                 new AddCommand(expectedPersonMultipleSymptoms));
     }
 
@@ -122,7 +129,8 @@ public class AddCommandParserTest {
                 + URGENCY_LEVEL_DESC_BOB
                 + DOCTOR_NAME_DESC_BOB
                 + NEXT_OF_KIN_PHONE_DESC_BOB
-                + NEXT_OF_KIN_DESC_BOB;
+                + NEXT_OF_KIN_DESC_BOB
+                + NOTES_DESC_BOB;
 
         // multiple names
         assertParseFailure(parser, NAME_DESC_AMY + validExpectedPersonString,
@@ -160,6 +168,10 @@ public class AddCommandParserTest {
         assertParseFailure(parser, NEXT_OF_KIN_DESC_AMY + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NEXT_OF_KIN));
 
+        // multiple notes
+        assertParseFailure(parser, NOTES_DESC_AMY + validExpectedPersonString,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NOTES));
+
         // multiple fields repeated
         assertParseFailure(parser,
                 validExpectedPersonString
@@ -172,6 +184,7 @@ public class AddCommandParserTest {
                         + NEXT_OF_KIN_DESC_AMY
                         + NEXT_OF_KIN_PHONE_DESC_AMY
                         + DOCTOR_NAME_DESC_AMY
+                        + NOTES_DESC_BOB
                         + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PATIENT_NAME,
                         PREFIX_ADDRESS,
@@ -181,7 +194,8 @@ public class AddCommandParserTest {
                         PREFIX_URGENCY,
                         PREFIX_NEXT_OF_KIN,
                         PREFIX_NEXT_OF_KIN_PHONE,
-                        PREFIX_DOCTOR));
+                        PREFIX_DOCTOR,
+                        PREFIX_NOTES));
 
         // invalid value followed by valid value
 
@@ -218,6 +232,10 @@ public class AddCommandParserTest {
 
         assertParseFailure(parser, INVALID_NEXT_OF_KIN_DESC + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NEXT_OF_KIN));
+
+        // invalid notes
+        assertParseFailure(parser, INVALID_NOTES_DESC + validExpectedPersonString,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NOTES));
 
         // valid value followed by invalid value
 
@@ -268,7 +286,8 @@ public class AddCommandParserTest {
                         + URGENCY_LEVEL_DESC_AMY
                         + NEXT_OF_KIN_DESC_AMY
                         + NEXT_OF_KIN_PHONE_DESC_AMY
-                        + DOCTOR_NAME_DESC_AMY,
+                        + DOCTOR_NAME_DESC_AMY
+                        + NOTES_DESC_AMY,
                 new AddCommand(expectedPerson));
     }
 
@@ -345,7 +364,8 @@ public class AddCommandParserTest {
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB
+                        + NOTES_DESC_BOB,
                 Name.MESSAGE_CONSTRAINTS);
 
         // invalid phone
@@ -353,7 +373,8 @@ public class AddCommandParserTest {
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB
+                        + NOTES_DESC_BOB,
                 Phone.MESSAGE_CONSTRAINTS);
 
         // invalid email
@@ -361,7 +382,8 @@ public class AddCommandParserTest {
                         + INVALID_EMAIL_DESC + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB
+                        + NOTES_DESC_BOB,
                 Email.MESSAGE_CONSTRAINTS);
 
         // invalid address
@@ -369,7 +391,8 @@ public class AddCommandParserTest {
                         + EMAIL_DESC_BOB + INVALID_ADDRESS_DESC
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB
+                        + NOTES_DESC_BOB,
                 Address.MESSAGE_CONSTRAINTS);
 
         // invalid symptom
@@ -377,7 +400,8 @@ public class AddCommandParserTest {
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + INVALID_SYMPTOM_DESC + VALID_SYMPTOM_FRIEND
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB
+                        + NOTES_DESC_BOB,
                 Symptom.MESSAGE_CONSTRAINTS);
 
         // invalid urgency level
@@ -385,7 +409,8 @@ public class AddCommandParserTest {
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
                         + IC_DESC_BOB + INVALID_URGENCY_LEVEL_DESC + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB
+                        + NOTES_DESC_BOB,
                 UrgencyLevel.MESSAGE_CONSTRAINTS);
 
         // invalid nok phone
@@ -393,7 +418,8 @@ public class AddCommandParserTest {
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + INVALID_NEXT_OF_KIN_PHONE + NEXT_OF_KIN_DESC_BOB,
+                        + INVALID_NEXT_OF_KIN_PHONE + NEXT_OF_KIN_DESC_BOB
+                        + NOTES_DESC_BOB,
                 NextOfKinPhone.MESSAGE_CONSTRAINTS);
 
         // invalid ic
@@ -401,7 +427,8 @@ public class AddCommandParserTest {
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
                         + INVALID_IC_DESC + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB
+                        + NOTES_DESC_BOB,
                 Ic.MESSAGE_CONSTRAINTS);
 
 
@@ -410,7 +437,8 @@ public class AddCommandParserTest {
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + INVALID_DOCTOR_NAME_DESC
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB
+                        + NOTES_DESC_BOB,
                 DoctorName.MESSAGE_CONSTRAINTS);
 
         // invalid next of kin
@@ -418,8 +446,18 @@ public class AddCommandParserTest {
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_FRIEND + SYMPTOM_DESC_FRIEND
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + INVALID_NEXT_OF_KIN_DESC,
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + INVALID_NEXT_OF_KIN_DESC
+                        + NOTES_DESC_BOB,
                 NextOfKin.MESSAGE_CONSTRAINTS);
+
+        // invalid notes
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB
+                        + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB
+                        + INVALID_NOTES_DESC,
+                Notes.MESSAGE_CONSTRAINTS);
 
         // two invalid values, only first invalid value reported
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB

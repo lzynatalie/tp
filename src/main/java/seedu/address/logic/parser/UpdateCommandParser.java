@@ -8,6 +8,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
@@ -47,7 +48,8 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
                         PREFIX_URGENCY,
                         PREFIX_NEXT_OF_KIN_PHONE,
                         PREFIX_DOCTOR,
-                        PREFIX_NEXT_OF_KIN
+                        PREFIX_NEXT_OF_KIN,
+                        PREFIX_NOTES
                 );
 
         Index index;
@@ -66,7 +68,8 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
                 PREFIX_URGENCY,
                 PREFIX_NEXT_OF_KIN_PHONE,
                 PREFIX_DOCTOR,
-                PREFIX_NEXT_OF_KIN);
+                PREFIX_NEXT_OF_KIN,
+                PREFIX_NOTES);
 
         UpdatePersonDescriptor updatePersonDescriptor = new UpdatePersonDescriptor();
 
@@ -104,6 +107,9 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
                     .get()));
         }
 
+        if (argMultimap.getValue(PREFIX_NOTES).isPresent()) {
+            updatePersonDescriptor.setNotes(ParserUtil.parseNotes(argMultimap.getValue(PREFIX_NOTES).get()));
+        }
         parseSymptomsForEdit(argMultimap.getAllValues(PREFIX_SYMPTOM)).ifPresent(updatePersonDescriptor::setSymptoms);
 
 

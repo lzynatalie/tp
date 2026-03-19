@@ -4,9 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.NextOfKin;
+import seedu.address.model.person.NextOfKinPhone;
 import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -25,7 +28,10 @@ public class PersonBuilder {
     public static final String DEFAULT_ADDRESS = "123, Jurong West Ave 6, #08-111";
     public static final String DEFAULT_IC = "S1234567A";
     public static final String DEFAULT_URGENCY_LEVEL = "low";
-    public static final String DEFAULT_NOTES = "Likes to eat apples";
+    public static final String DEFAULT_NEXT_OF_KIN_PHONE = "81234567";
+    public static final String DEFAULT_DOCTOR_NAME = "Seuss";
+    public static final String DEFAULT_NEXT_OF_KIN = "Ms Jane";
+    public static final String DEFAULT_NOTES = "Goes to gym";
 
     private Name name;
     private Phone phone;
@@ -34,6 +40,9 @@ public class PersonBuilder {
     private Set<Symptom> symptoms;
     private Ic ic;
     private UrgencyLevel urgencyLevel;
+    private NextOfKinPhone nextOfKinPhone;
+    private DoctorName doctorName;
+    private NextOfKin nextOfKin;
     private Notes notes;
 
     /**
@@ -47,6 +56,9 @@ public class PersonBuilder {
         symptoms = new HashSet<>();
         ic = new Ic(DEFAULT_IC);
         urgencyLevel = new UrgencyLevel(DEFAULT_URGENCY_LEVEL);
+        nextOfKinPhone = new NextOfKinPhone(DEFAULT_NEXT_OF_KIN_PHONE);
+        doctorName = new DoctorName(DEFAULT_DOCTOR_NAME);
+        nextOfKin = new NextOfKin(DEFAULT_NEXT_OF_KIN);
         notes = new Notes(DEFAULT_NOTES);
     }
 
@@ -61,6 +73,9 @@ public class PersonBuilder {
         symptoms = new HashSet<>(personToCopy.getSymptoms());
         ic = personToCopy.getIc();
         urgencyLevel = personToCopy.getUrgencyLevel();
+        nextOfKinPhone = personToCopy.getNextOfKinPhone();
+        doctorName = personToCopy.getDoctorName();
+        nextOfKin = personToCopy.getNextOfKin();
         notes = personToCopy.getNotes();
     }
 
@@ -120,8 +135,28 @@ public class PersonBuilder {
         return this;
     }
 
-    public Person build() {
-        return new Person(name, phone, email, address, symptoms, ic, urgencyLevel, notes);
+    /**
+     * Sets the {@code NextOfKinPhone} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withNextOfKinPhone(String nextOfKinPhone) {
+        this.nextOfKinPhone = new NextOfKinPhone(nextOfKinPhone);
+        return this;
+    }
+
+    /**
+     * Sets the {@code DoctorName} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withDoctorName(String doctorName) {
+        this.doctorName = new DoctorName(doctorName);
+        return this;
+    }
+
+    /**
+     * Sets the {@code NextOfKin} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withNextOfKin(String nextOfKin) {
+        this.nextOfKin = new NextOfKin(nextOfKin);
+        return this;
     }
 
     /**
@@ -131,4 +166,14 @@ public class PersonBuilder {
         this.notes = new Notes(notes);
         return this;
     }
+
+    /**
+     * Builds and returns the {@code Person} object that we are building.
+     */
+    public Person build() {
+        return new Person(name, phone, email, address, symptoms, ic, urgencyLevel,
+                nextOfKinPhone, doctorName, nextOfKin, notes);
+    }
+
+
 }

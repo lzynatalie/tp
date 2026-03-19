@@ -11,9 +11,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.NextOfKin;
+import seedu.address.model.person.NextOfKinPhone;
 import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -34,16 +37,25 @@ class JsonAdaptedPerson {
     private final List<JsonAdaptedSymptom> symptoms = new ArrayList<>();
     private final String ic;
     private final String urgencyLevel;
+    private final String nextOfKinPhone;
+    private final String doctorName;
+    private final String nextOfKin;
     private final String notes;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
     @JsonCreator
-    public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-                             @JsonProperty("email") String email, @JsonProperty("address") String address,
-                             @JsonProperty("symptoms") List<JsonAdaptedSymptom> symptoms, @JsonProperty("ic") String ic,
+    public JsonAdaptedPerson(@JsonProperty("name") String name,
+                             @JsonProperty("phone") String phone,
+                             @JsonProperty("email") String email,
+                             @JsonProperty("address") String address,
+                             @JsonProperty("tags") List<JsonAdaptedSymptom> symptoms,
+                             @JsonProperty("ic") String ic,
                              @JsonProperty("urgencyLevel") String urgencyLevel,
+                             @JsonProperty("doctorName") String doctorName,
+                             @JsonProperty("nextOfKinPhone") String nextOfKinPhone,
+                             @JsonProperty("nextOfKin") String nextOfKin,
                              @JsonProperty("notes") String notes) {
         this.name = name;
         this.phone = phone;
@@ -54,6 +66,9 @@ class JsonAdaptedPerson {
         }
         this.ic = ic;
         this.urgencyLevel = urgencyLevel;
+        this.nextOfKinPhone = nextOfKinPhone;
+        this.doctorName = doctorName;
+        this.nextOfKin = nextOfKin;
         this.notes = notes;
     }
 
@@ -71,6 +86,9 @@ class JsonAdaptedPerson {
                 .collect(Collectors.toList()));
         ic = source.getIc().value;
         urgencyLevel = source.getUrgencyLevel().toString();
+        nextOfKinPhone = source.getNextOfKinPhone().toString();
+        doctorName = source.getDoctorName().toString();
+        nextOfKin = source.getNextOfKin().toString();
     }
 
     /**
@@ -133,6 +151,33 @@ class JsonAdaptedPerson {
         }
         final UrgencyLevel modelUrgencyLevel = new UrgencyLevel(urgencyLevel);
 
+        if (nextOfKin == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    NextOfKin.class.getSimpleName()));
+        }
+        if (!NextOfKin.isValidNextOfKin(nextOfKin)) {
+            throw new IllegalValueException(NextOfKin.MESSAGE_CONSTRAINTS);
+        }
+        final NextOfKin modelNextOfKin = new NextOfKin(nextOfKin);
+
+        if (nextOfKinPhone == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    NextOfKinPhone.class.getSimpleName()));
+        }
+        if (!NextOfKinPhone.isValidNextOfKinPhone(nextOfKinPhone)) {
+            throw new IllegalValueException(NextOfKinPhone.MESSAGE_CONSTRAINTS);
+        }
+        final NextOfKinPhone modelNextOfKinPhone = new NextOfKinPhone(nextOfKinPhone);
+
+        if (doctorName == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    DoctorName.class.getSimpleName()));
+        }
+        if (!DoctorName.isValidName(doctorName)) {
+            throw new IllegalValueException(DoctorName.MESSAGE_CONSTRAINTS);
+        }
+        final DoctorName modelDoctorName = new DoctorName(doctorName);
+
         final Notes modelNotes;
         if (notes == null) {
             modelNotes = new Notes("");
@@ -144,8 +189,8 @@ class JsonAdaptedPerson {
         }
 
         final Set<Symptom> modelSymptoms = new HashSet<>(personSymptoms);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelSymptoms,
-                modelIc, modelUrgencyLevel, modelNotes);
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelSymptoms, modelIc, modelUrgencyLevel,
+                modelNextOfKinPhone, modelDoctorName, modelNextOfKin, modelNotes);
     }
 
 }

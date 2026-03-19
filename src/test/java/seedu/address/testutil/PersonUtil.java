@@ -1,8 +1,11 @@
 package seedu.address.testutil;
 
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
@@ -42,6 +45,9 @@ public class PersonUtil {
         );
         sb.append(PREFIX_IC + person.getIc().value + " ");
         sb.append(PREFIX_URGENCY + person.getUrgencyLevel().toString() + " ");
+        sb.append(PREFIX_NEXT_OF_KIN_PHONE + person.getNextOfKinPhone().toString() + " ");
+        sb.append(PREFIX_DOCTOR + person.getDoctorName().toString() + " ");
+        sb.append(PREFIX_NEXT_OF_KIN + person.getNextOfKin().toString() + " ");
         sb.append(PREFIX_NOTES + person.getNotes().toString() + " ");
 
         return sb.toString();
@@ -69,6 +75,12 @@ public class PersonUtil {
                 .append(" "));
         descriptor.getNotes().ifPresent(notes -> sb.append(PREFIX_NOTES).append(notes)
                 .append(" "));
+        descriptor.getNextOfKinPhone().ifPresent(nextOfKinPhone -> sb.append(PREFIX_NEXT_OF_KIN_PHONE)
+                .append(nextOfKinPhone.value).append(" "));
+        descriptor.getDoctorName().ifPresent(doctorName -> sb.append(PREFIX_DOCTOR).append(doctorName)
+                .append(" "));
+        descriptor.getNextOfKin().ifPresent(nextOfKin -> sb.append(PREFIX_NEXT_OF_KIN)
+                .append(nextOfKin).append(" "));
         return sb.toString();
     }
 }

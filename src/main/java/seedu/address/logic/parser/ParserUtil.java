@@ -10,9 +10,12 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.NextOfKin;
+import seedu.address.model.person.NextOfKinPhone;
 import seedu.address.model.person.Notes;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
@@ -141,6 +144,21 @@ public class ParserUtil {
     }
 
     /**
+     * Parses a {@code String phone} into a {@code NextOfKinPhone}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code phone} is invalid.
+     */
+    public static NextOfKinPhone parseNextOfKinPhone(String phone) throws ParseException {
+        requireNonNull(phone);
+        String trimmedPhone = phone.trim();
+        if (!NextOfKinPhone.isValidNextOfKinPhone(trimmedPhone)) {
+            throw new ParseException(NextOfKinPhone.MESSAGE_CONSTRAINTS);
+        }
+        return new NextOfKinPhone(trimmedPhone);
+    }
+
+    /**
      * Parses {@code String ic} into an {@code Ic}.
      * Leading and trailing whitespaces will be trimmed.
      *
@@ -153,6 +171,36 @@ public class ParserUtil {
             throw new ParseException(Ic.MESSAGE_CONSTRAINTS);
         }
         return new Ic(trimmedIc);
+    }
+
+    /**
+     * Parses {@code String name} into a {@code DoctorName}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code DoctorName} is invalid.
+     */
+    public static DoctorName parseDoctorName(String name) throws ParseException {
+        requireNonNull(name);
+        String trimmedDoctorName = name.trim();
+        if (!DoctorName.isValidName(trimmedDoctorName)) {
+            throw new ParseException(DoctorName.MESSAGE_CONSTRAINTS);
+        }
+        return new DoctorName(trimmedDoctorName);
+    }
+
+    /**
+     * Parses {@code String name} into a {@code NextOfKin}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code NextofKin} is invalid.
+     */
+    public static NextOfKin parseNextOfKin(String name) throws ParseException {
+        requireNonNull(name);
+        String trimmedNextOfKin = name.trim();
+        if (!NextOfKin.isValidNextOfKin(trimmedNextOfKin)) {
+            throw new ParseException(NextOfKin.MESSAGE_CONSTRAINTS);
+        }
+        return new NextOfKin(trimmedNextOfKin);
     }
 
     /**

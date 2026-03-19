@@ -26,6 +26,9 @@ public class Person {
     private final Address address;
     private final Set<Symptom> symptoms = new HashSet<>();
     private final UrgencyLevel urgencyLevel;
+    private final NextOfKinPhone nextOfKinPhone;
+    private final DoctorName doctorName;
+    private final NextOfKin nextOfKin;
     private final Notes notes;
 
     /**
@@ -38,8 +41,13 @@ public class Person {
                   Set<Symptom> symptoms,
                   Ic ic,
                   UrgencyLevel urgencyLevel,
+                  NextOfKinPhone nextOfKinPhone,
+                  DoctorName doctorName,
+                  NextOfKin nextOfKin,
                   Notes notes) {
-        requireAllNonNull(name, phone, email, address, symptoms, ic, urgencyLevel);
+        requireAllNonNull(name, phone, email, address, symptoms, ic,
+                urgencyLevel, doctorName, nextOfKinPhone, nextOfKin, notes);
+
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -47,6 +55,9 @@ public class Person {
         this.symptoms.addAll(symptoms);
         this.ic = ic;
         this.urgencyLevel = urgencyLevel;
+        this.nextOfKinPhone = nextOfKinPhone;
+        this.doctorName = doctorName;
+        this.nextOfKin = nextOfKin;
         this.notes = notes;
     }
 
@@ -66,6 +77,10 @@ public class Person {
         return address;
     }
 
+    public NextOfKinPhone getNextOfKinPhone() {
+        return nextOfKinPhone;
+    }
+
     /**
      * Returns an immutable symptom set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
@@ -80,6 +95,14 @@ public class Person {
 
     public UrgencyLevel getUrgencyLevel() {
         return urgencyLevel;
+    }
+
+    public DoctorName getDoctorName() {
+        return doctorName;
+    }
+
+    public NextOfKin getNextOfKin() {
+        return nextOfKin;
     }
 
     public Notes getNotes() {
@@ -122,13 +145,17 @@ public class Person {
                 && symptoms.equals(otherPerson.symptoms)
                 && ic.equals(otherPerson.ic)
                 && urgencyLevel.equals(otherPerson.urgencyLevel)
+                && nextOfKinPhone.equals(otherPerson.nextOfKinPhone)
+                && doctorName.equals(otherPerson.doctorName)
+                && nextOfKin.equals(otherPerson.nextOfKin)
                 && notes.equals(otherPerson.notes);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, symptoms, ic, urgencyLevel, notes);
+        return Objects.hash(name, phone, email, address, symptoms,
+                ic, urgencyLevel, doctorName, nextOfKinPhone, nextOfKin, notes);
     }
 
     @Override
@@ -141,6 +168,9 @@ public class Person {
                 .add("symptoms", symptoms)
                 .add("ic", ic)
                 .add("urgencyLevel", urgencyLevel)
+                .add("nextOfKinPhone", nextOfKinPhone)
+                .add("doctorName", doctorName)
+                .add("nextOfKin", nextOfKin)
                 .add("notes", notes)
                 .toString();
     }

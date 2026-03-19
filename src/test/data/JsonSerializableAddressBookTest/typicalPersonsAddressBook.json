@@ -8,6 +8,9 @@
     "symptoms" : [ "friends" ],
     "ic" : "S1111111A",
     "urgencyLevel" : "low",
+    "nextOfKinPhone": "91234567",
+    "doctorName": "Ben Leong",
+    "nextOfKin" : "Benny Blanco",
     "notes": "Keeps saying hi"
   }, {
     "name" : "Benson Meier",
@@ -17,6 +20,9 @@
     "symptoms" : [ "owesMoney", "friends" ],
     "ic" : "S2222222A",
     "urgencyLevel" : "high",
+    "nextOfKinPhone": "92345678",
+    "doctorName": "Colin",
+    "nextOfKin" : "Selena Gomez",
     "notes": "Cannot sit down"
   }, {
     "name" : "Carl Kurz",
@@ -26,6 +32,9 @@
     "symptoms" : [ ],
     "ic" : "S3333333A",
     "urgencyLevel" : "low",
+    "nextOfKinPhone": "93456789",
+    "doctorName": "Tzer Bin",
+    "nextOfKin" : "Justin Bieber",
     "notes": "Funny guy"
   }, {
     "name" : "Daniel Meier",
@@ -35,6 +44,9 @@
     "symptoms" : [ "friends" ],
     "ic" : "S4444444A",
     "urgencyLevel" : "extreme",
+    "nextOfKinPhone": "94567890",
+    "doctorName": "Lady Gaga",
+    "nextOfKin" : "Hailey Bieber",
     "notes": "Arrested for harrassment"
   }, {
     "name" : "Elle Meyer",
@@ -44,6 +56,9 @@
     "symptoms" : [ ],
     "ic" : "S5555555A",
     "urgencyLevel" : "high",
+    "nextOfKinPhone": "95678901",
+    "doctorName": "Spiderman",
+    "nextOfKin" : "Kendall Jenner",
     "notes": "Cannot stand up"
   }, {
     "name" : "Fiona Kunz",
@@ -53,6 +68,9 @@
     "symptoms" : [ ],
     "ic" : "S6666666A",
     "urgencyLevel" : "moderate",
+    "nextOfKinPhone": "96789012",
+    "doctorName": "Ironman",
+    "nextOfKin" : "Kylie Jenner",
     "notes": "Hates walking"
   }, {
     "name" : "George Best",
@@ -62,6 +80,9 @@
     "symptoms" : [ ],
     "ic" : "S7777777A",
     "urgencyLevel" : "extreme",
+    "nextOfKinPhone": "97890123",
+    "doctorName": "Choong",
+    "nextOfKin" : "Kris Jenner",
     "notes": "Handsome man"
   } ]
 }

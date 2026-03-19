@@ -41,7 +41,13 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label urgencyLevel;
     @FXML
+    private Label nextOfKinPhone;
+    @FXML
     private FlowPane symptoms;
+    @FXML
+    private Label doctorName;
+    @FXML
+    private Label nextOfKin;
     @FXML
     private Label notes;
 
@@ -58,6 +64,9 @@ public class PersonCard extends UiPart<Region> {
         phone.setText("Hp: " + person.getPhone().value);
         address.setText(person.getAddress().value);
         email.setText(person.getEmail().value);
+        nextOfKinPhone.setText(person.getNextOfKinPhone().toString());
+        doctorName.setText(person.getDoctorName().toString());
+        nextOfKin.setText(person.getNextOfKin().toString());
 
         // Map the new medical fields to the UI
         ic.setText("NRIC: " + person.getIc().value);

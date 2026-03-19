@@ -2,8 +2,11 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
@@ -25,9 +28,12 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.NextOfKin;
+import seedu.address.model.person.NextOfKinPhone;
 import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -51,6 +57,9 @@ public class UpdateCommand extends Command {
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_IC + "IC] "
             + "[" + PREFIX_URGENCY + "LEVEL] "
+            + "[" + PREFIX_NEXT_OF_KIN + "NEXT-OF-KIN] "
+            + "[" + PREFIX_NEXT_OF_KIN_PHONE + "N-O-K PHONE] "
+            + "[" + PREFIX_DOCTOR + "]"
             + "[" + PREFIX_SYMPTOM + "SYMPTOM]"
             + "[" + PREFIX_NOTES + "NOTES]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
@@ -112,6 +121,10 @@ public class UpdateCommand extends Command {
         Ic updatedIc = updatePersonDescriptor.getIc().orElse(personToUpdate.getIc());
         UrgencyLevel updatedUrgencyLevel = updatePersonDescriptor.getUrgencyLevel()
                 .orElse(personToUpdate.getUrgencyLevel());
+        NextOfKinPhone updatedNextOfKinPhone = updatePersonDescriptor.getNextOfKinPhone()
+                .orElse(personToUpdate.getNextOfKinPhone());
+        DoctorName updatedDoctorName = updatePersonDescriptor.getDoctorName().orElse(personToUpdate.getDoctorName());
+        NextOfKin updatedNextOfKin = updatePersonDescriptor.getNextOfKin().orElse(personToUpdate.getNextOfKin());
         Notes updatedNotes = updatePersonDescriptor.getNotes().orElse(personToUpdate.getNotes());
 
         return new Person(updatedName,
@@ -121,6 +134,9 @@ public class UpdateCommand extends Command {
                 updatedSymptoms,
                 updatedIc,
                 updatedUrgencyLevel,
+                updatedNextOfKinPhone,
+                updatedDoctorName,
+                updatedNextOfKin,
                 updatedNotes);
     }
 
@@ -159,6 +175,9 @@ public class UpdateCommand extends Command {
         private Set<Symptom> symptoms;
         private Ic ic;
         private UrgencyLevel urgencyLevel;
+        private NextOfKinPhone nextOfKinPhone;
+        private DoctorName doctorName;
+        private NextOfKin nextOfKin;
         private Notes notes;
 
         public UpdatePersonDescriptor() {}
@@ -175,6 +194,9 @@ public class UpdateCommand extends Command {
             setSymptoms(toCopy.symptoms);
             setUrgencyLevel(toCopy.urgencyLevel);
             setIc(toCopy.ic);
+            setNextOfKinPhone(toCopy.nextOfKinPhone);
+            setDoctorName(toCopy.doctorName);
+            setNextOfKin(toCopy.nextOfKin);
             setNotes(toCopy.notes);
         }
 
@@ -182,7 +204,8 @@ public class UpdateCommand extends Command {
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, symptoms, urgencyLevel, ic);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address,
+                    symptoms, urgencyLevel, ic, nextOfKinPhone, doctorName, nextOfKin, notes);
         }
 
         public void setName(Name name) {
@@ -225,6 +248,21 @@ public class UpdateCommand extends Command {
             return Optional.ofNullable(ic);
         }
 
+        public void setDoctorName(DoctorName doctorName) {
+            this.doctorName = doctorName;
+        }
+
+        public Optional<DoctorName> getDoctorName() {
+            return Optional.ofNullable(doctorName);
+        }
+        public void setNextOfKin(NextOfKin nextOfKin) {
+            this.nextOfKin = nextOfKin;
+        }
+
+        public Optional<NextOfKin> getNextOfKin() {
+            return Optional.ofNullable(nextOfKin);
+        }
+
         public void setNotes(Notes notes) {
             this.notes = notes;
         }
@@ -258,6 +296,14 @@ public class UpdateCommand extends Command {
             return Optional.ofNullable(urgencyLevel);
         }
 
+        public void setNextOfKinPhone(NextOfKinPhone nextOfKinPhone) {
+            this.nextOfKinPhone = nextOfKinPhone;
+        }
+
+        public Optional<NextOfKinPhone> getNextOfKinPhone() {
+            return Optional.ofNullable(nextOfKinPhone);
+        }
+
         @Override
         public boolean equals(Object other) {
             if (other == this) {
@@ -276,6 +322,9 @@ public class UpdateCommand extends Command {
                     && Objects.equals(symptoms, otherUpdatePersonDescriptor.symptoms)
                     && Objects.equals(ic, otherUpdatePersonDescriptor.ic)
                     && Objects.equals(urgencyLevel, otherUpdatePersonDescriptor.urgencyLevel)
+                    && Objects.equals(nextOfKinPhone, otherUpdatePersonDescriptor.nextOfKinPhone)
+                    && Objects.equals(doctorName, otherUpdatePersonDescriptor.doctorName)
+                    && Objects.equals(nextOfKin, otherUpdatePersonDescriptor.nextOfKin)
                     && Objects.equals(notes, otherUpdatePersonDescriptor.notes);
         }
 
@@ -289,6 +338,9 @@ public class UpdateCommand extends Command {
                     .add("symptoms", symptoms)
                     .add("ic", ic)
                     .add("urgencyLevel", urgencyLevel)
+                    .add("nextOfKinPhone", nextOfKinPhone)
+                    .add("doctorName", doctorName)
+                    .add("nextOfKin", nextOfKin)
                     .add("notes", notes)
                     .toString();
         }

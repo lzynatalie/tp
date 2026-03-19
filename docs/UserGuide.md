@@ -75,6 +75,8 @@ Records comprehensive patient information (name, identification, contact details
 * **`s/` (Symptoms):** Must be alphanumeric.
 * **`n/` (Notes):** Maximum length of 500 characters.
 
+**Tip:** A person can have any number of symptoms (including 0).
+
 **Examples:**
 * `add pn/John Doe Jun Kai ic/T0123456B p/12345678 u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 s/Diabetic n/Admitted at 12pm`
 
@@ -93,6 +95,7 @@ Updates an existing patient's details in ClinicConnect.
 * Edits the patient at the specified `INDEX`. The index refers to the index number shown in the displayed patient list. The index **must be a positive integer** (1, 2, 3, …).
 * **At least one** of the optional fields must be provided.
 * Existing values will be overwritten by the input values.
+* When editing symptoms, the existing symptoms will be removed (not cumulative). You can remove all symptoms by typing `s/` without specifying any symptoms after it.
 * The same validation constraints from the `add` command apply here.
 
 **Examples:**
@@ -105,9 +108,12 @@ Allows triage coordinators to locate specific patient records using various iden
 
 **Format:** `find [pn/<NAME>] [ic/<IC NUMBER>] [p/<PATIENT PHONE NUMBER>] [u/<URGENCY LEVEL>]`
 
+* Finds patients whose identifiers match the given keywords.
 * At least one identifier must be provided.
 * The search is case-insensitive.
 * Leading and trailing spaces are ignored/trimmed.
+* Only full words will be matched for names (e.g., `Han` will not match `Hans`).
+* Patients matching at least one keyword will be returned (i.e. `OR` search).
 
 **Examples:**
 * `find pn/Alice` returns patients with the name Alice.

@@ -41,7 +41,7 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label urgencyLevel;
     @FXML
-    private FlowPane tags;
+    private FlowPane symptoms;
     @FXML
     private Label doctorName;
 
@@ -66,9 +66,9 @@ public class PersonCard extends UiPart<Region> {
         // Clinical Details: Apply styling using the refactored method
         setUrgencyStyle(person.getUrgencyLevel().getStyleClass(), person.getUrgencyLevel().toString());
 
-        person.getTags().stream()
-                .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        person.getSymptoms().stream()
+                .sorted(Comparator.comparing(symptom -> symptom.symptomName))
+                .forEach(symptom -> symptoms.getChildren().add(new Label(symptom.symptomName)));
     }
 
     /**

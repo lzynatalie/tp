@@ -63,6 +63,16 @@ public class RangeDeleteCommand extends DeleteCommand {
         }
 
         StringBuilder deletedPersonsString = new StringBuilder();
+
+        if (!prefixes.isEmpty()) {
+            for (Person person : personsToDelete) {
+                Person updatedPerson = getUpdatedPerson(person);
+                model.setPerson(person, updatedPerson);
+                deletedPersonsString.append("\n" + Messages.format(updatedPerson));
+            }
+            return new CommandResult(String.format(MESSAGE_DELETE_FIELD_SUCCESS, deletedPersonsString));
+        }
+
         for (Person person : personsToDelete) {
             model.deletePerson(person);
             deletedPersonsString.append("\n" + Messages.format(person));

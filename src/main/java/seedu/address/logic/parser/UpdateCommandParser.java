@@ -3,6 +3,7 @@ package seedu.address.logic.parser;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_APPEND_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
@@ -49,7 +50,8 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
                         PREFIX_NEXT_OF_KIN_PHONE,
                         PREFIX_DOCTOR,
                         PREFIX_NEXT_OF_KIN,
-                        PREFIX_NOTES
+                        PREFIX_NOTES,
+                        PREFIX_APPEND_NOTES // NEW: Added to tokenizer
                 );
 
         Index index;
@@ -69,7 +71,13 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
                 PREFIX_NEXT_OF_KIN_PHONE,
                 PREFIX_DOCTOR,
                 PREFIX_NEXT_OF_KIN,
-                PREFIX_NOTES);
+                PREFIX_NOTES,
+                PREFIX_APPEND_NOTES);
+
+        // NEW: BUG PREVENTION: Prevent overwrite (n/) and append (an/) at the same time
+        if (argMultimap.getValue(PREFIX_NOTES).isPresent() && argMultimap.getValue(PREFIX_APPEND_NOTES).isPresent()) {
+            throw new ParseException("You cannot overwrite a note (n/) and append to a note (an/) in the same command.");
+        }
 
         UpdatePersonDescriptor updatePersonDescriptor = new UpdatePersonDescriptor();
 
@@ -110,6 +118,17 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
         if (argMultimap.getValue(PREFIX_NOTES).isPresent()) {
             updatePersonDescriptor.setNotes(ParserUtil.parseNotes(argMultimap.getValue(PREFIX_NOTES).get()));
         }
+
+        // NEW: Handle Append Note & block empty strings
+        if (argMultimap.getValue(PREFIX_APPEND_NOTES).isPresent()) {
+            String notesToAppend = argMultimap.getValue(PREFIX_APPEND_NOTES).get().trim();
+            if (notesToAppend.isEmpty()) {
+                throw new ParseException("The text to append cannot be empty. "
+                        + "If you want to clear the note, use n/ instead.");
+            }
+            updatePersonDescriptor.setNotesToAppend(notesToAppend);
+        }
+
         parseSymptomsForEdit(argMultimap.getAllValues(PREFIX_SYMPTOM)).ifPresent(updatePersonDescriptor::setSymptoms);
 
 

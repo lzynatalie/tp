@@ -2,11 +2,15 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_URGENCY;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -24,22 +28,30 @@ public class AddCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a person to the address book. "
             + "Parameters: "
-            + PREFIX_NAME + "NAME "
-            + PREFIX_PHONE + "PHONE "
+            + PREFIX_PATIENT_NAME + "NAME "
+            + PREFIX_PATIENT_PHONE + "PHONE "
             + PREFIX_EMAIL + "EMAIL "
             + PREFIX_ADDRESS + "ADDRESS "
+            + PREFIX_DOCTOR + "DOCTOR "
             + PREFIX_IC + "IC "
             + PREFIX_URGENCY + "LEVEL"
-            + "[" + PREFIX_TAG + "TAG]...\n"
+            + PREFIX_NEXT_OF_KIN + "NEXT-OF-KIN "
+            + PREFIX_NEXT_OF_KIN_PHONE + "N-O-K PHONE "
+            + "[" + PREFIX_SYMPTOM + "SYMPTOM]..."
+            + "[" + PREFIX_NOTES + "NOTES]...\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_NAME + "John Doe "
-            + PREFIX_PHONE + "98765432 "
+            + PREFIX_PATIENT_NAME + "John Doe "
+            + PREFIX_PATIENT_PHONE + "98765432 "
             + PREFIX_EMAIL + "johnd@example.com "
             + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 "
             + PREFIX_IC + "S1234567A "
             + PREFIX_URGENCY + "high "
-            + PREFIX_TAG + "friends "
-            + PREFIX_TAG + "owesMoney";
+            + PREFIX_NEXT_OF_KIN + "John "
+            + PREFIX_NEXT_OF_KIN_PHONE + "91234567 "
+            + PREFIX_DOCTOR + "Dr Sally "
+            + PREFIX_SYMPTOM + "fever "
+            + PREFIX_SYMPTOM + "cough "
+            + PREFIX_NOTES + "Does not like to eat veggies";
 
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book";

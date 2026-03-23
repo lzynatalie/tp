@@ -10,12 +10,16 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.NextOfKin;
+import seedu.address.model.person.NextOfKinPhone;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.symptom.Symptom;
 
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
@@ -98,30 +102,30 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String tag} into a {@code Tag}.
+     * Parses a {@code String symptom} into a {@code Symptom}.
      * Leading and trailing whitespaces will be trimmed.
      *
-     * @throws ParseException if the given {@code tag} is invalid.
+     * @throws ParseException if the given {@code symptom} is invalid.
      */
-    public static Tag parseTag(String tag) throws ParseException {
-        requireNonNull(tag);
-        String trimmedTag = tag.trim();
-        if (!Tag.isValidTagName(trimmedTag)) {
-            throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
+    public static Symptom parseSymptom(String symptom) throws ParseException {
+        requireNonNull(symptom);
+        String trimmedSymptom = symptom.trim();
+        if (!Symptom.isValidSymptomName(trimmedSymptom)) {
+            throw new ParseException(Symptom.MESSAGE_CONSTRAINTS);
         }
-        return new Tag(trimmedTag);
+        return new Symptom(trimmedSymptom);
     }
 
     /**
-     * Parses {@code Collection<String> tags} into a {@code Set<Tag>}.
+     * Parses {@code Collection<String> symptoms} into a {@code Set<Symptom>}.
      */
-    public static Set<Tag> parseTags(Collection<String> tags) throws ParseException {
-        requireNonNull(tags);
-        final Set<Tag> tagSet = new HashSet<>();
-        for (String tagName : tags) {
-            tagSet.add(parseTag(tagName));
+    public static Set<Symptom> parseSymptoms(Collection<String> symptoms) throws ParseException {
+        requireNonNull(symptoms);
+        final Set<Symptom> symptomSet = new HashSet<>();
+        for (String symptomName : symptoms) {
+            symptomSet.add(parseSymptom(symptomName));
         }
-        return tagSet;
+        return symptomSet;
     }
 
     /**
@@ -140,6 +144,21 @@ public class ParserUtil {
     }
 
     /**
+     * Parses a {@code String phone} into a {@code NextOfKinPhone}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code phone} is invalid.
+     */
+    public static NextOfKinPhone parseNextOfKinPhone(String phone) throws ParseException {
+        requireNonNull(phone);
+        String trimmedPhone = phone.trim();
+        if (!NextOfKinPhone.isValidNextOfKinPhone(trimmedPhone)) {
+            throw new ParseException(NextOfKinPhone.MESSAGE_CONSTRAINTS);
+        }
+        return new NextOfKinPhone(trimmedPhone);
+    }
+
+    /**
      * Parses {@code String ic} into an {@code Ic}.
      * Leading and trailing whitespaces will be trimmed.
      *
@@ -152,5 +171,50 @@ public class ParserUtil {
             throw new ParseException(Ic.MESSAGE_CONSTRAINTS);
         }
         return new Ic(trimmedIc);
+    }
+
+    /**
+     * Parses {@code String name} into a {@code DoctorName}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code DoctorName} is invalid.
+     */
+    public static DoctorName parseDoctorName(String name) throws ParseException {
+        requireNonNull(name);
+        String trimmedDoctorName = name.trim();
+        if (!DoctorName.isValidName(trimmedDoctorName)) {
+            throw new ParseException(DoctorName.MESSAGE_CONSTRAINTS);
+        }
+        return new DoctorName(trimmedDoctorName);
+    }
+
+    /**
+     * Parses {@code String name} into a {@code NextOfKin}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code NextofKin} is invalid.
+     */
+    public static NextOfKin parseNextOfKin(String name) throws ParseException {
+        requireNonNull(name);
+        String trimmedNextOfKin = name.trim();
+        if (!NextOfKin.isValidNextOfKin(trimmedNextOfKin)) {
+            throw new ParseException(NextOfKin.MESSAGE_CONSTRAINTS);
+        }
+        return new NextOfKin(trimmedNextOfKin);
+    }
+
+    /**
+     * Parses a {@code String note} into a {@code Notes}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code name} is invalid.
+     */
+    public static Notes parseNotes(String notes) throws ParseException {
+        requireNonNull(notes);
+        String trimmedName = notes.trim();
+        if (!Notes.isValidNotes(trimmedName)) {
+            throw new ParseException(Notes.MESSAGE_CONSTRAINTS);
+        }
+        return new Notes(trimmedName);
     }
 }

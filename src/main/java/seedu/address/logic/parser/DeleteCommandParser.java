@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.DeleteCommand;
+import seedu.address.logic.commands.MultipleDeleteCommand;
+import seedu.address.logic.commands.RangeDeleteCommand;
+import seedu.address.logic.commands.SingleDeleteCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
@@ -28,6 +31,11 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
      * @throws ParseException if the user input does not conform the expected format
      */
     public DeleteCommand parse(String args) throws ParseException {
+        if (args == null || args.trim().isEmpty()) {
+            throw new ParseException(String.format(
+                    Messages.MESSAGE_MISSING_PERSON_INDEX, DeleteCommand.MESSAGE_USAGE));
+        }
+
         if (args.contains(MULTIPLE_INDICES_DELIMITER)) {
             return parseMultipleIndices(args);
         } else if (args.contains(RANGE_INDICES_DELIMITER)) {
@@ -40,10 +48,10 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
     private DeleteCommand parseSingleIndex(String args) throws ParseException {
         try {
             Index index = ParserUtil.parseIndex(args);
-            return new DeleteCommand(index);
+            return new SingleDeleteCommand(index);
         } catch (ParseException pe) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE), pe);
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, SingleDeleteCommand.MESSAGE_USAGE), pe);
         }
     }
 
@@ -51,7 +59,7 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         Matcher matcher = MULTIPLE_INDICES_ARGUMENT_FORMAT.matcher(args.trim());
         if (!matcher.matches()) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE_MULTIPLE_INDICES));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, MultipleDeleteCommand.MESSAGE_USAGE));
         }
 
         String[] indexStrings = matcher.group("indices").split(MULTIPLE_INDICES_DELIMITER);
@@ -61,18 +69,18 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
                 indices[i] = ParserUtil.parseIndex(indexStrings[i].trim());
             } catch (ParseException pe) {
                 throw new ParseException(
-                        String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                                DeleteCommand.MESSAGE_USAGE_MULTIPLE_INDICES), pe);
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, MultipleDeleteCommand.MESSAGE_USAGE), pe);
             }
         }
-        return new DeleteCommand(indices);
+
+        return new MultipleDeleteCommand(indices);
     }
 
     private DeleteCommand parseRangeIndices(String args) throws ParseException {
         Matcher matcher = RANGE_ARGUMENT_FORMAT.matcher(args.trim());
         if (!matcher.matches()) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE_RANGE_INDICES));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, RangeDeleteCommand.MESSAGE_USAGE));
         }
 
         Index startIndex;
@@ -82,13 +90,9 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
             endIndex = ParserUtil.parseIndex(matcher.group("end").trim());
         } catch (ParseException pe) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE_RANGE_INDICES), pe);
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, RangeDeleteCommand.MESSAGE_USAGE), pe);
         }
 
-        if (startIndex.getZeroBased() > endIndex.getZeroBased()) {
-            throw new ParseException(Messages.MESSAGE_INVALID_PERSON_INDEX_RANGE);
-        }
-
-        return new DeleteCommand(startIndex, endIndex);
+        return new RangeDeleteCommand(startIndex, endIndex);
     }
 }

@@ -9,8 +9,11 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_IC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_PHONE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_HUSBAND;
 
 import org.junit.jupiter.api.Test;
 
@@ -53,12 +56,24 @@ public class UpdatePersonDescriptorTest {
         editedAmy = new UpdatePersonDescriptorBuilder(DESC_AMY).withAddress(VALID_ADDRESS_BOB).build();
         assertFalse(DESC_AMY.equals(editedAmy));
 
-        // different tags -> returns false
-        editedAmy = new UpdatePersonDescriptorBuilder(DESC_AMY).withTags(VALID_TAG_HUSBAND).build();
+        // different symptoms -> returns false
+        editedAmy = new UpdatePersonDescriptorBuilder(DESC_AMY).withSymptoms(VALID_SYMPTOM_HUSBAND).build();
         assertFalse(DESC_AMY.equals(editedAmy));
 
         // different ic -> returns false
         editedAmy = new UpdatePersonDescriptorBuilder(DESC_AMY).withIc(VALID_IC_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different nextOfKinPhone -> returns false
+        editedAmy = new UpdatePersonDescriptorBuilder(DESC_AMY).withNextOfKinPhone(VALID_NEXT_OF_KIN_PHONE_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different nextOfKin -> returns false
+        editedAmy = new UpdatePersonDescriptorBuilder(DESC_AMY).withNextOfKin(VALID_NEXT_OF_KIN_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different notes -> returns false
+        editedAmy = new UpdatePersonDescriptorBuilder(DESC_AMY).withNotes(VALID_NOTES_BOB).build();
         assertFalse(DESC_AMY.equals(editedAmy));
     }
 
@@ -69,10 +84,15 @@ public class UpdatePersonDescriptorTest {
                 + updatePersonDescriptor.getName().orElse(null) + ", phone="
                 + updatePersonDescriptor.getPhone().orElse(null) + ", email="
                 + updatePersonDescriptor.getEmail().orElse(null) + ", address="
-                + updatePersonDescriptor.getAddress().orElse(null) + ", tags="
-                + updatePersonDescriptor.getTags().orElse(null) + ", ic="
+                + updatePersonDescriptor.getAddress().orElse(null) + ", symptoms="
+                + updatePersonDescriptor.getSymptoms().orElse(null) + ", ic="
                 + updatePersonDescriptor.getIc().orElse(null) + ", urgencyLevel="
-                + updatePersonDescriptor.getUrgencyLevel().orElse(null) + "}";
+                + updatePersonDescriptor.getUrgencyLevel().orElse(null) + ", nextOfKinPhone="
+                + updatePersonDescriptor.getNextOfKinPhone().orElse(null) + ", doctorName="
+                + updatePersonDescriptor.getDoctorName().orElse(null) + ", nextOfKin="
+                + updatePersonDescriptor.getNextOfKin().orElse(null) + ", notes="
+                + updatePersonDescriptor.getUrgencyLevel().orElse(null)
+                + "}";
         assertEquals(expected, updatePersonDescriptor.toString());
     }
 }

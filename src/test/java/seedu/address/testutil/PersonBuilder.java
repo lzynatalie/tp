@@ -4,13 +4,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.NextOfKin;
+import seedu.address.model.person.NextOfKinPhone;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.symptom.Symptom;
 import seedu.address.model.util.SampleDataUtil;
 
 /**
@@ -24,14 +28,22 @@ public class PersonBuilder {
     public static final String DEFAULT_ADDRESS = "123, Jurong West Ave 6, #08-111";
     public static final String DEFAULT_IC = "S1234567A";
     public static final String DEFAULT_URGENCY_LEVEL = "low";
+    public static final String DEFAULT_NEXT_OF_KIN_PHONE = "81234567";
+    public static final String DEFAULT_DOCTOR_NAME = "Seuss";
+    public static final String DEFAULT_NEXT_OF_KIN = "Ms Jane";
+    public static final String DEFAULT_NOTES = "Goes to gym";
 
     private Name name;
     private Phone phone;
     private Email email;
     private Address address;
-    private Set<Tag> tags;
+    private Set<Symptom> symptoms;
     private Ic ic;
     private UrgencyLevel urgencyLevel;
+    private NextOfKinPhone nextOfKinPhone;
+    private DoctorName doctorName;
+    private NextOfKin nextOfKin;
+    private Notes notes;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -41,9 +53,13 @@ public class PersonBuilder {
         phone = new Phone(DEFAULT_PHONE);
         email = new Email(DEFAULT_EMAIL);
         address = new Address(DEFAULT_ADDRESS);
-        tags = new HashSet<>();
+        symptoms = new HashSet<>();
         ic = new Ic(DEFAULT_IC);
         urgencyLevel = new UrgencyLevel(DEFAULT_URGENCY_LEVEL);
+        nextOfKinPhone = new NextOfKinPhone(DEFAULT_NEXT_OF_KIN_PHONE);
+        doctorName = new DoctorName(DEFAULT_DOCTOR_NAME);
+        nextOfKin = new NextOfKin(DEFAULT_NEXT_OF_KIN);
+        notes = new Notes(DEFAULT_NOTES);
     }
 
     /**
@@ -54,9 +70,13 @@ public class PersonBuilder {
         phone = personToCopy.getPhone();
         email = personToCopy.getEmail();
         address = personToCopy.getAddress();
-        tags = new HashSet<>(personToCopy.getTags());
+        symptoms = new HashSet<>(personToCopy.getSymptoms());
         ic = personToCopy.getIc();
         urgencyLevel = personToCopy.getUrgencyLevel();
+        nextOfKinPhone = personToCopy.getNextOfKinPhone();
+        doctorName = personToCopy.getDoctorName();
+        nextOfKin = personToCopy.getNextOfKin();
+        notes = personToCopy.getNotes();
     }
 
     /**
@@ -68,10 +88,10 @@ public class PersonBuilder {
     }
 
     /**
-     * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code Person} that we are building.
+     * Parses the {@code symptoms} into a {@code Set<Symptom>} and set it to the {@code Person} that we are building.
      */
-    public PersonBuilder withTags(String ... tags) {
-        this.tags = SampleDataUtil.getTagSet(tags);
+    public PersonBuilder withSymptoms(String ... symptoms) {
+        this.symptoms = SampleDataUtil.getSymptomSet(symptoms);
         return this;
     }
 
@@ -115,8 +135,45 @@ public class PersonBuilder {
         return this;
     }
 
-    public Person build() {
-        return new Person(name, phone, email, address, tags, ic, urgencyLevel);
+    /**
+     * Sets the {@code NextOfKinPhone} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withNextOfKinPhone(String nextOfKinPhone) {
+        this.nextOfKinPhone = new NextOfKinPhone(nextOfKinPhone);
+        return this;
     }
+
+    /**
+     * Sets the {@code DoctorName} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withDoctorName(String doctorName) {
+        this.doctorName = new DoctorName(doctorName);
+        return this;
+    }
+
+    /**
+     * Sets the {@code NextOfKin} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withNextOfKin(String nextOfKin) {
+        this.nextOfKin = new NextOfKin(nextOfKin);
+        return this;
+    }
+
+    /**
+     * Sets the {@code Notes} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withNotes(String notes) {
+        this.notes = new Notes(notes);
+        return this;
+    }
+
+    /**
+     * Builds and returns the {@code Person} object that we are building.
+     */
+    public Person build() {
+        return new Person(name, phone, email, address, symptoms, ic, urgencyLevel,
+                nextOfKinPhone, doctorName, nextOfKin, notes);
+    }
+
 
 }

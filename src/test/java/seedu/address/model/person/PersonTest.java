@@ -2,14 +2,17 @@ package seedu.address.model.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_IC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_PHONE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
-import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_HUSBAND;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
@@ -22,7 +25,7 @@ public class PersonTest {
     @Test
     public void asObservableList_modifyList_throwsUnsupportedOperationException() {
         Person person = new PersonBuilder().build();
-        assertThrows(UnsupportedOperationException.class, () -> person.getTags().remove(0));
+        assertThrows(UnsupportedOperationException.class, () -> person.getSymptoms().remove(0));
     }
 
     @Test
@@ -36,7 +39,7 @@ public class PersonTest {
         // same ic, all other attributes different -> returns true
         Person editedAlice = new PersonBuilder(ALICE).withName(VALID_NAME_BOB).withPhone(VALID_PHONE_BOB)
                 .withEmail(VALID_EMAIL_BOB)
-                .withAddress(VALID_ADDRESS_BOB).withTags(VALID_TAG_HUSBAND).build();
+                .withAddress(VALID_ADDRESS_BOB).withSymptoms(VALID_SYMPTOM_HUSBAND).build();
         assertTrue(ALICE.isSamePerson(editedAlice));
 
         // different ic, all other attributes same -> returns false
@@ -83,18 +86,77 @@ public class PersonTest {
         editedAlice = new PersonBuilder(ALICE).withAddress(VALID_ADDRESS_BOB).build();
         assertFalse(ALICE.equals(editedAlice));
 
-        // different tags -> returns false
-        editedAlice = new PersonBuilder(ALICE).withTags(VALID_TAG_HUSBAND).build();
+        // different nok phone -> returns false
+        editedAlice = new PersonBuilder(ALICE).withNextOfKinPhone(VALID_NEXT_OF_KIN_PHONE_BOB).build();
+        assertFalse(ALICE.equals(editedAlice));
+        // different symptoms -> returns false
+        editedAlice = new PersonBuilder(ALICE).withSymptoms(VALID_SYMPTOM_HUSBAND).build();
+        assertFalse(ALICE.equals(editedAlice));
+
+        // different notes -> returns false
+        editedAlice = new PersonBuilder(ALICE).withNotes(VALID_NOTES_BOB).build();
         assertFalse(ALICE.equals(editedAlice));
     }
 
     @Test
     public void toStringMethod() {
-        String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
-                + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress() + ", tags=" + ALICE.getTags()
+        String expected = Person.class.getCanonicalName()
+                + "{name=" + ALICE.getName()
+                + ", phone=" + ALICE.getPhone()
+                + ", email=" + ALICE.getEmail()
+                + ", address=" + ALICE.getAddress()
+                + ", symptoms=" + ALICE.getSymptoms()
                 + ", ic=" + ALICE.getIc()
                 + ", urgencyLevel=" + ALICE.getUrgencyLevel()
+                + ", nextOfKinPhone=" + ALICE.getNextOfKinPhone()
+                + ", doctorName=" + ALICE.getDoctorName()
+                + ", nextOfKin=" + ALICE.getNextOfKin()
+                + ", notes=" + ALICE.getNotes()
                 + "}";
         assertEquals(expected, ALICE.toString());
+    }
+
+    @Test
+    public void hashCode_includingNextOfKinPhone() {
+        // same values -> equal hashCode
+        Person aliceCopy = new PersonBuilder(ALICE).build();
+        assertEquals(ALICE.hashCode(), aliceCopy.hashCode());
+
+        // different nok phone -> different hashCode
+        Person editedAlice = new PersonBuilder(ALICE).withNextOfKinPhone("81384393").build();
+        assertNotEquals(ALICE.hashCode(), editedAlice.hashCode());
+    }
+
+    @Test
+    public void hashCode_includingDoctorName() {
+        // same values -> equal hashCode
+        Person aliceCopy = new PersonBuilder(ALICE).build();
+        assertEquals(ALICE.hashCode(), aliceCopy.hashCode());
+
+        // different doctorName -> different hashCode
+        Person editedAlice = new PersonBuilder(ALICE).withDoctorName("Dr. John Doe").build();
+        assertNotEquals(ALICE.hashCode(), editedAlice.hashCode());
+    }
+
+    @Test
+    public void hashCode_includingNameOfKin() {
+        // same values -> equal hashCode
+        Person aliceCopy = new PersonBuilder(ALICE).build();
+        assertEquals(ALICE.hashCode(), aliceCopy.hashCode());
+
+        // different NameOfKin -> different hashCode
+        Person editedAlice = new PersonBuilder(ALICE).withNextOfKin("John Doe").build();
+        assertNotEquals(ALICE.hashCode(), editedAlice.hashCode());
+    }
+
+    @Test
+    public void hashCode_includingNotes() {
+        // same values -> equal hashCode
+        Person aliceCopy = new PersonBuilder(ALICE).build();
+        assertEquals(ALICE.hashCode(), aliceCopy.hashCode());
+
+        // different doctorName -> different hashCode
+        Person editedAlice = new PersonBuilder(ALICE).withNotes("An aspiring dentist").build();
+        assertNotEquals(ALICE.hashCode(), editedAlice.hashCode());
     }
 }

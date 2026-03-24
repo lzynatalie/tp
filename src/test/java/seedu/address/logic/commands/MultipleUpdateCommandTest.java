@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
@@ -18,9 +20,13 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.SingleUpdateCommand.UpdatePersonDescriptor;
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Person;
+import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.UpdatePersonDescriptorBuilder;
 
 public class MultipleUpdateCommandTest {
 
@@ -28,18 +34,62 @@ public class MultipleUpdateCommandTest {
 
     @Test
     public void execute_invalidIndexFilteredList_failure() {
-        // Create an out-of-bounds index to test the atomic execution block
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
-
-        // Pass one valid index and one invalid index
         List<Index> indices = Arrays.asList(INDEX_FIRST_PERSON, outOfBoundIndex);
         UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
 
         MultipleUpdateCommand command = new MultipleUpdateCommand(indices, descriptor);
 
-        // The entire command should fail safely and throw the invalid index message
         assertCommandFailure(command, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
     }
+
+    @Test
+    public void execute_multiplePersons_success() {
+        // Target the first and second person
+        List<Index> indices = Arrays.asList(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptorBuilder().withPhone(VALID_PHONE_BOB).build();
+        MultipleUpdateCommand command = new MultipleUpdateCommand(indices, descriptor);
+
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+
+        // Create the expected updated persons
+        Person updatedFirstPerson = new PersonBuilder(firstPerson).withPhone(VALID_PHONE_BOB).build();
+        Person updatedSecondPerson = new PersonBuilder(secondPerson).withPhone(VALID_PHONE_BOB).build();
+
+        // Build the expected success message
+        String expectedNames = updatedFirstPerson.getName() + ", " + updatedSecondPerson.getName();
+        String expectedMessage = String.format(MultipleUpdateCommand.MESSAGE_UPDATE_MULTIPLE_SUCCESS, expectedNames);
+
+        // Build the expected model
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(firstPerson, updatedFirstPerson);
+        expectedModel.setPerson(secondPerson, updatedSecondPerson);
+
+        // Asserts lines 54-57, 63-71 (Successful Loop)
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_duplicatePerson_throwsCommandException() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+
+        // Target the second person
+        List<Index> indices = Arrays.asList(INDEX_SECOND_PERSON);
+
+        // Try to update the second person to have the EXACT same details as the first person
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptorBuilder(firstPerson).build();
+        MultipleUpdateCommand command = new MultipleUpdateCommand(indices, descriptor);
+
+        // FIX: The conflict error message prints the name of the person being updated (secondPerson)
+        String expectedMessage = SingleUpdateCommand.MESSAGE_DUPLICATE_PERSON
+                + " (Conflict at " + secondPerson.getName() + ")";
+
+        // Asserts lines 58-61 (Duplicate Exception check)
+        assertCommandFailure(command, model, expectedMessage);
+    }
+
 
     @Test
     public void equals() {
@@ -79,8 +129,6 @@ public class MultipleUpdateCommandTest {
         UpdatePersonDescriptor updatePersonDescriptor = new UpdatePersonDescriptor();
         MultipleUpdateCommand command = new MultipleUpdateCommand(indices, updatePersonDescriptor);
 
-        // Note: Check your MultipleUpdateCommand.java's toString() method.
-        // If your variables are named differently there, adjust "targetIndices=" or "updatePersonDescriptor=" below.
         String expected = MultipleUpdateCommand.class.getCanonicalName() + "{targetIndices=" + indices
                 + ", updatePersonDescriptor=" + updatePersonDescriptor + "}";
         assertEquals(expected, command.toString());

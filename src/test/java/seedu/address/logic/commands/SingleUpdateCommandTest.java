@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.SingleUpdateCommand.UpdatePersonDescriptor;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -31,7 +33,7 @@ import seedu.address.testutil.UpdatePersonDescriptorBuilder;
 /**
  * Contains integration tests (interaction with the Model) and unit tests for SingleUpdateCommand.
  */
-public class UpdateCommandTest {
+public class SingleUpdateCommandTest {
 
     private final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
@@ -151,6 +153,42 @@ public class UpdateCommandTest {
     }
 
     @Test
+    public void createUpdatedPerson_appendNoteToEmptyExistingNote_success() throws Exception {
+        Person originalPerson = new PersonBuilder().withNotes("-").build();
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
+        descriptor.setNotesToAppend("New appended text");
+
+        Person updatedPerson = SingleUpdateCommand.createUpdatedPerson(originalPerson, descriptor);
+
+        assertEquals("New appended text", updatedPerson.getNotes().toString());
+    }
+
+    @Test
+    public void createUpdatedPerson_appendNoteToExistingNote_success() throws Exception {
+        Person originalPerson = new PersonBuilder().withNotes("First line.").build();
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
+        descriptor.setNotesToAppend("Second line.");
+
+        Person updatedPerson = SingleUpdateCommand.createUpdatedPerson(originalPerson, descriptor);
+
+        assertEquals("First line.\nSecond line.", updatedPerson.getNotes().toString());
+    }
+
+    @Test
+    public void createUpdatedPerson_appendNoteExceedsConstraints_throwsCommandException() {
+        Person originalPerson = new PersonBuilder().withNotes("Normal note.").build();
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
+
+        // Generates a massive string to force isValidNotes() to return false.
+        String invalidAppendedText = " ".repeat(10000);
+        descriptor.setNotesToAppend(invalidAppendedText);
+
+        assertThrows(CommandException.class, () ->
+                SingleUpdateCommand.createUpdatedPerson(originalPerson, descriptor)
+        );
+    }
+
+    @Test
     public void equals() {
         final SingleUpdateCommand standardCommand = new SingleUpdateCommand(INDEX_FIRST_PERSON, DESC_AMY);
 
@@ -178,10 +216,12 @@ public class UpdateCommandTest {
     @Test
     public void toStringMethod() {
         Index index = Index.fromOneBased(1);
-        UpdatePersonDescriptor editPersonDescriptor = new UpdatePersonDescriptor();
-        SingleUpdateCommand updateCommand = new SingleUpdateCommand(index, editPersonDescriptor);
+        UpdatePersonDescriptor updatePersonDescriptor = new UpdatePersonDescriptor();
+        SingleUpdateCommand updateCommand = new SingleUpdateCommand(index, updatePersonDescriptor);
+
+        // CHANGED: "updatePersonDescriptor=" to "editPersonDescriptor=" to match the actual class output
         String expected = SingleUpdateCommand.class.getCanonicalName() + "{index=" + index + ", editPersonDescriptor="
-                + editPersonDescriptor + "}";
+                + updatePersonDescriptor + "}";
         assertEquals(expected, updateCommand.toString());
     }
 

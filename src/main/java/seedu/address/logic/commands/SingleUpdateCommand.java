@@ -1,18 +1,8 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_APPEND_NOTES;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_URGENCY;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Collections;
@@ -48,22 +38,11 @@ public class SingleUpdateCommand extends Command {
 
     public static final String COMMAND_WORD = "update";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Updates the details of the person identified "
-            + "by the index number used in the displayed person list. "
-            + "Existing values will be overwritten by the input values.\n"
-            + "Parameters: INDEX (must be a positive integer) "
-            + "[" + PREFIX_PATIENT_NAME + "NAME] "
-            + "[" + PREFIX_PATIENT_PHONE + "PHONE] "
-            + "[" + PREFIX_EMAIL + "EMAIL] "
-            + "[" + PREFIX_ADDRESS + "ADDRESS] "
-            + "[" + PREFIX_IC + "IC] "
-            + "[" + PREFIX_URGENCY + "LEVEL] "
-            + "[" + PREFIX_NEXT_OF_KIN + "NEXT-OF-KIN] "
-            + "[" + PREFIX_NEXT_OF_KIN_PHONE + "N-O-K PHONE] "
-            + "[" + PREFIX_DOCTOR + "]"
-            + "[" + PREFIX_SYMPTOM + "SYMPTOM]"
-            + "[" + PREFIX_NOTES + "NOTES] [" + PREFIX_APPEND_NOTES + "APPEND_NOTES]...\n"
-            + "Example: " + COMMAND_WORD + " 1 "
+    public static final String MESSAGE_USAGE = "The index field cannot be empty.\n"
+            + "Usage:\n"
+            + "        Single update: " + COMMAND_WORD + " INDEX [PREFIX/VALUE]...\n"
+            + "        Multiple update: " + COMMAND_WORD + " INDEX1 INDEX2 [INDEX3...] [PREFIX/VALUE]...\n"
+            + "Example: " + COMMAND_WORD + " 1 2 "
             + PREFIX_PATIENT_PHONE + "91234567 "
             + PREFIX_EMAIL + "johndoe@example.com";
 

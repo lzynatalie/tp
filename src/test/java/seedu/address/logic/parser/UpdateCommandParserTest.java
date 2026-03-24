@@ -32,10 +32,14 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
+import seedu.address.logic.commands.MultipleUpdateCommand;
 import seedu.address.logic.commands.SingleUpdateCommand;
 import seedu.address.logic.commands.SingleUpdateCommand.UpdatePersonDescriptor;
 import seedu.address.model.person.Address;
@@ -52,7 +56,7 @@ public class UpdateCommandParserTest {
     private static final String MESSAGE_INVALID_FORMAT =
             String.format(MESSAGE_INVALID_COMMAND_FORMAT, SingleUpdateCommand.MESSAGE_USAGE);
 
-    private UpdateCommandParser parser = new UpdateCommandParser();
+    private final UpdateCommandParser parser = new UpdateCommandParser();
 
     @Test
     public void parse_missingParts_failure() {
@@ -169,9 +173,6 @@ public class UpdateCommandParserTest {
 
     @Test
     public void parse_multipleRepeatedFields_failure() {
-        // More extensive testing of duplicate parameter detections is done in
-        // AddCommandParserTest#parse_repeatedNonSymptomValue_failure()
-
         // valid followed by invalid
         Index targetIndex = INDEX_FIRST_PERSON;
         String userInput = targetIndex.getOneBased() + INVALID_PHONE_DESC + PHONE_DESC_BOB;
@@ -208,5 +209,32 @@ public class UpdateCommandParserTest {
         SingleUpdateCommand expectedCommand = new SingleUpdateCommand(targetIndex, descriptor);
 
         assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_notesAndAppendNotesSimultaneously_throwsParseException() {
+        String expectedMessage = "You cannot overwrite a note (n/) and append to a note (an/) in the same command.";
+
+        // Use an/ and n/ together to trigger the exception
+        assertParseFailure(parser, "1 n/Fever an/Take panadol", expectedMessage);
+    }
+
+    @Test
+    public void parse_emptyAppendNotes_throwsParseException() {
+        String expectedMessage = "The text to append cannot be empty. If you want to clear the note, use n/ instead.";
+
+        // Provide spaces after an/ to trigger the empty check
+        assertParseFailure(parser, "1 an/   ", expectedMessage);
+    }
+
+    @Test
+    public void parse_multipleIndices_returnsMultipleUpdateCommand() {
+        List<Index> indices = Arrays.asList(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
+
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptorBuilder().withPhone(VALID_PHONE_AMY).build();
+        MultipleUpdateCommand expectedCommand = new MultipleUpdateCommand(indices, descriptor);
+
+        // Pass two numbers to trigger the "else" branch in your Master Parser
+        assertParseSuccess(parser, "1 2 " + PHONE_DESC_AMY, expectedCommand);
     }
 }

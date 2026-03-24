@@ -160,6 +160,8 @@ public class SingleDeleteCommandTest {
     public void equals() {
         DeleteCommand deleteFirstCommand = new SingleDeleteCommand(INDEX_FIRST_PERSON);
         DeleteCommand deleteSecondCommand = new SingleDeleteCommand(INDEX_SECOND_PERSON);
+        DeleteCommand deleteFirstCommandWithPrefixes =
+                new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(PREFIX_SYMPTOM, PREFIX_NOTES));
 
         // same object -> returns true
         assertTrue(deleteFirstCommand.equals(deleteFirstCommand));
@@ -180,14 +182,28 @@ public class SingleDeleteCommandTest {
         // same target index but different command type -> returns true
         DeleteCommand deleteRangeCommand = new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_FIRST_PERSON);
         assertTrue(deleteFirstCommand.equals(deleteRangeCommand));
+
+        // same target index and same prefixes -> returns true
+        DeleteCommand deleteFirstCommandWithSamePrefixes =
+                new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(PREFIX_SYMPTOM, PREFIX_NOTES));
+        assertTrue(deleteFirstCommandWithPrefixes.equals(deleteFirstCommandWithSamePrefixes));
+
+        // same target index but different prefixes -> returns false
+        assertFalse(deleteFirstCommand.equals(deleteFirstCommandWithPrefixes));
+
+        // same target indices and same prefixes but different command type -> returns true
+        DeleteCommand deleteMultipleCommandWithSamePrefixes =
+                new MultipleDeleteCommand(new Index[]{ INDEX_FIRST_PERSON }, Set.of(PREFIX_SYMPTOM, PREFIX_NOTES));
+        assertTrue(deleteFirstCommandWithSamePrefixes.equals(deleteMultipleCommandWithSamePrefixes));
     }
 
     @Test
     public void toStringMethod() {
         Index targetIndex = Index.fromOneBased(1);
-        DeleteCommand deleteCommand = new SingleDeleteCommand(targetIndex);
+        DeleteCommand deleteCommand = new SingleDeleteCommand(targetIndex, Set.of(PREFIX_SYMPTOM, PREFIX_NOTES));
         String expected = SingleDeleteCommand.class.getCanonicalName()
-                + "{targetIndices=" + Set.of(targetIndex) + "}";
+                + "{targetIndices=" + Set.of(targetIndex)
+                + ", prefixes=" + Set.of(PREFIX_SYMPTOM, PREFIX_NOTES) + "}";
         assertEquals(expected, deleteCommand.toString());
     }
 

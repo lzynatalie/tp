@@ -138,13 +138,13 @@ public class DeleteCommandParserTest {
     @Test
     public void parse_validArgsSingleIndexWithFieldPrefixes_returnsDeleteCommand() {
         assertParseSuccess(parser, "1 n/ s/",
-                new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(new Prefix("n/"))));
+                new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(new Prefix("n/"), new Prefix("s/"))));
     }
 
     @Test
     public void parse_validArgsMultipleIndicesWithFieldPrefix_returnsDeleteCommand() {
         assertParseSuccess(parser, "1,2 s/", new MultipleDeleteCommand(
-                new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON }, Set.of(new Prefix("n/"))));
+                new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON }, Set.of(new Prefix("s/"))));
     }
 
     @Test

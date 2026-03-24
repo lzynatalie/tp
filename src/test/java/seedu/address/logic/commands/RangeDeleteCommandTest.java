@@ -275,9 +275,10 @@ public class RangeDeleteCommandTest {
     @Test
     public void toStringMethod() {
         Index targetIndex = Index.fromOneBased(1);
-        DeleteCommand deleteCommand = new RangeDeleteCommand(targetIndex, targetIndex);
+        DeleteCommand deleteCommand = new RangeDeleteCommand(targetIndex, targetIndex, Set.of(PREFIX_NOTES));
         String expected = RangeDeleteCommand.class.getCanonicalName()
-                + "{targetIndices=" + Set.of(targetIndex) + "}";
+                + "{targetIndices=" + Set.of(targetIndex)
+                + ", prefixes=" + Set.of(PREFIX_NOTES) + "}";
         assertEquals(expected, deleteCommand.toString());
     }
 

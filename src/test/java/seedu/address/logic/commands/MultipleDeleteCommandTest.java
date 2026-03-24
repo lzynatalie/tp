@@ -226,9 +226,10 @@ public class MultipleDeleteCommandTest {
     @Test
     public void toStringMethod() {
         Index targetIndex = Index.fromOneBased(1);
-        DeleteCommand deleteCommand = new MultipleDeleteCommand(new Index[]{ targetIndex });
+        DeleteCommand deleteCommand = new MultipleDeleteCommand(new Index[]{ targetIndex }, Set.of(PREFIX_SYMPTOM));
         String expected = MultipleDeleteCommand.class.getCanonicalName()
-                + "{targetIndices=" + Set.of(targetIndex) + "}";
+                + "{targetIndices=" + Set.of(targetIndex)
+                + ", prefixes=" + Set.of(PREFIX_SYMPTOM) + "}";
         assertEquals(expected, deleteCommand.toString());
     }
 

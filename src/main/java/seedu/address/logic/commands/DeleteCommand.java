@@ -110,13 +110,15 @@ public abstract class DeleteCommand extends Command {
         }
 
         DeleteCommand otherDeleteCommand = (DeleteCommand) other;
-        return this.getTargetIndicesAsSet().equals(otherDeleteCommand.getTargetIndicesAsSet());
+        return this.getTargetIndicesAsSet().equals(otherDeleteCommand.getTargetIndicesAsSet())
+                && this.getPrefixes().equals(otherDeleteCommand.getPrefixes());
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("targetIndices", this.getTargetIndicesAsSet())
+                .add("prefixes", this.getPrefixes())
                 .toString();
     }
 }

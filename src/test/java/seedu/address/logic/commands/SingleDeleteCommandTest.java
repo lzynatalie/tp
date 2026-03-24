@@ -137,13 +137,18 @@ public class SingleDeleteCommandTest {
 
     @Test
     public void execute_missingFieldValueFilteredList_throwsCommandException() {
-        showPersonAtIndex(model, INDEX_SECOND_PERSON);
+        // Set the target person's notes to be empty to trigger the missing field value condition
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person firstPersonWithoutNotes = new PersonBuilder(firstPerson).withNotes("").build();
+        model.setPerson(firstPerson, firstPersonWithoutNotes);
+
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
 
         Person targetPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        assertTrue(targetPerson.getSymptoms().isEmpty(),
-                "Precondition failed: target person should not have symptoms.");
+        assertTrue(targetPerson.getNotes().getValue().isEmpty(),
+                "Precondition failed: target person should not have notes.");
 
-        DeleteCommand deleteCommand = new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(PREFIX_SYMPTOM));
+        DeleteCommand deleteCommand = new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(PREFIX_NOTES));
 
         assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_NO_VALUE_FOR_PERSON);
     }

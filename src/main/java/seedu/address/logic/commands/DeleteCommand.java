@@ -7,6 +7,7 @@ import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.CliSyntax;
 import seedu.address.logic.parser.Prefix;
 import seedu.address.model.person.Address;
@@ -44,6 +45,8 @@ public abstract class DeleteCommand extends Command {
             "Duplicate prefixes are not allowed. Each prefix should only be specified once.";
     public static final String MESSAGE_VALUE_NOT_ALLOWED =
             "Values are not allowed for the prefixes. Please specify only the prefix without any value.";
+    public static final String MESSAGE_NO_VALUE_FOR_PERSON =
+            "The specified person(s) do not have any value for the specified prefix(es).";
 
     private Set<Prefix> prefixes;
 
@@ -57,17 +60,23 @@ public abstract class DeleteCommand extends Command {
 
     public abstract Set<Index> getTargetIndicesAsSet();
 
-    public Person getUpdatedPerson(Person personToDelete) {
+    public Person getUpdatedPerson(Person personToDelete) throws CommandException {
         Name name = personToDelete.getName();
         Phone phone = personToDelete.getPhone();
         Email email = personToDelete.getEmail();
         Address address = personToDelete.getAddress();
+        if (prefixes.contains(PREFIX_SYMPTOM) && personToDelete.getSymptoms().isEmpty()) {
+            throw new CommandException(MESSAGE_NO_VALUE_FOR_PERSON);
+        }
         Set<Symptom> updatedSymptoms = prefixes.contains(PREFIX_SYMPTOM) ? Set.of() : personToDelete.getSymptoms();
         Ic ic = personToDelete.getIc();
         UrgencyLevel urgencyLevel = personToDelete.getUrgencyLevel();
         NextOfKinPhone nextOfKinPhone = personToDelete.getNextOfKinPhone();
         DoctorName doctorName = personToDelete.getDoctorName();
         NextOfKin nextOfKin = personToDelete.getNextOfKin();
+        if (prefixes.contains(PREFIX_NOTES) && personToDelete.getNotes().getValue().isEmpty()) {
+            throw new CommandException(MESSAGE_NO_VALUE_FOR_PERSON);
+        }
         Notes updatedNotes = prefixes.contains(PREFIX_NOTES) ? new Notes("") : personToDelete.getNotes();
         return new Person(name, phone, email, address, updatedSymptoms, ic,
                  urgencyLevel, nextOfKinPhone, doctorName, nextOfKin, updatedNotes);

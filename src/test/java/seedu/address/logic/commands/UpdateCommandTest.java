@@ -238,6 +238,25 @@ public class UpdateCommandTest {
     }
 
     @Test
+    public void execute_appendNonEmptyNote_success() throws Exception {
+        // 1. Pick a person who already has some notes
+        Person personToUpdate = model.getFilteredPersonList().get(0);
+
+        // 2. Create a descriptor with a REAL (non-empty) note to append
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
+        descriptor.setNotesToAppend(new Notes("Patient is recovering well."));
+
+        UpdateCommand updateCommand = new UpdateCommand(INDEX_FIRST_PERSON, descriptor);
+
+        // 3. Execute the command
+        updateCommand.execute(model);
+
+        // 4. Verify the change
+        String updatedNote = model.getFilteredPersonList().get(0).getNotes().toString();
+        assertTrue(updatedNote.contains("Patient is recovering well."));
+    }
+
+    @Test
     public void equals() {
         final UpdateCommand standardCommand = new UpdateCommand(INDEX_FIRST_PERSON, DESC_AMY);
 

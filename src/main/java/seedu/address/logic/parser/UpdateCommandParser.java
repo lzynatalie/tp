@@ -127,7 +127,7 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
                 throw new ParseException("The text to append cannot be empty. "
                         + "If you want to clear the note, use n/ instead.");
             }
-            updatePersonDescriptor.setNotesToAppend(notesToAppend);
+            updatePersonDescriptor.setNotesToAppend(ParserUtil.parseNotes(notesToAppend));
         }
 
         parseSymptomsForEdit(argMultimap.getAllValues(PREFIX_SYMPTOM)).ifPresent(updatePersonDescriptor::setSymptoms);

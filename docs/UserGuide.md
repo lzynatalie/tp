@@ -82,9 +82,19 @@ Records comprehensive patient information (name, identification, contact details
 
 ### Listing all patients : `list`
 
-Displays all contacts currently stored in the application in a structured list format. This allows users to view the complete database after filtering or searching.
+Displays all patients in the application in a structured list format. You can also filter the list by urgency level and/or symptoms.
 
-**Format:** `list`
+**Format:** `list [u/<URGENCY_LEVEL>]... [s/<SYMPTOM>]...`
+
+* You may provide `u/` (urgency level) to match urgency levels.
+* You may provide `s/` (symptoms) to match symptoms.
+* If both `u/` and `s/` are provided, only patients matching **both** criteria are shown.
+
+**Examples:**
+* `list` (shows everyone)
+* `list u/high`
+* `list s/fever s/cough`
+* `list u/high s/fever`
 
 ### Updating a patient : `update`
 
@@ -206,6 +216,6 @@ _Details coming soon ..._
 | **Update** | `update INDEX [prefix/VALUE]...`                                                           | `update 1 u/extreme n/Immediate surgery required`                          |
 | **Search** | `find [pn/NAME] [ic/IC] [p/PHONE] [u/URGENCY]`                                             | `find u/high`, `find ic/S1234567A`                                         |
 | **Delete** | `delete INDEX` <br> `delete INDEX,INDEX` <br> `delete START-END`                           | `delete 3` <br> `delete 1,4` <br> `delete 2-5`                             |
-| **List** | `list`                                                                                     | `list`                                                                     |
+| **List** | `list [u/<URGENCY_LEVEL>]... [s/<SYMPTOM>]...`                                               | `list` <br> `list u/high` <br> `list s/fever s/cough`                     |
 | **Clear** | `clear`                                                                                    | `clear`                                                                    |
 | **Exit** | `exit`                                                                                     | `exit`                                                                     |

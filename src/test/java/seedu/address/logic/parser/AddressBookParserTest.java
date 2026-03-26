@@ -87,7 +87,10 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
-        assertThrows(ParseException.class, () -> parser.parseCommand(ListCommand.COMMAND_WORD + " 3"));
+        assertThrows(ParseException.class, "Please use prefixes \"u/\" for urgency level, \"s/\" for symptoms\n"
+            + "Examples: `list u/high` `list s/fever` `list u/high s/fever`.", () ->
+                parser.parseCommand(ListCommand.COMMAND_WORD + " fever"));
+        assertThrows(ParseException.class, () -> parser.parseCommand(ListCommand.COMMAND_WORD + " u/urgent"));
     }
 
     @Test

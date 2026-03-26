@@ -63,14 +63,15 @@ Shows a message explaining how to access the help page.
 
 Records comprehensive patient information (name, identification, contact details, medical urgency, and notes) and saves it to the hard disk.
 
-**Format:** `add pn/<PATIENT NAME> ic/<IC NUMBER> p/<PATIENT PHONE NUMBER> u/<URGENCY LEVEL> d/<DOCTOR NAME> nk/<NEXT-OF-KIN NAME> nkp/<NEXT-OF-KIN PHONE NUMBER> [s/<SYMPTOMS>] [n/<NOTES>]`
+**Format:** `add pn/<PATIENT NAME> ic/<IC NUMBER> p/<PATIENT PHONE NUMBER> u/<URGENCY LEVEL> d/<DOCTOR NAME> nk/<NEXT-OF-KIN NAME> nkp/<NEXT-OF-KIN PHONE NUMBER> nkr/<NEXT-OF-KIN RELATIONSHIP> [s/<SYMPTOMS>] [n/<NOTES>]`
 
 **Compulsory Fields & Constraints:**
 * **`pn/`, `d/`, `nk/` (Names):** May contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
 * **`ic/`:** Must follow the format: `[S/T/F/G/M]` + 7 digits + 1 letter (total 9 characters). Duplicates are not allowed.
 * **`p/`, `nkp/` (Phones):** Must contain exactly 8 digits (0-9 only).
 * **`u/` (Urgency):** Must be exactly one of: `low`, `moderate`, `high`, `extreme`.
-
+* **`nkr/` (Next of kin relationship):** May contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
+* 
 **Optional Fields:**
 * **`s/` (Symptoms):** Must be alphanumeric.
 * **`n/` (Notes):** Maximum length of 500 characters.
@@ -78,7 +79,7 @@ Records comprehensive patient information (name, identification, contact details
 **Tip:** A person can have any number of symptoms (including 0).
 
 **Examples:**
-* `add pn/John Doe Jun Kai ic/T0123456B p/12345678 u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 s/Diabetic n/Admitted at 12pm`
+* `add pn/John Doe Jun Kai ic/T0123456B p/12345678 u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 nkr/Mother s/Diabetic n/Admitted at 12pm`
 
 ### Listing all patients : `list`
 
@@ -90,7 +91,7 @@ Displays all contacts currently stored in the application in a structured list f
 
 Updates an existing patient's details in ClinicConnect.
 
-**Format:** `update <INDEX> [pn/<PATIENT NAME>] [ic/<IC NUMBER>] [p/<PATIENT PHONE NUMBER>] [s/<SYMPTOMS>] [u/<URGENCY LEVEL>] [d/<DOCTOR NAME>] [nk/<NEXT-OF-KIN NAME>] [nkp/<NEXT-OF-KIN PHONE NUMBER>] [n/<NOTES>]`
+**Format:** `update <INDEX> [pn/<PATIENT NAME>] [ic/<IC NUMBER>] [p/<PATIENT PHONE NUMBER>] [s/<SYMPTOMS>] [u/<URGENCY LEVEL>] [d/<DOCTOR NAME>] [nk/<NEXT-OF-KIN NAME>] [nkp/<NEXT-OF-KIN PHONE NUMBER>] [nkr/<NEXT-OF-KIN RELATIONSHIP>] [n/<NOTES>]`
 
 * Edits the patient at the specified `INDEX`. The index refers to the index number shown in the displayed patient list. The index **must be a positive integer** (1, 2, 3, …).
 * **At least one** of the optional fields must be provided.

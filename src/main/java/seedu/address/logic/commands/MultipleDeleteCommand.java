@@ -28,7 +28,7 @@ public class MultipleDeleteCommand extends DeleteCommand {
     private Person[] deletedPersons;
     private boolean wasExecuted = false;
 
-    public MultipleDeleteCommand(Index[] targetIndices) {
+    public MultipleDeleteCommand(Index... targetIndices) {
         this(targetIndices, Set.of());
     }
 
@@ -75,7 +75,6 @@ public class MultipleDeleteCommand extends DeleteCommand {
 
         deletedPersons = personsToDelete;
 
-        StringBuilder deletedPersonsString = new StringBuilder();
         for (Person person : personsToDelete) {
             model.deletePerson(person);
             deletedPersonsString.append("\n" + Messages.format(person));

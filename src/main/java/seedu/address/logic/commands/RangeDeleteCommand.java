@@ -71,6 +71,7 @@ public class RangeDeleteCommand extends DeleteCommand {
                 model.setPerson(person, updatedPerson);
                 deletedPersonsString.append("\n" + Messages.format(updatedPerson));
             }
+            wasExecuted = true;
             return new CommandResult(String.format(MESSAGE_DELETE_FIELD_SUCCESS, deletedPersonsString));
         }
 
@@ -78,6 +79,7 @@ public class RangeDeleteCommand extends DeleteCommand {
             model.deletePerson(person);
             deletedPersonsString.append("\n" + Messages.format(person));
         }
+        wasExecuted = true;
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, deletedPersonsString));
     }
 
@@ -101,14 +103,6 @@ public class RangeDeleteCommand extends DeleteCommand {
         }
 
         deletedPersons = personsToDelete;
-
-        StringBuilder deletedPersonsString = new StringBuilder();
-        for (Person person : personsToDelete) {
-            model.deletePerson(person);
-            deletedPersonsString.append("\n" + Messages.format(person));
-        }
-        wasExecuted = true;
-        return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, deletedPersonsString));
         return personsToDelete;
     }
 

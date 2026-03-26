@@ -1,7 +1,8 @@
-package seedu.address.logic.commands;
+package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 
 import java.util.function.Predicate;
@@ -9,24 +10,25 @@ import java.util.function.Predicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.symptom.Symptom;
 import seedu.address.testutil.PersonBuilder;
 
-/**
- * Contains integration tests (interaction with the Model) and unit tests for ListCommand.
- */
-public class ListCommandTest {
+public class ListCommandParserTest {
 
+    private ListCommandParser parser;
     private Model model;
     private Model expectedModel;
 
     @BeforeEach
     public void setUp() {
+        parser = new ListCommandParser();
         model = new ModelManager(getMedicalAddressBook(), new UserPrefs());
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
     }
@@ -55,21 +57,9 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_listIsNotFiltered_showsSameList() {
-        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, model.getFilteredPersonList().size());
-        assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
-    }
+    public void parse_validPrefixedUrgency_filtersByUrgency() throws Exception {
+        ListCommand command = parser.parse(" u/high");
 
-    @Test
-    public void execute_listIsFiltered_showsEverything() {
-        model.updateFilteredPersonList(person -> person.getIc().value.equalsIgnoreCase("S0000001A"));
-        int filteredSize = expectedModel.getFilteredPersonList().size();
-        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, filteredSize);
-        assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
-    }
-
-    @Test
-    public void execute_listFilteredByUrgency_showsMatchingPatients() {
         Predicate<Person> predicate = person -> person.getUrgencyLevel().toString()
                 .equalsIgnoreCase("high");
         String criteriaDescription = "Urgency: high";
@@ -78,12 +68,13 @@ public class ListCommandTest {
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS_FILTERED,
                 expectedModel.getFilteredPersonList().size(), criteriaDescription);
 
-        assertCommandSuccess(new ListCommand(predicate, criteriaDescription), model, expectedMessage,
-                expectedModel);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
     @Test
-    public void execute_listFilteredBySymptoms_showsMatchingPatients() {
+    public void parse_validPrefixedSymptoms_filtersBySymptoms() throws Exception {
+        ListCommand command = parser.parse(" s/fever");
+
         Predicate<Person> predicate = person -> person.getSymptoms().stream()
                 .anyMatch(symptom -> symptom.symptomName.equalsIgnoreCase("fever"));
         String criteriaDescription = "Symptoms: fever";
@@ -92,45 +83,59 @@ public class ListCommandTest {
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS_FILTERED,
                 expectedModel.getFilteredPersonList().size(), criteriaDescription);
 
-        assertCommandSuccess(new ListCommand(predicate, criteriaDescription), model, expectedMessage,
-                expectedModel);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
     @Test
-    public void execute_listFilteredByUrgencyAndSymptoms_showsIntersectionOfMatches() {
+    public void parse_unprefixedSymptoms_throwsParseException() {
+        ParseException exception = assertThrows(ParseException.class, () ->
+                parser.parse("fever cough"));
+        assertEquals("Please use prefixes \"u/\" for urgency level, \"s/\" for symptoms\n"
+            + "Examples: `list u/high` `list s/fever` `list u/high s/fever`.",
+            exception.getMessage());
+    }
+
+    @Test
+    public void parse_validPrefixedUrgencyAndSymptoms_intersection() throws Exception {
+        ListCommand command = parser.parse(" u/high s/fever");
+
         Predicate<Person> predicate = person -> person.getUrgencyLevel().toString()
                 .equalsIgnoreCase("high")
                 && person.getSymptoms().stream()
                 .anyMatch(symptom -> symptom.symptomName.equalsIgnoreCase("fever"));
+
         String criteriaDescription = "Urgency: high, Symptoms: fever";
 
         expectedModel.updateFilteredPersonList(predicate);
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS_FILTERED,
                 expectedModel.getFilteredPersonList().size(), criteriaDescription);
 
-        assertCommandSuccess(new ListCommand(predicate, criteriaDescription), model, expectedMessage,
-                expectedModel);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
     @Test
-    public void execute_listEmptyModel_returnsEmptyListMessage() {
-        Model emptyModel = new ModelManager(new AddressBook(), new UserPrefs());
-        Model expectedModel = new ModelManager(emptyModel.getAddressBook(), new UserPrefs());
-        assertCommandSuccess(new ListCommand(), emptyModel, ListCommand.MESSAGE_EMPTY_LIST,
-                expectedModel);
+    public void parse_invalidUrgency_throwsParseException() {
+        assertThrows(ParseException.class, () -> parser.parse(" u/urgent"));
     }
 
     @Test
-    public void execute_listNoMatchesWithCriteria_throwsCommandException() {
-        Model emptyModel = new ModelManager(new AddressBook(), new UserPrefs());
-        Predicate<Person> predicate = person -> false;
-        String criteriaDescription = "Urgency: high";
-        ListCommand listCommand = new ListCommand(predicate, criteriaDescription);
-
-        CommandException exception = assertThrows(CommandException.class, () ->
-                listCommand.execute(emptyModel));
-
-        assertEquals("No patient(s) matching the following criteria: \"" + criteriaDescription + "\"",
+    public void parse_emptyUrgency_throwsParseException() {
+        ParseException exception = assertThrows(ParseException.class, () -> parser.parse(" u/"));
+        assertEquals(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE),
                 exception.getMessage());
     }
+
+    @Test
+    public void parse_emptySymptoms_throwsParseException() {
+        ParseException exception = assertThrows(ParseException.class, () -> parser.parse(" s/"));
+        assertEquals(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE),
+                exception.getMessage());
+    }
+
+    @Test
+    public void parse_invalidSymptoms_throwsParseException() {
+        ParseException exception = assertThrows(ParseException.class, () -> parser.parse(" s/fever!"));
+        assertEquals(Symptom.MESSAGE_CONSTRAINTS, exception.getMessage());
+    }
 }
+

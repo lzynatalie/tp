@@ -1,12 +1,27 @@
 package seedu.address.logic.parser;
 
+import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_MISSING_PERSON_INDEX;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_URGENCY;
 
+import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
-import seedu.address.logic.Messages;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.MultipleDeleteCommand;
 import seedu.address.logic.commands.RangeDeleteCommand;
@@ -25,38 +40,86 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
     private static final Pattern RANGE_ARGUMENT_FORMAT =
             Pattern.compile("(?<start>^[0-9]+)-(?<end>[0-9]+$)");
 
+    private final Logger logger = LogsCenter.getLogger(DeleteCommandParser.class);
+
     /**
      * Parses the given {@code String} of arguments in the context of the DeleteCommand
      * and returns a DeleteCommand object for execution.
      * @throws ParseException if the user input does not conform the expected format
      */
     public DeleteCommand parse(String args) throws ParseException {
-        if (args == null || args.trim().isEmpty()) {
-            throw new ParseException(String.format(
-                    Messages.MESSAGE_MISSING_PERSON_INDEX, DeleteCommand.MESSAGE_USAGE));
+        requireNonNull(args);
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
+                PREFIX_PATIENT_NAME,
+                PREFIX_PATIENT_PHONE,
+                PREFIX_EMAIL,
+                PREFIX_ADDRESS,
+                PREFIX_SYMPTOM,
+                PREFIX_IC,
+                PREFIX_URGENCY,
+                PREFIX_NEXT_OF_KIN,
+                PREFIX_NEXT_OF_KIN_PHONE,
+                PREFIX_DOCTOR,
+                PREFIX_NOTES
+        );
+
+        final String indicesString = argMultimap.getPreamble();
+        if (indicesString.isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_MISSING_PERSON_INDEX, DeleteCommand.MESSAGE_USAGE));
         }
 
-        if (args.contains(MULTIPLE_INDICES_DELIMITER)) {
-            return parseMultipleIndices(args);
-        } else if (args.contains(RANGE_INDICES_DELIMITER)) {
-            return parseRangeIndices(args);
+        if (argMultimap.areAnyPrefixesPresent(
+                PREFIX_PATIENT_NAME,
+                PREFIX_PATIENT_PHONE,
+                PREFIX_EMAIL,
+                PREFIX_ADDRESS,
+                PREFIX_IC,
+                PREFIX_URGENCY,
+                PREFIX_NEXT_OF_KIN,
+                PREFIX_NEXT_OF_KIN_PHONE,
+                PREFIX_DOCTOR)) {
+            throw new ParseException(String.format(
+                    MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_DELETE_FIELD_USAGE));
+        }
+
+        try {
+            argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_SYMPTOM, PREFIX_NOTES);
+        } catch (ParseException pe) {
+            throw new ParseException(DeleteCommand.MESSAGE_DUPLICATE_PREFIXES);
+        }
+
+        if (argMultimap.getValue(PREFIX_SYMPTOM).map(v -> !v.isEmpty()).orElse(false)
+                || argMultimap.getValue(PREFIX_NOTES).map(v -> !v.isEmpty()).orElse(false)) {
+            throw new ParseException(DeleteCommand.MESSAGE_VALUE_NOT_ALLOWED);
+        }
+
+        Set<Prefix> prefixes = argMultimap.getPrefixes();
+
+        logger.fine("Indices: " + indicesString + "; Prefixes: " + prefixes);
+
+        if (indicesString.contains(MULTIPLE_INDICES_DELIMITER)) {
+            return parseMultipleIndices(indicesString, prefixes);
+        } else if (indicesString.contains(RANGE_INDICES_DELIMITER)) {
+            return parseRangeIndices(indicesString, prefixes);
         } else {
-            return parseSingleIndex(args);
+            return parseSingleIndex(indicesString, prefixes);
         }
     }
 
-    private DeleteCommand parseSingleIndex(String args) throws ParseException {
+    private DeleteCommand parseSingleIndex(String indexString, Set<Prefix> prefixes) throws ParseException {
+        Index index;
         try {
-            Index index = ParserUtil.parseIndex(args);
-            return new SingleDeleteCommand(index);
+            index = ParserUtil.parseIndex(indexString);
         } catch (ParseException pe) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, SingleDeleteCommand.MESSAGE_USAGE), pe);
         }
+
+        return new SingleDeleteCommand(index, prefixes);
     }
 
-    private DeleteCommand parseMultipleIndices(String args) throws ParseException {
-        Matcher matcher = MULTIPLE_INDICES_ARGUMENT_FORMAT.matcher(args.trim());
+    private DeleteCommand parseMultipleIndices(String indicesString, Set<Prefix> prefixes) throws ParseException {
+        final Matcher matcher = MULTIPLE_INDICES_ARGUMENT_FORMAT.matcher(indicesString.trim());
         if (!matcher.matches()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, MultipleDeleteCommand.MESSAGE_USAGE));
@@ -73,11 +136,11 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
             }
         }
 
-        return new MultipleDeleteCommand(indices);
+        return new MultipleDeleteCommand(indices, prefixes);
     }
 
-    private DeleteCommand parseRangeIndices(String args) throws ParseException {
-        Matcher matcher = RANGE_ARGUMENT_FORMAT.matcher(args.trim());
+    private DeleteCommand parseRangeIndices(String indicesString, Set<Prefix> prefixes) throws ParseException {
+        final Matcher matcher = RANGE_ARGUMENT_FORMAT.matcher(indicesString.trim());
         if (!matcher.matches()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, RangeDeleteCommand.MESSAGE_USAGE));
@@ -93,6 +156,6 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, RangeDeleteCommand.MESSAGE_USAGE), pe);
         }
 
-        return new RangeDeleteCommand(startIndex, endIndex);
+        return new RangeDeleteCommand(startIndex, endIndex, prefixes);
     }
 }

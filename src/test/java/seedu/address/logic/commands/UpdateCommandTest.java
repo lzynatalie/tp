@@ -24,6 +24,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.UpdatePersonDescriptorBuilder;
@@ -148,6 +149,111 @@ public class UpdateCommandTest {
                 new UpdatePersonDescriptorBuilder().withName(VALID_NAME_BOB).build());
 
         assertCommandFailure(updateCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_appendNoteToExistingNote_success() throws Exception {
+        // Covers lines 144-145: Testing the "else" block (adding to existing text)
+        Person personToUpdate = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        String originalNote = personToUpdate.getNotes().toString();
+        String textToAppend = "More info";
+
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
+        descriptor.setNotesToAppend(new Notes(textToAppend));
+        UpdateCommand updateCommand = new UpdateCommand(INDEX_FIRST_PERSON, descriptor);
+
+        String expectedNote = originalNote + "\n" + textToAppend;
+        updateCommand.execute(model);
+
+        assertEquals(expectedNote, model.getFilteredPersonList().get(0).getNotes().toString());
+    }
+
+    @Test
+    public void execute_appendNoteToEmptyNote_success() throws Exception {
+        // Covers line 142: Testing the case where the patient currently has no notes ("-" or empty)
+        // First, clear the note for the first person
+        model.setPerson(model.getFilteredPersonList().get(0),
+                new PersonBuilder(model.getFilteredPersonList().get(0)).withNotes("").build());
+
+        String textToAppend = "First Note";
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
+        descriptor.setNotesToAppend(new Notes(textToAppend));
+        UpdateCommand updateCommand = new UpdateCommand(INDEX_FIRST_PERSON, descriptor);
+
+        updateCommand.execute(model);
+
+        // Should NOT have a leading newline since original was empty
+        assertEquals(textToAppend, model.getFilteredPersonList().get(0).getNotes().toString());
+    }
+
+    @Test
+    public void execute_appendNoteExceedsLimit_throwsCommandException() {
+        // 1. Set up two valid strings that, when combined, exceed your character limit (assuming a 500 char limit)
+        String existingText = "a".repeat(250);
+        String textToAppend = "b".repeat(251); // Combined length: 501
+
+        // 2. Give the target patient the initial 250-character note
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person personWithExistingNotes = new PersonBuilder(firstPerson).withNotes(existingText).build();
+        model.setPerson(firstPerson, personWithExistingNotes);
+
+        // 3. Set up the descriptor to append the 251-character note
+        // This no longer crashes the test setup because 251 is a valid length on its own!
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
+        descriptor.setNotesToAppend(new Notes(textToAppend));
+
+        UpdateCommand updateCommand = new UpdateCommand(INDEX_FIRST_PERSON, descriptor);
+
+        // 4. Verify that the execution properly catches the overflow and throws the CommandException
+        String expectedMessage = "Appending this text exceeds the note character constraints. "
+                + Notes.MESSAGE_CONSTRAINTS;
+
+        assertCommandFailure(updateCommand, model, expectedMessage);
+    }
+
+    @Test
+    public void execute_appendNoteToNoteWithExistingContent_success() {
+        // Covers the "False" branch of line 142 (existingNotesText is NOT empty)
+        Person personToUpdate = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+
+        // Ensure the person definitely has existing notes
+        Person personWithNotes = new PersonBuilder(personToUpdate).withNotes("Initial Note").build();
+        model.setPerson(personToUpdate, personWithNotes);
+
+        String textToAppend = "Second Note";
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptorBuilder()
+                .withNotesToAppend(textToAppend).build();
+        UpdateCommand updateCommand = new UpdateCommand(INDEX_FIRST_PERSON, descriptor);
+
+        // This forces the "else" block (line 144) to run: combinedText = existing + "\n" + append
+        String expectedNote = "Initial Note" + "\n" + textToAppend;
+        Person editedPerson = new PersonBuilder(personWithNotes).withNotes(expectedNote).build();
+
+        String expectedMessage = String.format(UpdateCommand.MESSAGE_UPDATE_PERSON_SUCCESS,
+                Messages.format(editedPerson));
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(personWithNotes, editedPerson);
+
+        assertCommandSuccess(updateCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_appendNonEmptyNote_success() throws Exception {
+        // 1. Pick a person who already has some notes
+        Person personToUpdate = model.getFilteredPersonList().get(0);
+
+        // 2. Create a descriptor with a REAL (non-empty) note to append
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
+        descriptor.setNotesToAppend(new Notes("Patient is recovering well."));
+
+        UpdateCommand updateCommand = new UpdateCommand(INDEX_FIRST_PERSON, descriptor);
+
+        // 3. Execute the command
+        updateCommand.execute(model);
+
+        // 4. Verify the change
+        String updatedNote = model.getFilteredPersonList().get(0).getNotes().toString();
+        assertTrue(updatedNote.contains("Patient is recovering well."));
     }
 
     @Test

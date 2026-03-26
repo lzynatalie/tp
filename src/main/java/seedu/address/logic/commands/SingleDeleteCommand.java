@@ -8,6 +8,7 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.Prefix;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
@@ -26,6 +27,17 @@ public class SingleDeleteCommand extends DeleteCommand {
     private boolean wasExecuted = false;
 
     public SingleDeleteCommand(Index targetIndex) {
+        this(targetIndex, Set.of());
+    }
+
+    /**
+     * Creates a SingleDeleteCommand to delete the specified person.
+     *
+     * @param targetIndex The index of the person to delete.
+     * @param prefixes The prefixes indicating which fields to delete (if any).
+     */
+    public SingleDeleteCommand(Index targetIndex, Set<Prefix> prefixes) {
+        super(prefixes);
         this.targetIndex = targetIndex;
     }
 
@@ -50,6 +62,15 @@ public class SingleDeleteCommand extends DeleteCommand {
 
         Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
         deletedPerson = personToDelete;
+
+        if (!getPrefixes().isEmpty()) {
+            Person updatedPerson = getUpdatedPerson(personToDelete);
+            assert updatedPerson.isSamePerson(personToDelete)
+                    : "Updated person should be have the same identity as original person.";
+            model.setPerson(personToDelete, updatedPerson);
+            return new CommandResult(String.format(MESSAGE_DELETE_FIELD_SUCCESS, Messages.format(updatedPerson)));
+        }
+
         model.deletePerson(personToDelete);
         wasExecuted = true;
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));

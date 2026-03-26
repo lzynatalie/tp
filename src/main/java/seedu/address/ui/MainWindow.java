@@ -177,15 +177,24 @@ public class MainWindow extends UiPart<Stage> {
     private CommandResult executeCommand(String commandText) throws CommandException, ParseException {
         try {
             CommandResult commandResult = logic.execute(commandText);
-            logger.info("Result: " + commandResult.getFeedbackToUser());
-            resultDisplay.setStyle("success");
-            resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
+            String feedbackToUser = commandResult.getFeedbackToUser();
+            logger.info("Result: " + feedbackToUser);
+
+            // `find` returning 0 results is not an error, but we highlight it as a "red box".
+            if (feedbackToUser.startsWith("Found 0 patient(s)")) {
+                resultDisplay.setStyle("exception");
+            } else {
+                resultDisplay.setStyle("success");
+            }
+
+            resultDisplay.setFeedbackToUser(feedbackToUser);
 
             if (commandResult.isShowHelp()) {
                 handleHelp();
             }
 
             if (commandResult.isExit()) {
+                commandBoxPlaceholder.setDisable(true);
                 delayExit();
             }
 

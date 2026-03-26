@@ -1,6 +1,8 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
@@ -11,6 +13,8 @@ import java.util.function.Predicate;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.DoctorNameContainsKeywordsPredicate;
+import seedu.address.model.person.EmailContainsKeywordsPredicate;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 
@@ -33,20 +37,25 @@ public class FindCommandParser implements Parser<FindCommand> {
         // No text at all or only whitespace after the command word
         if (trimmedArgs.isEmpty()) {
             throw new ParseException("At least one parameter to search with must be provided. You "
-                + "can use the command 'find' with the following parameters: pn/NAME, ic/IC_NUMBER, p/PHONE_NUMBER");
+                + "can use the command 'find' with the following parameters: pn/NAME, ic/IC_NUMBER, p/PHONE_NUMBER, "
+                + "e/EMAIL, d/DOCTOR_NAME");
         }
 
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_PATIENT_NAME, PREFIX_IC, PREFIX_PATIENT_PHONE);
+                ArgumentTokenizer.tokenize(args, PREFIX_PATIENT_NAME, PREFIX_IC, PREFIX_PATIENT_PHONE,
+                        PREFIX_EMAIL, PREFIX_DOCTOR);
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_PATIENT_NAME, PREFIX_IC, PREFIX_PATIENT_PHONE);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_PATIENT_NAME, PREFIX_IC, PREFIX_PATIENT_PHONE,
+                PREFIX_EMAIL, PREFIX_DOCTOR);
 
         boolean hasName = argMultimap.getValue(PREFIX_PATIENT_NAME).isPresent();
         boolean hasIc = argMultimap.getValue(PREFIX_IC).isPresent();
         boolean hasPhone = argMultimap.getValue(PREFIX_PATIENT_PHONE).isPresent();
+        boolean hasEmail = argMultimap.getValue(PREFIX_EMAIL).isPresent();
+        boolean hasDoctor = argMultimap.getValue(PREFIX_DOCTOR).isPresent();
 
         // Legacy behaviour: no prefixes, treat entire args as name keywords
-        if (!hasName && !hasIc && !hasPhone) {
+        if (!hasName && !hasIc && !hasPhone && !hasEmail && !hasDoctor) {
             List<String> legacyKeywords = Arrays.asList(trimmedArgs.split("\\s+"));
             String criteriaDescription = "Patient Name: " + trimmedArgs;
             return new FindCommand(new NameContainsKeywordsPredicate(legacyKeywords), criteriaDescription);
@@ -63,7 +72,8 @@ public class FindCommandParser implements Parser<FindCommand> {
             }
             List<String> nameKeywords = Arrays.asList(nameArgs.split("\\s+"));
             Predicate<Person> namePredicate = new NameContainsKeywordsPredicate(nameKeywords);
-            predicate = predicate == null ? namePredicate : predicate.or(namePredicate);
+            // Name is checked first, so `predicate` must still be null here.
+            predicate = namePredicate;
             criteriaBuilder.append("Patient Name: ").append(nameArgs);
         }
 
@@ -97,8 +107,37 @@ public class FindCommandParser implements Parser<FindCommand> {
             criteriaBuilder.append("Phone Number: ").append(phoneArg);
         }
 
+        if (hasEmail) {
+            String emailArg = argMultimap.getValue(PREFIX_EMAIL).get().trim();
+            if (emailArg.isEmpty()) {
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+            }
+            List<String> emailKeywords = Arrays.asList(emailArg.split("\\s+"));
+            Predicate<Person> emailPredicate = new EmailContainsKeywordsPredicate(emailKeywords);
+            predicate = predicate == null ? emailPredicate : predicate.or(emailPredicate);
+            if (criteriaBuilder.length() > 0) {
+                criteriaBuilder.append(", ");
+            }
+            criteriaBuilder.append("Email: ").append(emailArg);
+        }
+
+        if (hasDoctor) {
+            String doctorArg = argMultimap.getValue(PREFIX_DOCTOR).get().trim();
+            if (doctorArg.isEmpty()) {
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+            }
+            List<String> doctorNameKeywords = Arrays.asList(doctorArg.split("\\s+"));
+            Predicate<Person> doctorNamePredicate = new DoctorNameContainsKeywordsPredicate(doctorNameKeywords);
+            predicate = predicate == null ? doctorNamePredicate : predicate.or(doctorNamePredicate);
+            if (criteriaBuilder.length() > 0) {
+                criteriaBuilder.append(", ");
+            }
+            criteriaBuilder.append("Doctor Name: ").append(doctorArg);
+        }
+
         String criteriaDescription = criteriaBuilder.toString().trim();
-        assert predicate != null;
         return new FindCommand(predicate, criteriaDescription);
     }
 

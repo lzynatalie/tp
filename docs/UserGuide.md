@@ -82,9 +82,19 @@ Records comprehensive patient information (name, identification, contact details
 
 ### Listing all patients : `list`
 
-Displays all contacts currently stored in the application in a structured list format. This allows users to view the complete database after filtering or searching.
+Displays all patients in the application in a structured list format. You can also filter the list by urgency level and/or symptoms.
 
-**Format:** `list`
+**Format:** `list [u/<URGENCY_LEVEL>]... [s/<SYMPTOM>]...`
+
+* You may provide `u/` (urgency level) to match urgency levels.
+* You may provide `s/` (symptoms) to match symptoms.
+* If both `u/` and `s/` are provided, only patients matching **both** criteria are shown.
+
+**Examples:**
+* `list` (shows everyone)
+* `list u/high`
+* `list s/fever s/cough`
+* `list u/high s/fever`
 
 ### Updating a patient : `update`
 
@@ -106,7 +116,7 @@ Updates an existing patient's details in ClinicConnect.
 
 Allows triage coordinators to locate specific patient records using various identifiers, reducing the manual effort of scrolling.
 
-**Format:** `find [pn/<NAME>] [ic/<IC NUMBER>] [p/<PATIENT PHONE NUMBER>] [u/<URGENCY LEVEL>]`
+**Format:** `find [pn/<NAME>] [ic/<IC NUMBER>] [p/<PATIENT PHONE NUMBER>] [e/<EMAIL>] [d/<DOCTOR NAME>]`
 
 * Finds patients whose identifiers match the given keywords.
 * At least one identifier must be provided.
@@ -118,7 +128,8 @@ Allows triage coordinators to locate specific patient records using various iden
 **Examples:**
 * `find pn/Alice` returns patients with the name Alice.
 * `find ic/S1234567A` returns the patient with that specific IC.
-* `find u/high` returns all patients with a high urgency level.
+* `find e/johndoe@example.com` returns the patient(s) with that email.
+* `find d/Dr Sally` returns the patient(s) with that doctor name.
 
 ### Deleting a patient : `delete`
 
@@ -204,8 +215,8 @@ _Details coming soon ..._
 | :--- |:-------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------|
 | **Add** | `add pn/NAME ic/IC p/PHONE u/URGENCY d/DOCTOR nk/NOK nkp/NOK_PHONE [s/SYMPTOMS] [n/NOTES]` | `add pn/John ic/S1234567A p/98765432 u/high d/Dr Tan nk/Mary nkp/87654321` |
 | **Update** | `update INDEX [prefix/VALUE]...`                                                           | `update 1 u/extreme n/Immediate surgery required`                          |
-| **Search** | `find [pn/NAME] [ic/IC] [p/PHONE] [u/URGENCY]`                                             | `find u/high`, `find ic/S1234567A`                                         |
+| **Search** | `find [pn/NAME] [ic/IC] [p/PHONE] [e/EMAIL] [d/DOCTOR]`                                     | `find e/johndoe@example.com`, `find d/Dr Sally`, `find ic/S1234567A`                                         |
 | **Delete** | `delete INDEX` <br> `delete INDEX,INDEX` <br> `delete START-END`                           | `delete 3` <br> `delete 1,4` <br> `delete 2-5`                             |
-| **List** | `list`                                                                                     | `list`                                                                     |
+| **List** | `list [u/<URGENCY_LEVEL>]... [s/<SYMPTOM>]...`                                               | `list` <br> `list u/high` <br> `list s/fever s/cough`                     |
 | **Clear** | `clear`                                                                                    | `clear`                                                                    |
 | **Exit** | `exit`                                                                                     | `exit`                                                                     |

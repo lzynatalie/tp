@@ -8,6 +8,8 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -26,6 +28,12 @@ import seedu.address.logic.commands.SingleDeleteCommand;
 public class DeleteCommandParserTest {
 
     private DeleteCommandParser parser = new DeleteCommandParser();
+
+    @Test
+    public void parse_emptyArgs_throwsParseException() {
+        assertParseFailure(parser, "", String.format(
+                MESSAGE_MISSING_PERSON_INDEX, DeleteCommand.MESSAGE_USAGE));
+    }
 
     @Test
     public void parse_validArgsSingleIndex_returnsDeleteCommand() {
@@ -128,8 +136,47 @@ public class DeleteCommandParserTest {
     }
 
     @Test
-    public void parse_emptyArgs_throwsParseException() {
-        assertParseFailure(parser, "", String.format(
-                MESSAGE_MISSING_PERSON_INDEX, DeleteCommand.MESSAGE_USAGE));
+    public void parse_validArgsSingleIndexWithFieldPrefixes_returnsDeleteCommand() {
+        assertParseSuccess(parser, "1 n/ s/",
+                new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(new Prefix("n/"), new Prefix("s/"))));
+    }
+
+    @Test
+    public void parse_validArgsMultipleIndicesWithFieldPrefix_returnsDeleteCommand() {
+        assertParseSuccess(parser, "1,2 s/", new MultipleDeleteCommand(
+                new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON }, Set.of(new Prefix("s/"))));
+    }
+
+    @Test
+    public void parse_validArgsRangeIndicesWithFieldPrefix_returnsDeleteCommand() {
+        assertParseSuccess(parser, "1-2 n/", new RangeDeleteCommand(
+                INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, Set.of(new Prefix("n/"))));
+    }
+
+    @Test
+    public void parse_invalidArgsNotesPrefixWithValue_throwsParseException() {
+        assertParseFailure(parser, "1 n/notes", DeleteCommand.MESSAGE_VALUE_NOT_ALLOWED);
+    }
+
+    @Test
+    public void parse_invalidArgsSymptomsPrefixWithValue_throwsParseException() {
+        assertParseFailure(parser, "1 s/symptom", DeleteCommand.MESSAGE_VALUE_NOT_ALLOWED);
+    }
+
+    @Test
+    public void parse_invalidArgsDuplicateFieldPrefixes_throwsParseException() {
+        assertParseFailure(parser, "1 n/ n/", DeleteCommand.MESSAGE_DUPLICATE_PREFIXES);
+    }
+
+    @Test
+    public void parse_invalidArgsNonOptionalFieldPrefix_throwsParseException() {
+        assertParseFailure(parser, "1 p/", String.format(
+                MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_DELETE_FIELD_USAGE));
+    }
+
+    @Test
+    public void parse_invalidArgsNonExistentFieldPrefix_throwsParseException() {
+        assertParseFailure(parser, "1 x/", String.format(
+                MESSAGE_INVALID_COMMAND_FORMAT, SingleDeleteCommand.MESSAGE_USAGE));
     }
 }

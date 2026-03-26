@@ -8,6 +8,7 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.Prefix;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
@@ -26,13 +27,19 @@ public class RangeDeleteCommand extends DeleteCommand {
     private Person[] deletedPersons;
     private boolean wasExecuted = false;
 
-    /**
-     * Creates a RangeDeleteCommand to delete the specified range of people.
-     *
-     * @param startIndex The starting index of the range (inclusive).
-     * @param endIndex The ending index of the range (inclusive).
-     */
     public RangeDeleteCommand(Index startIndex, Index endIndex) {
+        this(startIndex, endIndex, Set.of());
+    }
+
+    /**
+     * Creates a RangeDeleteCommand to delete the specified people.
+     *
+     * @param startIndex The starting index of the range of people to delete.
+     * @param endIndex The ending index of the range of people to delete.
+     * @param prefixes The prefixes indicating which fields to delete (if any).
+     */
+    public RangeDeleteCommand(Index startIndex, Index endIndex, Set<Prefix> prefixes) {
+        super(prefixes);
         this.startIndex = startIndex;
         this.endIndex = endIndex;
     }
@@ -51,6 +58,30 @@ public class RangeDeleteCommand extends DeleteCommand {
             throw new CommandException(Messages.getErrorMessageForNoPersons(COMMAND_WORD));
         }
 
+        verifyValidIndices(model, lastShownList);
+
+        Person[] personsToDelete = getPersonsToDelete(lastShownList);
+        StringBuilder deletedPersonsString = new StringBuilder();
+
+        if (!getPrefixes().isEmpty()) {
+            Person[] updatedPersons = getUpdatedPersons(personsToDelete);
+            for (int i = 0; i < personsToDelete.length; i++) {
+                Person person = personsToDelete[i];
+                Person updatedPerson = updatedPersons[i];
+                model.setPerson(person, updatedPerson);
+                deletedPersonsString.append("\n" + Messages.format(updatedPerson));
+            }
+            return new CommandResult(String.format(MESSAGE_DELETE_FIELD_SUCCESS, deletedPersonsString));
+        }
+
+        for (Person person : personsToDelete) {
+            model.deletePerson(person);
+            deletedPersonsString.append("\n" + Messages.format(person));
+        }
+        return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, deletedPersonsString));
+    }
+
+    private void verifyValidIndices(Model model, List<Person> lastShownList) throws CommandException {
         if (startIndex.getZeroBased() >= lastShownList.size() || endIndex.getZeroBased() >= lastShownList.size()) {
             Index lastIndex = Index.fromOneBased(model.getFilteredPersonList().size());
             throw new CommandException(Messages.getErrorMessageForInvalidIndices(lastIndex));
@@ -59,7 +90,9 @@ public class RangeDeleteCommand extends DeleteCommand {
         if (startIndex.getZeroBased() > endIndex.getZeroBased()) {
             throw new CommandException(Messages.getErrorMessageForInvalidRangeIndices());
         }
+    }
 
+    private Person[] getPersonsToDelete(List<Person> lastShownList) {
         int numberOfPersonsToDelete = endIndex.getZeroBased() - startIndex.getZeroBased() + 1;
         Person[] personsToDelete = new Person[numberOfPersonsToDelete];
         for (int i = 0; i < numberOfPersonsToDelete; i++) {
@@ -76,6 +109,7 @@ public class RangeDeleteCommand extends DeleteCommand {
         }
         wasExecuted = true;
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, deletedPersonsString));
+        return personsToDelete;
     }
 
     @Override

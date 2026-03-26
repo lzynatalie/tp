@@ -22,11 +22,15 @@ public class FindCommand extends Command {
             + "  pn/NAME...\n"
             + "  ic/IC_NUMBER\n"
             + "  p/PHONE_NUMBER\n"
+            + "  e/EMAIL\n"
+            + "  d/DOCTOR_NAME\n"
             + "You can specify one or more of the above. At least one must be provided.\n"
             + "Examples:\n"
             + "  " + COMMAND_WORD + " pn/Alice Bob\n"
             + "  " + COMMAND_WORD + " ic/S1234567A\n"
-            + "  " + COMMAND_WORD + " p/91234567";
+            + "  " + COMMAND_WORD + " p/91234567\n"
+            + "  " + COMMAND_WORD + " e/johndoe@example.com\n"
+            + "  " + COMMAND_WORD + " d/Dr Sally";
 
     private final Predicate<Person> predicate;
     private final String criteriaDescription;

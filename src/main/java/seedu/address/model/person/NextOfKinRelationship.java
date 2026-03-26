@@ -1,7 +1,5 @@
 package seedu.address.model.person;
 
-import java.util.Objects;
-
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
@@ -20,7 +18,7 @@ public class NextOfKinRelationship {
 
     // Regex: letters + allowed punctuation + spaces
     // ^ start, $ end
-    public static final String VALIDATION_REGEX = "[A-Za-z][A-Za-z ,.'-]*";;
+    public static final String VALIDATION_REGEX = "[A-Za-z][A-Za-z ,.'-]*";
 
     private final String label;
 

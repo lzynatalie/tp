@@ -17,6 +17,7 @@ import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.NextOfKin;
 import seedu.address.model.person.NextOfKinPhone;
+import seedu.address.model.person.NextOfKinRelationship;
 import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -77,12 +78,13 @@ public abstract class DeleteCommand extends Command {
         NextOfKinPhone nextOfKinPhone = personToDelete.getNextOfKinPhone();
         DoctorName doctorName = personToDelete.getDoctorName();
         NextOfKin nextOfKin = personToDelete.getNextOfKin();
+        NextOfKinRelationship nextOfKinRelationship = personToDelete.getNextOfKinRelationship();
         if (prefixes.contains(PREFIX_NOTES) && personToDelete.getNotes().getValue().isEmpty()) {
             throw new CommandException(MESSAGE_NO_VALUE_FOR_PERSON);
         }
         Notes updatedNotes = prefixes.contains(PREFIX_NOTES) ? new Notes("") : personToDelete.getNotes();
         return new Person(name, phone, email, address, updatedSymptoms, ic,
-                 urgencyLevel, nextOfKinPhone, doctorName, nextOfKin, updatedNotes);
+                 urgencyLevel, nextOfKinPhone, doctorName, nextOfKin, nextOfKinRelationship, updatedNotes);
     }
 
     public Person[] getUpdatedPersons(Person[] personsToDelete) throws CommandException {

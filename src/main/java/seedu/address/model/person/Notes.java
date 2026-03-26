@@ -1,9 +1,12 @@
 package seedu.address.model.person;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+
 
 /**
  * Represents the notes field for a patient.
@@ -46,8 +49,8 @@ public class Notes {
 
         String existingText = this.value;
 
-        // 3. Handle overwriting the default placeholder or empty strings
-        if (existingText.trim().isEmpty() || existingText.equals("-")) {
+        // 3. Handle overwriting empty strings (Dash check removed!)
+        if (existingText.trim().isEmpty()) {
             return new Notes(formattedAppend);
         }
 
@@ -67,23 +70,6 @@ public class Notes {
         return value;
     }
 
-    /**
-     * Appends the given Notes to this current Notes.
-     * Returns a new Notes object containing the combined text.
-     */
-    public Notes append(Notes additionalNotes) {
-        if (additionalNotes.value.trim().isEmpty()) {
-            return this;
-        }
-
-        String existingText = this.value;
-
-        if (existingText.trim().isEmpty()) {
-            return additionalNotes;
-        }
-
-        return new Notes(existingText + "\n" + additionalNotes.value);
-    }
 
     @Override
     public String toString() {

@@ -245,27 +245,21 @@ public class UpdateCommandTest {
     public void execute_appendNoteWithTimestamp_success() {
         // Test 1: Your PR 99 test for appending with timestamps (Dash logic removed!)
         Person personToUpdate = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        
         String textToAppend = "Patient is recovering well.";
         UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
-        descriptor.setNotesToAppend(new Notes(textToAppend)); 
-        
+        descriptor.setNotesToAppend(new Notes(textToAppend));
         UpdateCommand updateCommand = new UpdateCommand(INDEX_FIRST_PERSON, descriptor);
-
         // Generate the expected timestamp format
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM HH:mm"));
         String formattedAppend = "[" + timestamp + "] " + textToAppend;
-        
         // Combine with existing notes (handling empty string naturally)
         String existingNotes = personToUpdate.getNotes().toString();
         String expectedNoteText = existingNotes.isEmpty() ? formattedAppend : existingNotes + "\n" + formattedAppend;
-
         Person editedPerson = new PersonBuilder(personToUpdate).withNotes(expectedNoteText).build();
-        String expectedMessage = String.format(UpdateCommand.MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson));
-        
+        String expectedMessage = String.format(UpdateCommand.MESSAGE_UPDATE_PERSON_SUCCESS,
+                Messages.format(editedPerson));
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(personToUpdate, editedPerson);
-
         assertCommandSuccess(updateCommand, model, expectedMessage, expectedModel);
     }
 

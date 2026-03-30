@@ -49,44 +49,14 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
      */
     public DeleteCommand parse(String args) throws ParseException {
         requireNonNull(args);
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
-                PREFIX_PATIENT_NAME,
-                PREFIX_PATIENT_PHONE,
-                PREFIX_EMAIL,
-                PREFIX_ADDRESS,
-                PREFIX_SYMPTOM,
-                PREFIX_IC,
-                PREFIX_URGENCY,
-                PREFIX_NEXT_OF_KIN,
-                PREFIX_NEXT_OF_KIN_PHONE,
-                PREFIX_DOCTOR,
-                PREFIX_NOTES
-        );
+        ArgumentMultimap argMultimap = tokenizeArgs(args);
 
         final String indicesString = argMultimap.getPreamble();
         if (indicesString.isEmpty()) {
             throw new ParseException(String.format(MESSAGE_MISSING_PERSON_INDEX, DeleteCommand.MESSAGE_USAGE));
         }
 
-        if (argMultimap.areAnyPrefixesPresent(
-                PREFIX_PATIENT_NAME,
-                PREFIX_PATIENT_PHONE,
-                PREFIX_EMAIL,
-                PREFIX_ADDRESS,
-                PREFIX_IC,
-                PREFIX_URGENCY,
-                PREFIX_NEXT_OF_KIN,
-                PREFIX_NEXT_OF_KIN_PHONE,
-                PREFIX_DOCTOR)) {
-            throw new ParseException(String.format(
-                    MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_DELETE_FIELD_USAGE));
-        }
-
-        try {
-            argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_SYMPTOM, PREFIX_NOTES);
-        } catch (ParseException pe) {
-            throw new ParseException(DeleteCommand.MESSAGE_DUPLICATE_PREFIXES);
-        }
+        verifyNoInvalidPrefixes(argMultimap);
 
         if (argMultimap.getValue(PREFIX_SYMPTOM).map(v -> !v.isEmpty()).orElse(false)
                 || argMultimap.getValue(PREFIX_NOTES).map(v -> !v.isEmpty()).orElse(false)) {
@@ -157,5 +127,43 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         }
 
         return new RangeDeleteCommand(startIndex, endIndex, prefixes);
+    }
+
+    private ArgumentMultimap tokenizeArgs(String args) {
+        return ArgumentTokenizer.tokenize(args,
+                PREFIX_PATIENT_NAME,
+                PREFIX_PATIENT_PHONE,
+                PREFIX_EMAIL,
+                PREFIX_ADDRESS,
+                PREFIX_SYMPTOM,
+                PREFIX_IC,
+                PREFIX_URGENCY,
+                PREFIX_NEXT_OF_KIN,
+                PREFIX_NEXT_OF_KIN_PHONE,
+                PREFIX_DOCTOR,
+                PREFIX_NOTES
+        );
+    }
+
+    private void verifyNoInvalidPrefixes(ArgumentMultimap argMultimap) throws ParseException {
+        if (argMultimap.areAnyPrefixesPresent(
+                PREFIX_PATIENT_NAME,
+                PREFIX_PATIENT_PHONE,
+                PREFIX_EMAIL,
+                PREFIX_ADDRESS,
+                PREFIX_IC,
+                PREFIX_URGENCY,
+                PREFIX_NEXT_OF_KIN,
+                PREFIX_NEXT_OF_KIN_PHONE,
+                PREFIX_DOCTOR)) {
+            throw new ParseException(String.format(
+                    MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_DELETE_FIELD_USAGE));
+        }
+
+        try {
+            argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_SYMPTOM, PREFIX_NOTES);
+        } catch (ParseException pe) {
+            throw new ParseException(DeleteCommand.MESSAGE_DUPLICATE_PREFIXES);
+        }
     }
 }

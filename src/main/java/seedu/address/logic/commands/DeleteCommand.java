@@ -65,13 +65,15 @@ public abstract class DeleteCommand extends Command {
         requireNonNull(personToDelete);
         assert !prefixes.isEmpty() : "There are no specified fields to delete.";
 
+        if (prefixes.contains(PREFIX_SYMPTOM) && personToDelete.getSymptoms().isEmpty()
+                || prefixes.contains(PREFIX_NOTES) && personToDelete.getNotes().getValue().isEmpty()) {
+            throw new CommandException(MESSAGE_NO_VALUE_FOR_PERSON);
+        }
+
         Name name = personToDelete.getName();
         Phone phone = personToDelete.getPhone();
         Email email = personToDelete.getEmail();
         Address address = personToDelete.getAddress();
-        if (prefixes.contains(PREFIX_SYMPTOM) && personToDelete.getSymptoms().isEmpty()) {
-            throw new CommandException(MESSAGE_NO_VALUE_FOR_PERSON);
-        }
         Set<Symptom> updatedSymptoms = prefixes.contains(PREFIX_SYMPTOM) ? Set.of() : personToDelete.getSymptoms();
         Ic ic = personToDelete.getIc();
         UrgencyLevel urgencyLevel = personToDelete.getUrgencyLevel();
@@ -79,10 +81,8 @@ public abstract class DeleteCommand extends Command {
         DoctorName doctorName = personToDelete.getDoctorName();
         NextOfKin nextOfKin = personToDelete.getNextOfKin();
         NextOfKinRelationship nextOfKinRelationship = personToDelete.getNextOfKinRelationship();
-        if (prefixes.contains(PREFIX_NOTES) && personToDelete.getNotes().getValue().isEmpty()) {
-            throw new CommandException(MESSAGE_NO_VALUE_FOR_PERSON);
-        }
         Notes updatedNotes = prefixes.contains(PREFIX_NOTES) ? new Notes("") : personToDelete.getNotes();
+
         return new Person(name, phone, email, address, updatedSymptoms, ic,
                  urgencyLevel, nextOfKinPhone, doctorName, nextOfKin, nextOfKinRelationship, updatedNotes);
     }

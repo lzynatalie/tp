@@ -125,10 +125,12 @@ Allows triage coordinators to locate specific patient records using various iden
 * Leading and trailing spaces are ignored/trimmed.
 * Only full words will be matched for names (e.g., `Han` will not match `Hans`).
 * Patients matching at least one keyword will be returned (i.e. `OR` search).
+* Phone search (`p/`) must be exactly 8 digits, matching the format for patient phone numbers.
 
 **Examples:**
 * `find pn/Alice` returns patients with the name Alice.
 * `find ic/S1234567A` returns the patient with that specific IC.
+* `find p/91234567` returns the patient(s) with that phone number.
 * `find e/johndoe@example.com` returns the patient(s) with that email.
 * `find d/Dr Sally` returns the patient(s) with that doctor name.
 

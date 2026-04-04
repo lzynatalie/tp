@@ -17,6 +17,7 @@ import seedu.address.model.person.DoctorNameContainsKeywordsPredicate;
 import seedu.address.model.person.EmailContainsKeywordsPredicate;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Phone;
 
 /**
  * Parses input arguments and creates a new FindCommand object
@@ -97,6 +98,9 @@ public class FindCommandParser implements Parser<FindCommand> {
             if (phoneArg.isEmpty()) {
                 throw new ParseException(
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+            }
+            if (!Phone.isValidPhone(phoneArg)) {
+                throw new ParseException(Phone.MESSAGE_CONSTRAINTS);
             }
             String phoneToMatch = phoneArg;
             Predicate<Person> phonePredicate = person -> person.getPhone().value.equals(phoneToMatch);

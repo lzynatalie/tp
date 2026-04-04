@@ -23,22 +23,22 @@ public class CommandHistory {
      */
     public void addCommand(String command) {
         assert command != null;
-        if (isDuplicateCommand(command)) {
-            removeAllDuplicateCommand(command);
+        String trimmedCommand = command.trim();
+
+        if (trimmedCommand.isEmpty()) {
+            return;
         }
-        commandHistory.add(command);
+
+        removeAnyDuplicateCommands(trimmedCommand);
+
+        commandHistory.add(trimmedCommand);
         historyIndex = commandHistory.size();
         currentInput = "";
     }
 
-    private void removeAllDuplicateCommand(String command) {
+    private void removeAnyDuplicateCommands(String command) {
         commandHistory.removeIf(c -> c.equalsIgnoreCase(command));
     }
-
-    private boolean isDuplicateCommand(String command) {
-        return commandHistory.contains(command);
-    }
-
 
     /**
      * Returns the previous command in the history. If there is no previous command, returns the current input.

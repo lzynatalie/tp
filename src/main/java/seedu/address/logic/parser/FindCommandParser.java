@@ -15,6 +15,7 @@ import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.DoctorNameContainsKeywordsPredicate;
 import seedu.address.model.person.EmailContainsKeywordsPredicate;
+import seedu.address.model.person.IcContainsKeywordsPredicate;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 
@@ -83,8 +84,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                 throw new ParseException(
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
-            String icToMatch = icArg;
-            Predicate<Person> icPredicate = person -> person.getIc().value.equalsIgnoreCase(icToMatch);
+            Predicate<Person> icPredicate = new IcContainsKeywordsPredicate(Arrays.asList(icArg));
             predicate = predicate == null ? icPredicate : predicate.or(icPredicate);
             if (criteriaBuilder.length() > 0) {
                 criteriaBuilder.append(", ");

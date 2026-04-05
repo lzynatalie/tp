@@ -64,9 +64,9 @@ Shows a message explaining how to access the help page.
 Records comprehensive patient information, add it to the address book and saves it to the hard disk.
 
 **Format:** `add pn/<PATIENT_NAME> ic/<IC_NUMBER> p/<PATIENT_PHONE_NUMBER> a/<ADDRESS> e/<EMAIL_ADDRESS> u/<URGENCY_LEVEL> d/<DOCTOR_NAME> nk/<NEXT_OF_KIN_NAME> nkp/<NEXT_OF_KIN_PHONE_NUMBER> nkr/<NEXT_OF_KIN_RELATIONSHIP> [s/<SYMPTOMS>] [n/<NOTES>]`
-* The fields `pn/`, `ic/`, `p/`, `a/`, `e/`, `u/`, `d/`, `nk/`, `nkp/`, and `nkr/` are **compulsory** and **must not be blank**.
-* The fields `s/` and `n/` are **optional**.
-* The same field cannot be provided more than once **except** for `s/` (symptoms).
+* The prefixes `pn/`, `ic/`, `p/`, `a/`, `e/`, `u/`, `d/`, `nk/`, `nkp/`, and `nkr/` are **compulsory** and **must not be blank**.
+* The prefixes `s/` and `n/` are **optional**.
+* The same prefix cannot be provided more than once **except** for `s/` (symptoms).
 * All parameters have their leading and trailing spaces ignored/trimmed automatically.
 
 **Patient Name (`pn/`):**
@@ -122,6 +122,7 @@ Records comprehensive patient information, add it to the address book and saves 
 * A patient can have any number of symptoms (including 0). To specify multiple symptoms, use multiple `s/` prefixes (e.g., `s/fever s/cough`).
 * If the prefix is declared then there must be a non-blank symptom after it (e.g., `s/` without any symptoms will be rejected).
 * If the prefix is not declared at all, it will be treated as if the patient has no symptoms.
+* Symptoms are compared case-insensitively to prevent duplicated entries. However, differences in internal spacing (e.g., "runny nose" vs "runnynose") are treated as distinct symptoms.
 
 **Notes (`n/`):**
 * Additional notes about the patient.

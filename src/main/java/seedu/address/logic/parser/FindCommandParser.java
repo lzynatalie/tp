@@ -9,6 +9,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import seedu.address.logic.commands.FindCommand;
@@ -67,78 +68,74 @@ public class FindCommandParser implements Parser<FindCommand> {
 
         if (argMultimap.getValue(PREFIX_PATIENT_NAME).isPresent()) {
             String nameArgs = argMultimap.getValue(PREFIX_PATIENT_NAME).get().trim();
-            if (nameArgs.isEmpty()) {
-                throw new ParseException(
-                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-            }
-            List<String> nameKeywords = Arrays.asList(nameArgs.split("\\s+"));
-            Predicate<Person> namePredicate = new NameContainsKeywordsPredicate(nameKeywords);
-            // Name is checked first, so `predicate` must still be null here.
-            predicate = namePredicate;
-            criteriaBuilder.append("Patient Name: ").append(nameArgs);
+            predicate = makePredicate(predicate, criteriaBuilder, "Patient Name: ", nameArgs,
+                    arg -> new NameContainsKeywordsPredicate(Arrays.asList(arg.split("\\s+"))));
         }
 
         if (hasIc) {
             String icArg = argMultimap.getValue(PREFIX_IC).get().trim();
-            if (icArg.isEmpty()) {
-                throw new ParseException(
-                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-            }
-            Predicate<Person> icPredicate = new IcContainsKeywordsPredicate(Arrays.asList(icArg));
-            predicate = predicate == null ? icPredicate : predicate.or(icPredicate);
-            if (criteriaBuilder.length() > 0) {
-                criteriaBuilder.append(", ");
-            }
-            criteriaBuilder.append("IC Number: ").append(icArg);
+            predicate = makePredicate(predicate, criteriaBuilder, "IC Number: ", icArg,
+                    arg -> new IcContainsKeywordsPredicate(Arrays.asList(arg)));
         }
 
         if (hasPhone) {
             String phoneArg = argMultimap.getValue(PREFIX_PATIENT_PHONE).get().trim();
-            if (phoneArg.isEmpty()) {
-                throw new ParseException(
-                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-            }
-            String phoneToMatch = phoneArg;
-            Predicate<Person> phonePredicate = person -> person.getPhone().value.equals(phoneToMatch);
-            predicate = predicate == null ? phonePredicate : predicate.or(phonePredicate);
-            if (criteriaBuilder.length() > 0) {
-                criteriaBuilder.append(", ");
-            }
-            criteriaBuilder.append("Phone Number: ").append(phoneArg);
+            predicate = makePredicate(predicate, criteriaBuilder, "Phone Number: ", phoneArg,
+                    arg -> person -> person.getPhone().value.equals(arg));
         }
 
         if (hasEmail) {
             String emailArg = argMultimap.getValue(PREFIX_EMAIL).get().trim();
-            if (emailArg.isEmpty()) {
-                throw new ParseException(
-                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-            }
-            List<String> emailKeywords = Arrays.asList(emailArg.split("\\s+"));
-            Predicate<Person> emailPredicate = new EmailContainsKeywordsPredicate(emailKeywords);
-            predicate = predicate == null ? emailPredicate : predicate.or(emailPredicate);
-            if (criteriaBuilder.length() > 0) {
-                criteriaBuilder.append(", ");
-            }
-            criteriaBuilder.append("Email: ").append(emailArg);
+            predicate = makePredicate(predicate, criteriaBuilder, "Email: ", emailArg,
+                    arg -> new EmailContainsKeywordsPredicate(Arrays.asList(arg.split("\\s+"))));
         }
 
         if (hasDoctor) {
             String doctorArg = argMultimap.getValue(PREFIX_DOCTOR).get().trim();
-            if (doctorArg.isEmpty()) {
-                throw new ParseException(
-                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-            }
-            List<String> doctorNameKeywords = Arrays.asList(doctorArg.split("\\s+"));
-            Predicate<Person> doctorNamePredicate = new DoctorNameContainsKeywordsPredicate(doctorNameKeywords);
-            predicate = predicate == null ? doctorNamePredicate : predicate.or(doctorNamePredicate);
-            if (criteriaBuilder.length() > 0) {
-                criteriaBuilder.append(", ");
-            }
-            criteriaBuilder.append("Doctor Name: ").append(doctorArg);
+            predicate = makePredicate(predicate, criteriaBuilder, "Doctor Name: ", doctorArg,
+                    arg -> new DoctorNameContainsKeywordsPredicate(Arrays.asList(arg.split("\\s+"))));
         }
 
         String criteriaDescription = criteriaBuilder.toString().trim();
         return new FindCommand(predicate, criteriaDescription);
+    }
+
+    /**
+     * Ensures {@code trimmedArg} is non-empty for a prefixed field, or throws.
+     */
+    private String parseNonEmptyPrefixedArg(String trimmedArg) throws ParseException {
+        if (trimmedArg.isEmpty()) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        }
+        return trimmedArg;
+    }
+
+    private static Predicate<Person> mergePredicates(Predicate<Person> current, Predicate<Person> next) {
+        return current == null ? next : current.or(next);
+    }
+
+    private static void appendCriteriaSegment(StringBuilder criteriaBuilder, String label, String value) {
+        if (criteriaBuilder.length() > 0) {
+            criteriaBuilder.append(", ");
+        }
+        criteriaBuilder.append(label).append(value);
+    }
+
+    /**
+     * Validates the prefixed argument, merges {@code toPredicate.apply(arg)} into {@code current},
+     * appends a segment to {@code criteriaBuilder}, and returns the combined predicate.
+     */
+    private Predicate<Person> makePredicate(
+            Predicate<Person> current,
+            StringBuilder criteriaBuilder,
+            String criteriaLabel,
+            String trimmedArg,
+            Function<String, Predicate<Person>> toPredicate) throws ParseException {
+        String arg = parseNonEmptyPrefixedArg(trimmedArg);
+        Predicate<Person> merged = mergePredicates(current, toPredicate.apply(arg));
+        appendCriteriaSegment(criteriaBuilder, criteriaLabel, arg);
+        return merged;
     }
 
 }

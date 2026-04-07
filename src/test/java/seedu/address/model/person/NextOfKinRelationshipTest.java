@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.testutil.Assert;
+
 public class NextOfKinRelationshipTest {
 
     @Test
@@ -23,8 +25,26 @@ public class NextOfKinRelationshipTest {
     }
 
     @Test
+    public void constructor_empty_throwsIllegalArgumentException() {
+        String invalid = "";
+        Assert.assertThrows(IllegalArgumentException.class, () -> new NextOfKinRelationship(invalid));
+    }
+
+    @Test
+    public void constructor_whiteSpacesOnly_throwsIllegalArgumentException() {
+        String invalid = "   ";
+        Assert.assertThrows(IllegalArgumentException.class, () -> new NextOfKinRelationship(invalid));
+    }
+
+    @Test
     public void constructor_validInput_success() {
         NextOfKinRelationship nok = new NextOfKinRelationship("Father");
+        assertEquals("Father", nok.getLabel());
+    }
+
+    @Test
+    public void constructor_validInputWithLeadingAndTrailingWhiteSpaces() {
+        NextOfKinRelationship nok = new NextOfKinRelationship("  Father  ");
         assertEquals("Father", nok.getLabel());
     }
 

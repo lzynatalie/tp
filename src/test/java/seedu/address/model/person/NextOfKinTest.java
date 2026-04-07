@@ -24,8 +24,25 @@ public class NextOfKinTest {
     }
 
     @Test
+    public void constructor_emptyName_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> new NextOfKin(""));
+    }
+
+    @Test
+    public void constructor_whiteSpacesOnlyName_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> new NextOfKin("   "));
+    }
+
+    @Test
+    public void constructor_validNameWithLeadingAndTrailingWhitespaces_success() {
+        String validName = "   Jane Doe  ";
+        NextOfKin nextOfKin = new NextOfKin(validName);
+        assertEquals("Jane Doe", nextOfKin.getFullName()); // should trim whitespaces
+    }
+
+    @Test
     public void constructor_invalidName_throwsIllegalArgumentException() {
-        String invalidName = "@John#Doe"; // contains invalid characters
+        String invalidName = "John#Doe"; // contains invalid characters
         assertThrows(IllegalArgumentException.class, () -> new NextOfKin(invalidName));
     }
 

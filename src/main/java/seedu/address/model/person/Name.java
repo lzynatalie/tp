@@ -10,11 +10,13 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Name {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "For the names, please use only these characters: (A-Z, a-z), spaces, comma (,), hyphens (-), "
-                    + "apostrophe (‘), period (.)";
+            "Patient name can contain: (A-Z, a-z), whitespaces, comma (,), "
+                    + "hyphens (-), apostrophe (‘), period (.).\n"
+                    + "The patient name should not be empty and must start with a letter.\n";
 
     /*
      * The first character of the address must not be a whitespace,
+     *
      * otherwise " " (a blank string) becomes a valid input.
      */
     public static final String VALIDATION_REGEX = "[A-Za-z][A-Za-z ,.'-]*";
@@ -28,8 +30,9 @@ public class Name {
      */
     public Name(String name) {
         requireNonNull(name);
-        checkArgument(isValidName(name), MESSAGE_CONSTRAINTS);
-        fullName = name;
+        String trimmedName = name.trim();
+        checkArgument(isValidName(trimmedName), MESSAGE_CONSTRAINTS);
+        fullName = trimmedName;
     }
 
     /**
@@ -57,12 +60,12 @@ public class Name {
         }
 
         Name otherName = (Name) other;
-        return fullName.equals(otherName.fullName);
+        return fullName.equalsIgnoreCase(otherName.fullName);
     }
 
     @Override
     public int hashCode() {
-        return fullName.hashCode();
+        return fullName.toLowerCase().hashCode();
     }
 
 }

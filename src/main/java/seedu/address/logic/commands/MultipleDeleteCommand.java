@@ -22,7 +22,7 @@ public class MultipleDeleteCommand extends DeleteCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Deletes the people identified by the index numbers used in the displayed person list.\n"
-            + "Parameters: INDEX,INDEX[,INDEX,...] (must be unique positive integers)\n"
+            + "Parameters: <INDEX>,<INDEX>[,<INDEX>,...] (must be unique positive integers)\n"
             + "Example: " + COMMAND_WORD + " 1,2,4";
 
     private final Index[] targetIndices;

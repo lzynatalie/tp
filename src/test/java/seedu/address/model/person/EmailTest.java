@@ -1,5 +1,6 @@
 package seedu.address.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -13,11 +14,43 @@ public class EmailTest {
         assertThrows(NullPointerException.class, () -> new Email(null));
     }
 
+
+    // Empty email
     @Test
-    public void constructor_invalidEmail_throwsIllegalArgumentException() {
+    public void constructor_emptyEmail_throwsIllegalArgumentException() {
         String invalidEmail = "";
         assertThrows(IllegalArgumentException.class, () -> new Email(invalidEmail));
     }
+
+    // Spaces only email
+    @Test
+    public void constructor_whiteSpacesOnlyEmail_throwsIllegalArgumentException() {
+        String invalidEmail = "   ";
+        assertThrows(IllegalArgumentException.class, () -> new Email(invalidEmail));
+    }
+
+    // An invalid email
+    @Test
+    public void constructor_invalidEmail_throwsIllegalArgumentException() {
+        String invalidEmail = "invalidemail"; // missing '@' symbol
+        assertThrows(IllegalArgumentException.class, () -> new Email(invalidEmail));
+    }
+
+    // A valid email
+    @Test
+    public void constructor_validEmail_success() {
+        String validEmail = "valid@email";
+        assertEquals(validEmail, new Email(validEmail).value);
+    }
+
+    // A valid email with leading and trailing whitespaces
+    @Test
+    public void constructor_validEmailWithLeadingAndTrailingWhitespaces_success() {
+        String validEmail = "   valid@email   ";
+        // Note the constructor will trim it and store the trimmed version
+        assertEquals("valid@email", new Email(validEmail).value);
+    }
+
 
     @Test
     public void isValidEmail() {

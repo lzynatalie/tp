@@ -38,9 +38,9 @@ public abstract class DeleteCommand extends Command {
     public static final String COMMAND_WORD = "delete";
 
     public static final String MESSAGE_USAGE = "Usage:\n"
-            + "        Single deletion: " + COMMAND_WORD + " INDEX\n"
-            + "        Multiple deletion: " + COMMAND_WORD + " INDEX,INDEX[,INDEX,...]\n"
-            + "        Range deletion: " + COMMAND_WORD + " START_INDEX-END_INDEX";
+            + "        Single deletion: " + COMMAND_WORD + " <INDEX>\n"
+            + "        Multiple deletion: " + COMMAND_WORD + " <INDEX>,<INDEX>[,<INDEX>,...]\n"
+            + "        Range deletion: " + COMMAND_WORD + " <START_INDEX>-<END_INDEX>";
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted person(s): %1$s";
     public static final String MESSAGE_DELETE_FIELD_SUCCESS = "Deleted field value(s) for person(s): %1$s";

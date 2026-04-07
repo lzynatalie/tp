@@ -99,12 +99,9 @@ public class AddCommandParser implements Parser<AddCommand> {
         NextOfKin nextOfKin = ParserUtil.parseNextOfKin(argMultimap.getValue(PREFIX_NEXT_OF_KIN).get());
         NextOfKinRelationship nextOfKinRelationship = ParserUtil.parseNextOfKinRelationship(argMultimap
                 .getValue(PREFIX_NEXT_OF_KIN_RELATIONSHIP).get());
-        Notes notes;
-        if (argMultimap.getValue(PREFIX_NOTES).isPresent()) {
-            notes = ParserUtil.parseNotes(argMultimap.getValue(PREFIX_NOTES).get());
-        } else {
-            notes = new Notes("");
-        }
+
+        Notes notes = ParserUtil.parseNotes(argMultimap.getValue(PREFIX_NOTES).orElse(""));
+
 
 
         Person person = new Person(name, phone, email, address, symptomList, ic,

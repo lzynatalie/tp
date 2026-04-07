@@ -11,19 +11,22 @@ public class NextOfKinPhone {
 
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Phone numbers should only contain numbers, and it should only be 8 digits long";
+            "Next-of-kin phone numbers should only contain numbers, and it should only be 8 digits long\n"
+                    + "Next-of-kin phone number cannot be left blank.";
+
     public static final String VALIDATION_REGEX = "\\d{8}";
     public final String value;
 
     /**
      * Constructs a {@code Phone}.
      *
-     * @param phone A valid phone number.
+     * @param nextOfKinPhone A valid next-of-kin phone number.
      */
-    public NextOfKinPhone(String phone) {
-        requireNonNull(phone);
-        checkArgument(isValidNextOfKinPhone(phone), MESSAGE_CONSTRAINTS);
-        value = phone;
+    public NextOfKinPhone(String nextOfKinPhone) {
+        requireNonNull(nextOfKinPhone);
+        String trimmedNextOfKinPhone = nextOfKinPhone.trim();
+        checkArgument(isValidNextOfKinPhone(trimmedNextOfKinPhone), MESSAGE_CONSTRAINTS);
+        value = trimmedNextOfKinPhone;
     }
 
     /**

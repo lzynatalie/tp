@@ -16,7 +16,8 @@ public class Notes {
 
     public static final int MAX_LENGTH = 500;
     public static final String MESSAGE_CONSTRAINTS =
-            "Invalid value:  The notes field exceeds the maximum limit of " + MAX_LENGTH + " characters.";
+            "The notes field can take in any values, but it should not exceed " + MAX_LENGTH + " characters."
+                    + " It can be left blank if there are no notes to add.";
 
     private final String value;
 
@@ -27,8 +28,9 @@ public class Notes {
      */
     public Notes(String notes) {
         requireNonNull(notes);
-        checkArgument(isValidNotes(notes), MESSAGE_CONSTRAINTS);
-        this.value = notes;
+        String trimmedNotes = notes.trim();
+        checkArgument(isValidNotes(trimmedNotes), MESSAGE_CONSTRAINTS);
+        this.value = trimmedNotes;
     }
 
     /**

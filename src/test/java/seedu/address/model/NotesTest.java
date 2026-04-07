@@ -17,10 +17,31 @@ public class NotesTest {
     }
 
     @Test
-    public void constructor_emptyNotes_setsEmpty() {
+    public void constructor_emptyNotes_success() {
         Notes notes = new Notes("");
         assertEquals("", notes.getValue());
     }
+
+    @Test
+    public void constructor_whiteSpacesOnly_success() {
+        Notes notes = new Notes("   ");
+        assertEquals("", notes.getValue());
+    }
+
+    @Test
+    public void constructor_validNotes_success() {
+        Notes notes = new Notes("hello");
+        assertEquals("hello", notes.getValue());
+
+    }
+
+    @Test
+    public void constructor_validNotesWithLeadingAndTrailingWhiteSpaces_success() {
+        Notes notes = new Notes("  hello  ");
+        assertEquals("hello", notes.getValue());
+
+    }
+
 
     @Test
     public void constructor_maxLengthNotes_accepts() {

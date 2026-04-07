@@ -3,23 +3,17 @@ package seedu.address.model.person;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
-import java.util.Objects;
-
 /**
  * Represents a Next-of-kin in the system.
- * Guarantees: immutable; name is validated and non-null.
+ * Guarantees: immutable; name is validated as declared in {@link #isValidNextOfKin(String)}
  */
 public class NextOfKin {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "For next-of-kin, please use only these characters: (A-Z, a-z), spaces, comma (,), "
-                    + "hyphens (-), apostrophe (‘), period (.) for the name of next-of-kin.";
+            "Next-of-kin name can contain: (A-Z, a-z), whitespaces, comma (,), "
+                    + "hyphens (-), apostrophe (‘), period (.).\n"
+                    + "The next-of-kin name should not be empty and must start with a letter.\n";
 
-    public static final String MESSAGE_EMPTY =
-            "The next-of-kin field cannot be empty.";
-
-    // Regex: letters + allowed punctuation + spaces
-    // ^ start, $ end
     public static final String VALIDATION_REGEX = "[A-Za-z][A-Za-z ,.'-]*";
 
     private final String fullName;
@@ -27,14 +21,13 @@ public class NextOfKin {
     /**
      * Constructs a {@code NextOfKin}.
      *
-     * @param name A valid doctor name.
+     * @param nextOfKinName A valid next-of-kin name.
      */
-    public NextOfKin(String name) {
-        Objects.requireNonNull(name);
-
-        requireNonNull(name);
-        checkArgument(isValidNextOfKin(name), MESSAGE_CONSTRAINTS);
-        fullName = name;
+    public NextOfKin(String nextOfKinName) {
+        requireNonNull(nextOfKinName);
+        String trimmedNextOfKinName = nextOfKinName.trim();
+        checkArgument(isValidNextOfKin(trimmedNextOfKinName), MESSAGE_CONSTRAINTS);
+        fullName = trimmedNextOfKinName;
     }
 
     /**

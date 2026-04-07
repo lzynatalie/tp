@@ -20,7 +20,7 @@ public class RangeDeleteCommand extends DeleteCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Deletes the people identified by the index numbers used in the displayed person list.\n"
-            + "Parameters: START_INDEX-END_INDEX (must be positive integers and START_INDEX <= END_INDEX)\n"
+            + "Parameters: <START_INDEX>-<END_INDEX> (must be positive integers and START_INDEX <= END_INDEX)\n"
             + "Example: " + COMMAND_WORD + " 1-3";
 
     private final Index startIndex;

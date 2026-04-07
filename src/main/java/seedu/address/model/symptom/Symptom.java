@@ -9,8 +9,10 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Symptom {
 
-    public static final String MESSAGE_CONSTRAINTS = "Symptom names can contain whitespaces and alphanumeric "
-            + "characters, and it should not be blank if the symptom prefix is used.";
+    public static final String MESSAGE_CONSTRAINTS =
+            "Symptom names can contain alphanumeric characters and whitespaces only.\n"
+                    + "It cannot be blank if the prefix is used and must start with an alphanumeric character\n";
+
     public static final String VALIDATION_REGEX = "\\p{Alnum}[\\p{Alnum}\\s]*";
 
     public final String symptomName;
@@ -22,8 +24,9 @@ public class Symptom {
      */
     public Symptom(String symptomName) {
         requireNonNull(symptomName);
-        checkArgument(isValidSymptomName(symptomName), MESSAGE_CONSTRAINTS);
-        this.symptomName = symptomName;
+        String trimmedSymptomName = symptomName.trim();
+        checkArgument(isValidSymptomName(trimmedSymptomName), MESSAGE_CONSTRAINTS);
+        this.symptomName = trimmedSymptomName;
     }
 
     /**

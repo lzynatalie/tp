@@ -21,8 +21,8 @@ public class ListCommand extends Command {
     public static final String COMMAND_WORD = "list";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists patients filtered by\n"
-            + "  - urgency level: u/URGENCY_LEVEL...\n"
-            + "  - symptoms: s/SYMPTOM...\n"
+            + "  - urgency level: u/<LEVEL>...\n"
+            + "  - symptoms: s/<SYMPTOM>...\n"
             + "If no parameters are provided, it lists all patients.\n"
             + "Examples:\n"
             + "  " + COMMAND_WORD + " u/high\n"

@@ -22,8 +22,6 @@ public class Messages {
     public static final String MESSAGE_START_INDEX_GREATER_THAN_END_INDEX =
             "Start index cannot be greater than end index";
     public static final String MESSAGE_MISSING_PERSON_INDEX = "The index field cannot be empty. \n%1$s";
-    public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
-    public static final String MESSAGE_PERSONS_SEARCHED = "Found %1$d patients matching the criteria  persons listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
     public static final String MESSAGE_DUPLICATE_INDICES =
@@ -104,6 +102,8 @@ public class Messages {
                 .append(person.getUrgencyLevel())
                 .append("; Next of Kin: ")
                 .append(person.getNextOfKin())
+                .append("; Next of Kin relationship: ")
+                .append(person.getNextOfKinRelationship())
                 .append("; Next of Kin phone: ")
                 .append(person.getNextOfKinPhone())
                 .append("; Doctor: ")
@@ -112,5 +112,4 @@ public class Messages {
         person.getSymptoms().forEach(builder::append);
         return builder.toString();
     }
-
 }

@@ -27,8 +27,9 @@ public class Ic {
      */
     public Ic(String ic) {
         requireNonNull(ic);
-        checkArgument(isValidIc(ic), MESSAGE_CONSTRAINTS);
-        this.value = ic;
+        String trimmedIc = ic.trim();
+        checkArgument(isValidIc(trimmedIc), MESSAGE_CONSTRAINTS);
+        this.value = trimmedIc;
     }
 
     public static boolean isValidIc(String test) {

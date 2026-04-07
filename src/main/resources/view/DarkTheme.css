@@ -369,6 +369,10 @@
     -fx-background-color: transparent, #4CAF50, transparent, #4CAF50;
 }
 
+#resultDisplay.no-patients-found .content {
+    -fx-background-color: transparent, #f5b94d, transparent, #f5b94d;
+}
+
 #resultDisplay.exception .content {
     -fx-background-color: transparent, #F44336, transparent, #F44336;
 }

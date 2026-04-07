@@ -1,5 +1,6 @@
 package seedu.address.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -13,11 +14,43 @@ public class IcTest {
         assertThrows(NullPointerException.class, () -> new Ic(null));
     }
 
+    // Empty Ic
     @Test
-    public void constructor_invalidIc_throwsIllegalArgumentException() {
+    public void constructor_emptyIc_throwsIllegalArgumentException() {
         String invalidIc = "";
         assertThrows(IllegalArgumentException.class, () -> new Ic(invalidIc));
     }
+
+    // Spaces only Ic
+    @Test
+    public void constructor_whiteSpacesOnlyIc_throwsIllegalArgumentException() {
+        String invalidIc = "   ";
+        assertThrows(IllegalArgumentException.class, () -> new Ic(invalidIc));
+    }
+
+    // An invalid Ic
+    @Test
+    public void constructor_invalidIc_throwsIllegalArgumentException() {
+        String invalidIc = "1234567A"; // missing first character
+        assertThrows(IllegalArgumentException.class, () -> new Ic(invalidIc));
+    }
+
+    // A valid Ic
+    @Test
+    public void constructor_validIc_success() {
+        String validIc = "S1234567A";
+        assertEquals(validIc, new Ic(validIc).value);
+    }
+
+    // A valid Ic with leading and trailing whitespaces
+    @Test
+    public void constructor_validIcWithLeadingAndTrailingWhitespaces_success() {
+        String validIc = "   S1234567A   ";
+        // Note the constructor will trim it and store the trimmed version
+        assertEquals("S1234567A", new Ic(validIc).value);
+    }
+
+
 
     @Test
     public void isValidIc() {
@@ -38,10 +71,10 @@ public class IcTest {
         assertFalse(Ic.isValidIc("A12345678A")); // more than 7 digits, with invalid first character
         assertFalse(Ic.isValidIc("S123456")); // less than 7 digits, no last character
         assertFalse(Ic.isValidIc("S123456A")); // less than 7 digits, with last character
-        assertFalse(Ic.isValidIc("S123456_")); // less than 7 digits, with underscore last character
+        assertFalse(Ic.isValidIc("S123456_")); // less than 7 digits, with invalid last character
         assertFalse(Ic.isValidIc("S12345678")); // more than 7 digits, no last character
         assertFalse(Ic.isValidIc("S12345678A")); // more than 7 digits, with last character
-        assertFalse(Ic.isValidIc("S12345678_")); // more than 7 digits, with underscore last character
+        assertFalse(Ic.isValidIc("S12345678_")); // more than 7 digits, with invalid last character
         assertFalse(Ic.isValidIc("1234567A")); // first character is missing
         assertFalse(Ic.isValidIc("X1234567A")); // first character is not S, T, F or G
         assertFalse(Ic.isValidIc("_1234567A")); // first character is underscore, not S, T, F or G
@@ -97,9 +130,9 @@ public class IcTest {
 
         // same values -> returns true
         assertTrue(ic.equals(new Ic("G9999999Y"))); // exact same
-        assertTrue(ic.equals(new Ic("g9999999Y"))); // case-insensitive
-        assertTrue(ic.equals(new Ic("G9999999y"))); // case-insensitive
-        assertTrue(ic.equals(new Ic("g9999999Y"))); // case-insensitive
+        assertTrue(ic.equals(new Ic("g9999999Y"))); // lower case first character, same digits and last character
+        assertTrue(ic.equals(new Ic("G9999999y"))); // same first character and digits, lower case last character
+        assertTrue(ic.equals(new Ic("g9999999Y"))); // lower case first character and last character, same digits
 
         // same object -> returns true
         assertTrue(ic.equals(ic));
@@ -114,7 +147,8 @@ public class IcTest {
         assertFalse(ic.equals(new Ic("F0000000B"))); // completely different
         assertFalse(ic.equals(new Ic("G9999999Z"))); // same digits but different last character
         assertFalse(ic.equals(new Ic("S9999999Y"))); // same digits but different first character
-        assertFalse(ic.equals(new Ic("S9999998Y"))); // different digits but same first and last character
+        assertFalse(ic.equals(new Ic("S9999999Z"))); // same digits but different first and last character
+        assertFalse(ic.equals(new Ic("G9999998Y"))); // different digits but same first and last character
 
     }
 }

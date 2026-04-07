@@ -4,18 +4,27 @@ skinparam arrowThickness 1.1
 skinparam arrowColor MODEL_COLOR
 skinparam classBackgroundColor MODEL_COLOR
 
+Class "<<enumeration>>\nLevel" as Level
 AddressBook *-right-> "1" UniquePersonList
-AddressBook *-right-> "1" UniqueTagList
-UniqueTagList -[hidden]down- UniquePersonList
-UniqueTagList -[hidden]down- UniquePersonList
+AddressBook *-right-> "1" UniqueSymptomList
+UniqueSymptomList -[hidden]down- UniquePersonList
+UniqueSymptomList -[hidden]down- UniquePersonList
 
-UniqueTagList -right-> "*" Tag
+UniqueSymptomList -right-> "*" Symptom
 UniquePersonList -right-> Person
 
-Person -up-> "*" Tag
+Person -up-> "*" Symptom
 
 Person *--> Name
 Person *--> Phone
 Person *--> Email
 Person *--> Address
+Person *--> DoctorName
+Person *--> Ic
+Person *--> NextOfKin
+Person *--> NextOfKinPhone
+Person *--> NextOfKinRelationship
+Person *--> UrgencyLevel
+UrgencyLevel --> Level
+Person *--> Notes
 @enduml

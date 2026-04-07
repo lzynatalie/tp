@@ -1,5 +1,6 @@
 package seedu.address.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -20,22 +21,43 @@ public class NextOfKinPhoneTest {
     }
 
     @Test
+    public void constructor_whiteSpacesOnlyNextOfKinPhone_throwsIllegalArgumentException() {
+        String invalidPhone = "   ";
+        assertThrows(IllegalArgumentException.class, () -> new NextOfKinPhone(invalidPhone));
+    }
+
+    @Test
+    public void constructor_validNextOfKinPhone_success() {
+        String validPhone = "93121534";
+        assertEquals(validPhone, new NextOfKinPhone(validPhone).value);
+    }
+
+    @Test
+    public void constructor_validPhoneWithLeadingAndTrailingWhiteSpaces_sucess() {
+        String validPhone = "  93121534  ";
+        assertEquals(validPhone.trim(), new NextOfKinPhone(validPhone).value);
+    }
+
+    @Test
     public void isValidNextOfKinPhone() {
         // null phone number
         assertThrows(NullPointerException.class, () -> NextOfKinPhone.isValidNextOfKinPhone(null));
 
         // invalid phone numbers
-        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("")); // empty string
-        assertFalse(NextOfKinPhone.isValidNextOfKinPhone(" ")); // spaces only
-        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("91")); // less than 3 numbers
-        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("phone")); // non-numeric
-        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("9011p041")); // alphabets within digits
-        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("9312 1534")); // spaces within digits
-        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("911")); // exactly 3 numbers
-        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("124293842033123")); // long phone numbers
+        assertFalse(Phone.isValidPhone("")); // empty string
+        assertFalse(Phone.isValidPhone(" ")); // spaces only
+        assertFalse(Phone.isValidPhone("1")); // 1 digit
+        assertFalse(Phone.isValidPhone("1234567")); // less than 8 numbers
+        assertFalse(Phone.isValidPhone("phone")); // non-numeric
+        assertFalse(Phone.isValidPhone("9011p041")); // alphabets within digits
+        assertFalse(Phone.isValidPhone("9312 1534")); // spaces within digits
+        assertFalse(Phone.isValidPhone("123456789")); // more than 8 numbers;
+        assertFalse(Phone.isValidPhone(" 12345678")); // leading white space
+        assertFalse(Phone.isValidPhone("12345678 ")); // trailing white space
+
 
         // valid phone numbers
-        assertTrue(NextOfKinPhone.isValidNextOfKinPhone("93121534")); // exactly 8 numbers
+        assertTrue(Phone.isValidPhone("93121534")); // exactly 8 numbers
     }
 
     @Test

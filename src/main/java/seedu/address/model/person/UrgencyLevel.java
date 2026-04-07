@@ -35,7 +35,8 @@ public class UrgencyLevel implements Comparable<UrgencyLevel> {
     }
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Urgency levels should be one of the following: low, moderate, high, extreme.";
+            "Urgency levels should be one of the following: low, moderate, high, extreme.\n"
+                    + "Urgency level cannot be left blank.\n";
 
     /**
      * Regex for validating urgency levels. Case-insensitive matching for low, moderate, high, and extreme.
@@ -51,8 +52,9 @@ public class UrgencyLevel implements Comparable<UrgencyLevel> {
      */
     public UrgencyLevel(String level) {
         requireNonNull(level);
-        checkArgument(isValidUrgencyLevel(level), MESSAGE_CONSTRAINTS);
-        this.level = Level.valueOf(level.toUpperCase());
+        String trimmedLevel = level.trim();
+        checkArgument(isValidUrgencyLevel(trimmedLevel), MESSAGE_CONSTRAINTS);
+        this.level = Level.valueOf(trimmedLevel.toUpperCase());
     }
 
     /**

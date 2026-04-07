@@ -56,7 +56,7 @@ public class ParserUtil {
         }
 
         // Split strictly by comma
-        String[] splitIndices = trimmedIndices.split(",");
+        String[] splitIndices = trimmedIndices.split(",", -1);
         List<Index> indices = new ArrayList<>();
 
         for (String indexString : splitIndices) {
@@ -209,7 +209,7 @@ public class ParserUtil {
     public static DoctorName parseDoctorName(String name) throws ParseException {
         requireNonNull(name);
         String trimmedDoctorName = name.trim();
-        if (!DoctorName.isValidName(trimmedDoctorName)) {
+        if (!DoctorName.isValidDoctorName(trimmedDoctorName)) {
             throw new ParseException(DoctorName.MESSAGE_CONSTRAINTS);
         }
         return new DoctorName(trimmedDoctorName);

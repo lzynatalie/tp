@@ -187,7 +187,7 @@ class JsonAdaptedPerson {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     DoctorName.class.getSimpleName()));
         }
-        if (!DoctorName.isValidName(doctorName)) {
+        if (!DoctorName.isValidDoctorName(doctorName)) {
             throw new IllegalValueException(DoctorName.MESSAGE_CONSTRAINTS);
         }
         final DoctorName modelDoctorName = new DoctorName(doctorName);

@@ -5,6 +5,7 @@ import static seedu.address.logic.Messages.getErrorMessageForDuplicateIndices;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
@@ -21,7 +22,7 @@ public class MultipleDeleteCommand extends DeleteCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Deletes the people identified by the index numbers used in the displayed person list.\n"
-            + "Parameters: INDEX,INDEX[,INDEX,...] (must be unique positive integers)\n"
+            + "Parameters: <INDEX>,<INDEX>[,<INDEX>,...] (must be unique positive integers)\n"
             + "Example: " + COMMAND_WORD + " 1,2,4";
 
     private final Index[] targetIndices;
@@ -29,17 +30,17 @@ public class MultipleDeleteCommand extends DeleteCommand {
     private boolean wasExecuted = false;
 
     public MultipleDeleteCommand(Index... targetIndices) {
-        this(targetIndices, Set.of());
+        this(targetIndices, Map.of());
     }
 
     /**
      * Creates a MultipleDeleteCommand to delete the specified people.
      *
      * @param targetIndices The indices of the people to delete.
-     * @param prefixes The prefixes indicating which fields to delete (if any).
+     * @param prefixesMap A map of prefixes to their corresponding values for field deletion (if any).
      */
-    public MultipleDeleteCommand(Index[] targetIndices, Set<Prefix> prefixes) {
-        super(prefixes);
+    public MultipleDeleteCommand(Index[] targetIndices, Map<Prefix, List<String>> prefixesMap) {
+        super(prefixesMap);
         this.targetIndices = targetIndices;
     }
 

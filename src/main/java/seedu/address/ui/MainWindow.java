@@ -180,9 +180,8 @@ public class MainWindow extends UiPart<Stage> {
             String feedbackToUser = commandResult.getFeedbackToUser();
             logger.info("Result: " + feedbackToUser);
 
-            // `find` returning 0 results is not an error, but we highlight it as a "red box".
             if (feedbackToUser.startsWith("Found 0 patient(s)")) {
-                resultDisplay.setStyle("exception");
+                resultDisplay.setStyle("no-patients-found");
             } else {
                 resultDisplay.setStyle("success");
             }

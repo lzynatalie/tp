@@ -10,12 +10,11 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class DoctorName {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "For the names, please use only these characters: (A-Z, a-z), spaces, comma (,), "
-                    + "hyphens (-), apostrophe (‘), period (.) for the doctor name.";
+            "Doctor name can contain: (A-Z, a-z), whitespaces, comma (,), "
+                    + "hyphens (-), apostrophe (‘), period (.).\n"
+                    + "The doctor name should not be empty and must start with a letter.\n";
 
 
-    // Regex: letters + allowed punctuation + spaces
-    // ^ start, $ end
     public static final String VALIDATION_REGEX = "[A-Za-z][A-Za-z ,.'-]*";
 
     private final String fullName;
@@ -23,18 +22,19 @@ public class DoctorName {
     /**
      * Constructs a {@code DoctorName}.
      *
-     * @param name A valid doctor name.
+     * @param doctorName A valid doctor name.
      */
-    public DoctorName(String name) {
-        requireNonNull(name);
-        checkArgument(isValidName(name), MESSAGE_CONSTRAINTS);
-        this.fullName = name;
+    public DoctorName(String doctorName) {
+        requireNonNull(doctorName);
+        String trimmedDoctorName = doctorName.trim();
+        checkArgument(isValidDoctorName(trimmedDoctorName), MESSAGE_CONSTRAINTS);
+        this.fullName = trimmedDoctorName;
     }
 
     /**
      * Returns true if a given string is a valid doctor name.
      */
-    public static boolean isValidName(String test) {
+    public static boolean isValidDoctorName(String test) {
         return test.matches(VALIDATION_REGEX);
     }
 

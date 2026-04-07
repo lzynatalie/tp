@@ -307,5 +307,7 @@ public class ParserUtilTest {
 
         // FIX FOR COVERAGE: Leading comma causing an empty string at the start
         assertThrows(ParseException.class, () -> ParserUtil.parseIndices(",2"));
+
+        assertThrows(ParseException.class, () -> ParserUtil.parseIndices("1,2,3,,,"));
     }
 }

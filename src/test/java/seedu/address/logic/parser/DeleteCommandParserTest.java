@@ -2,13 +2,18 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_MISSING_PERSON_INDEX;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -60,13 +65,13 @@ public class DeleteCommandParserTest {
     @Test
     public void parse_validArgsMultipleIndices_returnsDeleteCommand() {
         assertParseSuccess(parser, "1,2,3",
-                new MultipleDeleteCommand(new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, INDEX_THIRD_PERSON }));
+                new MultipleDeleteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, INDEX_THIRD_PERSON));
     }
 
     @Test
     public void parse_validArgsMultipleIndicesWithWhitespace_returnsDeleteCommand() {
         assertParseSuccess(parser, "  1,2,3  ",
-                new MultipleDeleteCommand(new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, INDEX_THIRD_PERSON }));
+                new MultipleDeleteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, INDEX_THIRD_PERSON));
     }
 
     @Test
@@ -82,14 +87,8 @@ public class DeleteCommandParserTest {
     }
 
     @Test
-    public void parse_invalidArgsMultipleIndicesWithSpaceBeforeDelimiter_throwsParseException() {
-        assertParseFailure(parser, "1 ,2 ,3", String.format(
-                MESSAGE_INVALID_COMMAND_FORMAT, MultipleDeleteCommand.MESSAGE_USAGE));
-    }
-
-    @Test
-    public void parse_invalidArgsMultipleIndicesWithSpaceAfterDelimiter_throwsParseException() {
-        assertParseFailure(parser, "1, 2, 3", String.format(
+    public void parse_invalidArgsMultipleIndicesWithSpaceAroundDelimiter_throwsParseException() {
+        assertParseFailure(parser, "1 , 2 , 3", String.format(
                 MESSAGE_INVALID_COMMAND_FORMAT, MultipleDeleteCommand.MESSAGE_USAGE));
     }
 
@@ -118,14 +117,8 @@ public class DeleteCommandParserTest {
     }
 
     @Test
-    public void parse_invalidArgsRangeIndicesWithSpaceBeforeDelimiter_throwsParseException() {
-        assertParseFailure(parser, "1 -3", String.format(
-                MESSAGE_INVALID_COMMAND_FORMAT, RangeDeleteCommand.MESSAGE_USAGE));
-    }
-
-    @Test
-    public void parse_invalidArgsRangeIndicesWithSpaceAfterDelimiter_throwsParseException() {
-        assertParseFailure(parser, "1- 3", String.format(
+    public void parse_invalidArgsRangeIndicesWithSpaceAroundDelimiter_throwsParseException() {
+        assertParseFailure(parser, "1 - 3", String.format(
                 MESSAGE_INVALID_COMMAND_FORMAT, RangeDeleteCommand.MESSAGE_USAGE));
     }
 
@@ -136,42 +129,69 @@ public class DeleteCommandParserTest {
     }
 
     @Test
-    public void parse_validArgsSingleIndexWithFieldPrefixes_returnsDeleteCommand() {
-        assertParseSuccess(parser, "1 n/ s/",
-                new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(new Prefix("n/"), new Prefix("s/"))));
+    public void parse_validArgsSingleIndexWithPrefixes_returnsDeleteCommand() {
+        assertParseSuccess(parser, "1 n/ s/", new SingleDeleteCommand(INDEX_FIRST_PERSON,
+                Map.of(new Prefix("n/"), List.of(), new Prefix("s/"), List.of())));
     }
 
     @Test
-    public void parse_validArgsMultipleIndicesWithFieldPrefix_returnsDeleteCommand() {
+    public void parse_validArgsMultipleIndicesWithPrefix_returnsDeleteCommand() {
         assertParseSuccess(parser, "1,2 s/", new MultipleDeleteCommand(
-                new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON }, Set.of(new Prefix("s/"))));
+                new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON }, Map.of(new Prefix("s/"), List.of())));
     }
 
     @Test
-    public void parse_validArgsRangeIndicesWithFieldPrefix_returnsDeleteCommand() {
+    public void parse_validArgsRangeIndicesWithPrefix_returnsDeleteCommand() {
         assertParseSuccess(parser, "1-2 n/", new RangeDeleteCommand(
-                INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, Set.of(new Prefix("n/"))));
+                INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, Map.of(new Prefix("n/"), List.of())));
     }
 
     @Test
     public void parse_invalidArgsNotesPrefixWithValue_throwsParseException() {
-        assertParseFailure(parser, "1 n/notes", DeleteCommand.MESSAGE_VALUE_NOT_ALLOWED);
+        assertParseFailure(parser, "1 n/notes",
+                String.format(DeleteCommand.MESSAGE_VALUE_NOT_ALLOWED, PREFIX_NOTES));
     }
 
     @Test
-    public void parse_invalidArgsSymptomsPrefixWithValue_throwsParseException() {
-        assertParseFailure(parser, "1 s/symptom", DeleteCommand.MESSAGE_VALUE_NOT_ALLOWED);
+    public void parse_validArgsSymptomsPrefixWithValue_returnsDeleteCommand() {
+        assertParseSuccess(parser, "1 s/symptom",
+                new SingleDeleteCommand(INDEX_FIRST_PERSON, Map.of(new Prefix("s/"), List.of("symptom"))));
     }
 
     @Test
-    public void parse_invalidArgsDuplicateFieldPrefixes_throwsParseException() {
-        assertParseFailure(parser, "1 n/ n/", DeleteCommand.MESSAGE_DUPLICATE_PREFIXES);
+    public void parse_validArgsSymptomsPrefixesWithValue_returnsDeleteCommand() {
+        assertParseSuccess(parser, "1 s/fever s/cough",
+                new SingleDeleteCommand(INDEX_FIRST_PERSON, Map.of(new Prefix("s/"), List.of("fever", "cough"))));
+    }
+
+    @Test
+    public void parse_invalidArgsDuplicateNotesPrefix_throwsParseException() {
+        assertParseFailure(parser, "1 n/ n/", String.format(
+                DeleteCommand.MESSAGE_DUPLICATE_PREFIXES, PREFIX_NOTES));
+    }
+
+    @Test
+    public void parse_invalidArgsDuplicateSymptomsPrefix_throwsParseException() {
+        assertParseFailure(parser, "1 s/ s/", String.format(
+                DeleteCommand.MESSAGE_DUPLICATE_PREFIXES, PREFIX_SYMPTOM));
+    }
+
+    @Test
+    public void parse_invalidArgsMissingValueSymptomsPrefix_throwsParseException() {
+        assertParseFailure(parser, "1 s/fever s/", String.format(
+                DeleteCommand.MESSAGE_VALUE_MISSING, PREFIX_SYMPTOM));
     }
 
     @Test
     public void parse_invalidArgsNonOptionalFieldPrefix_throwsParseException() {
         assertParseFailure(parser, "1 p/", String.format(
-                MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_DELETE_FIELD_USAGE));
+                DeleteCommand.MESSAGE_NON_OPTIONAL_FIELD_PREFIXES, PREFIX_PATIENT_PHONE));
+    }
+
+    @Test
+    public void parse_invalidArgsNonOptionalFieldPrefixes_throwsParseException() {
+        assertParseFailure(parser, "1 p/ e/", String.format(
+                DeleteCommand.MESSAGE_NON_OPTIONAL_FIELD_PREFIXES, PREFIX_PATIENT_PHONE + ", " + PREFIX_EMAIL));
     }
 
     @Test

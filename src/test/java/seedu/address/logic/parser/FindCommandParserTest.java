@@ -42,9 +42,9 @@ public class FindCommandParserTest {
     @Test
     public void parse_emptyArg_throwsParseException() {
         assertParseFailure(parser, "     ",
-                "At least one parameter to search with must be provided. You can use the command 'find'"
-                    + " with the following parameters: pn/NAME, ic/IC_NUMBER, p/PHONE_NUMBER, "
-                    + "e/EMAIL, d/DOCTOR_NAME");
+                "At least one parameter to search with must be provided. You "
+                        + "can use the command 'find' with the following parameters: pn/<PATIENT_NAME>, ic/<IC>,"
+                        + "p/<PATIENT_PHONE>, e/<EMAIL>, d/<DOCTOR>");
     }
 
     @Test
@@ -129,9 +129,9 @@ public class FindCommandParserTest {
     @Test
     public void parse_noFieldsProvided_throwsParseException() {
         assertParseFailure(parser, "",
-                "At least one parameter to search with must be provided. You can use the command 'find'"
-                    + " with the following parameters: pn/NAME, ic/IC_NUMBER, p/PHONE_NUMBER, "
-                    + "e/EMAIL, d/DOCTOR_NAME");
+                "At least one parameter to search with must be provided. You "
+                        + "can use the command 'find' with the following parameters: pn/<PATIENT_NAME>, ic/<IC>,"
+                        + "p/<PATIENT_PHONE>, e/<EMAIL>, d/<DOCTOR>");
     }
 
     @Test

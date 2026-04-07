@@ -15,6 +15,26 @@ public class UrgencyLevelTest {
     }
 
     @Test
+    public void constructor_emptyUrgencyLevel_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> new UrgencyLevel(""));
+    }
+
+    @Test
+    public void constructor_whiteSpacesOnlyUrgencyLevel_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> new UrgencyLevel("   "));
+    }
+
+    @Test
+    public void constructor_validUrgencyLevel_throwsIllegalArgumentException() {
+        assertEquals(UrgencyLevel.Level.LOW, new UrgencyLevel("low").level);
+    }
+
+    @Test
+    public void constructor_validUrgencyLevelWithLeadingAndTrailingWhiteSpaces_throwsIllegalArgumentException() {
+        assertEquals(UrgencyLevel.Level.LOW, new UrgencyLevel("  low  ").level);
+    }
+
+    @Test
     public void isValidUrgencyLevel() {
         // valid urgency levels
         assertTrue(UrgencyLevel.isValidUrgencyLevel("low"));
@@ -46,9 +66,25 @@ public class UrgencyLevelTest {
     @Test
     public void equals() {
         UrgencyLevel low = new UrgencyLevel("low");
+
+        // same object
+        assertTrue(low.equals(low));
+
+        // same values
         assertTrue(low.equals(new UrgencyLevel("low")));
+
+        // case-insensitive
         assertTrue(low.equals(new UrgencyLevel("LOW")));
+
+        // different values
         assertFalse(low.equals(new UrgencyLevel("high")));
+
+        // null -> returns false
+        assertFalse(low.equals(null));
+
+        // different types -> returns false
+        assertFalse(low.equals(5.0f));
+
     }
 
     @Test

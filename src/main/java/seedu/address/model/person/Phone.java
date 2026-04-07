@@ -11,7 +11,9 @@ public class Phone {
 
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Phone numbers should only contain numbers, and it should only be 8 digits long";
+            "Patient phone numbers should only contain numbers, and it should only be 8 digits long.\n"
+                    + "Patient phone number cannot be left blank.\n";
+
     public static final String VALIDATION_REGEX = "\\d{8}";
     public final String value;
 
@@ -22,8 +24,9 @@ public class Phone {
      */
     public Phone(String phone) {
         requireNonNull(phone);
-        checkArgument(isValidPhone(phone), MESSAGE_CONSTRAINTS);
-        value = phone;
+        String trimmedPhone = phone.trim();
+        checkArgument(isValidPhone(trimmedPhone), MESSAGE_CONSTRAINTS);
+        value = trimmedPhone;
     }
 
     /**

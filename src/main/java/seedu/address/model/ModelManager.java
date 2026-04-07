@@ -51,8 +51,9 @@ public class ModelManager implements Model {
                 return urgencyCompare;
             }
 
-            // Tie-breaker: Use IC value (more unique and secure than Name)
-            return p1.getIc().value.compareTo(p2.getIc().value);
+            // Tie-breaker: Use IC value (case-insensitive to handle different user inputs)
+            // FIXED: Using compareToIgnoreCase instead of compareTo
+            return p1.getIc().value.compareToIgnoreCase(p2.getIc().value);
         });
     }
 

@@ -63,18 +63,26 @@ public class UpdateCommandParser implements Parser<Command> {
         // --- OUR MULTIPLE INDEX LOGIC ---
         String trimmedPreamble = argMultimap.getPreamble().trim();
 
+        // FIXED 1: Determine which error messages to use dynamically
+        boolean isMultiple = trimmedPreamble.contains(",");
+        String expectedMessageUsage = isMultiple
+                ? MultipleUpdateCommand.MESSAGE_USAGE
+                : SingleUpdateCommand.MESSAGE_USAGE;
+        String expectedNotUpdatedMessage = isMultiple
+                ? MultipleUpdateCommand.MESSAGE_NOT_UPDATED
+                : SingleUpdateCommand.MESSAGE_NOT_UPDATED;
+
         if (trimmedPreamble.isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    SingleUpdateCommand.MESSAGE_USAGE));
+            // FIXED 2: Replaced SingleUpdateCommand with expectedMessageUsage
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, expectedMessageUsage));
         }
 
         // STRICT RULE: Check the TRIMMED preamble for spaces.
         if (trimmedPreamble.contains(",") && trimmedPreamble.contains(" ")) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    SingleUpdateCommand.MESSAGE_USAGE));
+            // FIXED 3: Replaced SingleUpdateCommand with expectedMessageUsage
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, expectedMessageUsage));
         }
 
-        boolean isMultiple = trimmedPreamble.contains(",");
         List<Index> indices = null;
         Index singleIndex = null;
 
@@ -85,8 +93,8 @@ public class UpdateCommandParser implements Parser<Command> {
                 singleIndex = ParserUtil.parseIndex(trimmedPreamble);
             }
         } catch (ParseException pe) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    SingleUpdateCommand.MESSAGE_USAGE), pe);
+            // FIXED 4: Replaced SingleUpdateCommand with expectedMessageUsage
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, expectedMessageUsage), pe);
         }
         // --------------------------------
 
@@ -167,7 +175,8 @@ public class UpdateCommandParser implements Parser<Command> {
         parseSymptomsForEdit(argMultimap.getAllValues(PREFIX_SYMPTOM)).ifPresent(updatePersonDescriptor::setSymptoms);
 
         if (!updatePersonDescriptor.isAnyFieldEdited()) {
-            throw new ParseException(SingleUpdateCommand.MESSAGE_NOT_UPDATED);
+            // FIXED 5: Replaced SingleUpdateCommand with expectedNotUpdatedMessage
+            throw new ParseException(expectedNotUpdatedMessage);
         }
 
         // --- OUR MULTIPLE COMMAND RETURN LOGIC ---

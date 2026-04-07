@@ -27,7 +27,7 @@ public class FindCommandParser implements Parser<FindCommand> {
      * Parses the given {@code String} of arguments in the context of the FindCommand
      * and returns a FindCommand object for execution.
      * Accepts either:
-     * - prefixed form: n/KEYWORD [MORE_KEYWORDS]..., ic/IC_NUMBER, p/PHONE_NUMBER
+     * - prefixed form: pn/KEYWORD [MORE_KEYWORDS]..., ic/IC, p/PATIENT_PHONE
      * - legacy form: KEYWORD [MORE_KEYWORDS]... (no prefix used)
      *
      * @throws ParseException if the user input does not conform the expected format
@@ -37,8 +37,8 @@ public class FindCommandParser implements Parser<FindCommand> {
         // No text at all or only whitespace after the command word
         if (trimmedArgs.isEmpty()) {
             throw new ParseException("At least one parameter to search with must be provided. You "
-                + "can use the command 'find' with the following parameters: pn/NAME, ic/IC_NUMBER, p/PHONE_NUMBER, "
-                + "e/EMAIL, d/DOCTOR_NAME");
+                    + "can use the command 'find' with the following parameters: pn/<PATIENT_NAME>, ic/<IC>,"
+                    + "p/<PATIENT_PHONE>, e/<EMAIL>, d/<DOCTOR>");
         }
 
         ArgumentMultimap argMultimap =

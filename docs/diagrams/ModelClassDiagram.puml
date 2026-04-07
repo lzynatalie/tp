@@ -18,7 +18,16 @@ Class Address
 Class Email
 Class Name
 Class Phone
-Class Tag
+Class DoctorName
+Class Ic
+Class NextOfKin
+Class NextOfKinPhone
+Class NextOfKinRelationship
+Class UrgencyLevel
+Class Notes
+Class Symptom
+Class "<<enumeration>>\nLevel" as Level
+
 
 Class I #FFFFFF
 }
@@ -41,7 +50,15 @@ Person *--> Name
 Person *--> Phone
 Person *--> Email
 Person *--> Address
-Person *--> "*" Tag
+Person *--> DoctorName
+Person *--> Ic
+Person *--> NextOfKin
+Person *--> NextOfKinPhone
+Person *--> NextOfKinRelationship
+Person *--> UrgencyLevel
+UrgencyLevel --> Level
+Person *--> "*" Symptom
+Person *--> Notes
 
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I

@@ -14,7 +14,8 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -150,19 +151,20 @@ public class RangeDeleteCommandTest {
         Person firstTargetPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Person secondTargetPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
         Person thirdTargetPerson = model.getFilteredPersonList().get(INDEX_THIRD_PERSON.getZeroBased());
-        assertFalse(firstTargetPerson.getNotes().getValue().isEmpty(),
-                "Precondition failed: target person should have notes.");
-        assertFalse(secondTargetPerson.getNotes().getValue().isEmpty(),
-                "Precondition failed: target person should have notes.");
-        assertFalse(thirdTargetPerson.getNotes().getValue().isEmpty(),
-                "Precondition failed: target person should have notes.");
+        firstTargetPerson = modifyPerson(model, firstTargetPerson, true, true);
+        secondTargetPerson = modifyPerson(model, secondTargetPerson, true, true);
+        thirdTargetPerson = modifyPerson(model, thirdTargetPerson, true, true);
+        assertTrue(hasNotes(firstTargetPerson), "Precondition failed: target person should have notes.");
+        assertTrue(hasNotes(secondTargetPerson), "Precondition failed: target person should have notes.");
+        assertTrue(hasNotes(thirdTargetPerson), "Precondition failed: target person should have notes.");
 
-        DeleteCommand deleteCommand =
-                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON, Set.of(PREFIX_NOTES));
+        // delete notes and fever and headache symptoms of the target persons
+        DeleteCommand deleteCommand = new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON,
+                Map.of(PREFIX_NOTES, List.of(), PREFIX_SYMPTOM, List.of("fever", "headache")));
 
-        Person firstExpectedPerson = new PersonBuilder(firstTargetPerson).withNotes("").build();
-        Person secondExpectedPerson = new PersonBuilder(secondTargetPerson).withNotes("").build();
-        Person thirdExpectedPerson = new PersonBuilder(thirdTargetPerson).withNotes("").build();
+        Person firstExpectedPerson = new PersonBuilder(firstTargetPerson).withSymptoms("cough").withNotes("").build();
+        Person secondExpectedPerson = new PersonBuilder(secondTargetPerson).withSymptoms("cough").withNotes("").build();
+        Person thirdExpectedPerson = new PersonBuilder(thirdTargetPerson).withSymptoms("cough").withNotes("").build();
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_FIELD_SUCCESS,
                 "\n" + Messages.format(firstExpectedPerson) + "\n" + Messages.format(secondExpectedPerson)
                         + "\n" + Messages.format(thirdExpectedPerson));
@@ -178,13 +180,15 @@ public class RangeDeleteCommandTest {
     @Test
     public void execute_missingFieldValueUnfilteredList_throwsCommandException() {
         Person secondTargetPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
-        assertTrue(secondTargetPerson.getSymptoms().isEmpty(),
+        secondTargetPerson = modifyPerson(model, secondTargetPerson, false, true);
+        assertTrue(!hasSymptoms(secondTargetPerson),
                 "Precondition failed: target person should not have symptoms.");
 
+        // delete all symptoms of target persons, but symptom field of one does not have values to delete
         DeleteCommand deleteCommand =
-                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON, Set.of(PREFIX_SYMPTOM));
+                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON, Map.of(PREFIX_SYMPTOM, List.of()));
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_NO_VALUE_FOR_PERSON);
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_VALUE_NOT_FOUND);
     }
 
     @Test
@@ -194,19 +198,20 @@ public class RangeDeleteCommandTest {
         Person firstTargetPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Person secondTargetPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
         Person thirdTargetPerson = model.getFilteredPersonList().get(INDEX_THIRD_PERSON.getZeroBased());
-        assertFalse(firstTargetPerson.getNotes().getValue().isEmpty(),
-                "Precondition failed: target person should have notes.");
-        assertFalse(secondTargetPerson.getNotes().getValue().isEmpty(),
-                "Precondition failed: target person should have notes.");
-        assertFalse(thirdTargetPerson.getNotes().getValue().isEmpty(),
-                "Precondition failed: target person should have notes.");
+        firstTargetPerson = modifyPerson(model, firstTargetPerson, true, true);
+        secondTargetPerson = modifyPerson(model, secondTargetPerson, true, true);
+        thirdTargetPerson = modifyPerson(model, thirdTargetPerson, true, true);
+        assertTrue(hasSymptoms(firstTargetPerson), "Precondition failed: target person should have symptoms.");
+        assertTrue(hasSymptoms(secondTargetPerson), "Precondition failed: target person should have symptoms.");
+        assertTrue(hasSymptoms(thirdTargetPerson), "Precondition failed: target person should have symptoms.");
 
+        // delete all symptoms of target persons
         DeleteCommand deleteCommand =
-                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON, Set.of(PREFIX_NOTES));
+                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON, Map.of(PREFIX_SYMPTOM, List.of()));
 
-        Person firstExpectedPerson = new PersonBuilder(firstTargetPerson).withNotes("").build();
-        Person secondExpectedPerson = new PersonBuilder(secondTargetPerson).withNotes("").build();
-        Person thirdExpectedPerson = new PersonBuilder(thirdTargetPerson).withNotes("").build();
+        Person firstExpectedPerson = new PersonBuilder(firstTargetPerson).withSymptoms().build();
+        Person secondExpectedPerson = new PersonBuilder(secondTargetPerson).withSymptoms().build();
+        Person thirdExpectedPerson = new PersonBuilder(thirdTargetPerson).withSymptoms().build();
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_FIELD_SUCCESS,
                 "\n" + Messages.format(firstExpectedPerson) + "\n" + Messages.format(secondExpectedPerson)
                         + "\n" + Messages.format(thirdExpectedPerson));
@@ -225,13 +230,15 @@ public class RangeDeleteCommandTest {
         showPersonsInIndexRange(model, INDEX_FIRST_PERSON, INDEX_THIRD_PERSON);
 
         Person secondTargetPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
-        assertTrue(secondTargetPerson.getSymptoms().isEmpty(),
-                "Precondition failed: target person should not have symptoms.");
+        secondTargetPerson = modifyPerson(model, secondTargetPerson, false, false);
+        assertTrue(!hasNotes(secondTargetPerson),
+                "Precondition failed: target person should not have notes.");
 
+        // delete all notes of target persons, but notes field of one has no value to delete
         DeleteCommand deleteCommand =
-                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON, Set.of(PREFIX_SYMPTOM));
+                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON, Map.of(PREFIX_NOTES, List.of()));
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_NO_VALUE_FOR_PERSON);
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_VALUE_NOT_FOUND);
     }
 
     @Test
@@ -244,17 +251,16 @@ public class RangeDeleteCommandTest {
 
     @Test
     public void equals() {
-        DeleteCommand deleteFirstCommand =
-                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
-        DeleteCommand deleteSecondCommand =
-                new RangeDeleteCommand(INDEX_SECOND_PERSON, INDEX_THIRD_PERSON);
+        DeleteCommand deleteFirstCommand = new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
+        DeleteCommand deleteSecondCommand = new RangeDeleteCommand(INDEX_SECOND_PERSON, INDEX_SECOND_PERSON);
+        DeleteCommand deleteFirstCommandWithPrefixes =
+                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, Map.of(PREFIX_SYMPTOM, List.of()));
 
         // same object -> returns true
         assertTrue(deleteFirstCommand.equals(deleteFirstCommand));
 
         // same values -> returns true
-        DeleteCommand deleteFirstCommandCopy =
-                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
+        DeleteCommand deleteFirstCommandCopy = new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
         assertTrue(deleteFirstCommand.equals(deleteFirstCommandCopy));
 
         // different types -> returns false
@@ -263,22 +269,43 @@ public class RangeDeleteCommandTest {
         // null -> returns false
         assertFalse(deleteFirstCommand.equals(null));
 
-        // different people -> returns false
+        // different target indices -> returns false
         assertFalse(deleteFirstCommand.equals(deleteSecondCommand));
 
+        // same target indices but different command type -> returns true
+        DeleteCommand deleteSingleCommand = new SingleDeleteCommand(INDEX_SECOND_PERSON);
+        assertTrue(deleteSecondCommand.equals(deleteSingleCommand));
+
         // different target indices and different command type -> returns false
-        DeleteCommand deleteMultipleCommand =
-                new MultipleDeleteCommand(new Index[]{ INDEX_FIRST_PERSON, INDEX_THIRD_PERSON });
+        DeleteCommand deleteMultipleCommand = new MultipleDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON);
         assertFalse(deleteFirstCommand.equals(deleteMultipleCommand));
+
+        // same target indices and same prefixes -> returns true
+        DeleteCommand deleteFirstCommandWithSamePrefixes =
+                new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, Map.of(PREFIX_SYMPTOM, List.of()));
+        assertTrue(deleteFirstCommandWithPrefixes.equals(deleteFirstCommandWithSamePrefixes));
+
+        // same target indices but different prefixes -> returns false
+        assertFalse(deleteFirstCommand.equals(deleteFirstCommandWithPrefixes));
+
+        // same target indices and same prefixes but different command type -> returns true
+        DeleteCommand deleteMultipleCommandWithSamePrefixes = new MultipleDeleteCommand(
+                new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON }, Map.of(PREFIX_SYMPTOM, List.of()));
+        assertTrue(deleteFirstCommandWithSamePrefixes.equals(deleteMultipleCommandWithSamePrefixes));
     }
 
     @Test
     public void toStringMethod() {
-        Index targetIndex = Index.fromOneBased(1);
-        DeleteCommand deleteCommand = new RangeDeleteCommand(targetIndex, targetIndex, Set.of(PREFIX_NOTES));
+        Index startIndex = Index.fromOneBased(1);
+        Index endIndex = Index.fromOneBased(3);
+        DeleteCommand deleteCommand =
+                new RangeDeleteCommand(startIndex, endIndex, Map.of(PREFIX_NOTES, List.of()));
         String expected = RangeDeleteCommand.class.getCanonicalName()
-                + "{targetIndices=" + Set.of(targetIndex)
-                + ", prefixes=" + Set.of(PREFIX_NOTES) + "}";
+                + "{targetIndices=" + List.of(
+                        Index.fromOneBased(1),
+                        Index.fromOneBased(2),
+                        Index.fromOneBased(3))
+                + ", prefixes=" + List.of(Map.entry(PREFIX_NOTES, List.of())) + "}";
         assertEquals(expected, deleteCommand.toString());
     }
 
@@ -318,5 +345,37 @@ public class RangeDeleteCommandTest {
         model.updateFilteredPersonList(p -> false);
 
         assertTrue(model.getFilteredPersonList().isEmpty());
+    }
+
+    /**
+     * Modifies the person in the model to meet the requirements and returns that person.
+     */
+    private Person modifyPerson(Model model, Person personToModify, boolean hasSymptoms, boolean hasNotes) {
+        PersonBuilder modifiedPersonBuilder = new PersonBuilder(personToModify);
+
+        if (hasSymptoms) {
+            modifiedPersonBuilder.withSymptoms("fever", "cough", "headache");
+        } else {
+            modifiedPersonBuilder.withSymptoms();
+        }
+
+        if (hasNotes) {
+            modifiedPersonBuilder.withNotes("Stays up late to do CS2103");
+        } else {
+            modifiedPersonBuilder.withNotes("");
+        }
+
+        Person modifiedPerson = modifiedPersonBuilder.build();
+        model.setPerson(personToModify, modifiedPerson);
+
+        return modifiedPerson;
+    }
+
+    private boolean hasSymptoms(Person person) {
+        return !person.getSymptoms().isEmpty();
+    }
+
+    private boolean hasNotes(Person person) {
+        return !person.getNotes().getValue().isEmpty();
     }
 }

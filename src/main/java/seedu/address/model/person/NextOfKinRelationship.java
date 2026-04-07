@@ -10,14 +10,10 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class NextOfKinRelationship {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Please use only these characters: (A-Z, a-z), spaces, comma (,), hyphens (-), apostrophe ('), "
-                    + "period (.) for the next-of-kin name";
+            "Next-of-kin relationship can contain: (A-Z, a-z), whitespaces, comma (,), "
+                    + "hyphens (-), apostrophe (‘), period (.).\n"
+                    + "The next-of-kin relationship should not be empty and must start with a letter.\n";
 
-    public static final String MESSAGE_EMPTY =
-            "The next-of-kin relationship field cannot be empty.";
-
-    // Regex: letters + allowed punctuation + spaces
-    // ^ start, $ end
     public static final String VALIDATION_REGEX = "[A-Za-z][A-Za-z ,.'-]*";
 
     private final String label;
@@ -29,8 +25,9 @@ public class NextOfKinRelationship {
      */
     public NextOfKinRelationship(String label) {
         requireNonNull(label);
-        checkArgument(isValidNextOfKinRelationship(label), MESSAGE_CONSTRAINTS);
-        this.label = label;
+        String trimmedLabel = label.trim();
+        checkArgument(isValidNextOfKinRelationship(trimmedLabel), MESSAGE_CONSTRAINTS);
+        this.label = trimmedLabel;
     }
 
     /**

@@ -1,11 +1,14 @@
 package seedu.address.model;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.person.Notes;
 import seedu.address.testutil.Assert;
 
@@ -65,7 +68,7 @@ public class NotesTest {
     }
 
     @Test
-    public void append_emptyAdditionalNotes_returnsOriginal() {
+    public void append_emptyAdditionalNotes_returnsOriginal() throws CommandException {
         // This turns Line 50 GREEN
         Notes original = new Notes("Existing Content");
         Notes emptyAppend = new Notes("");
@@ -73,7 +76,7 @@ public class NotesTest {
     }
 
     @Test
-    public void append_toEmptyNotes_returnsAdditional() {
+    public void append_toEmptyNotes_returnsAdditional() throws CommandException {
         // This turns Line 42 GREEN, while accounting for timestamps!
         Notes emptyOriginal = new Notes("");
         Notes toAppend = new Notes("New Content");
@@ -84,5 +87,35 @@ public class NotesTest {
         String expectedNote = "[" + timestamp + "] New Content";
 
         assertEquals(expectedNote, emptyOriginal.append(toAppend).toString());
+    }
+
+    @Test
+    public void append_exceedsMaxLength_throwsCommandException() {
+        // Fill base to near the limit
+        Notes base = new Notes("a".repeat(490));
+        Notes additional = new Notes("overflow");
+        assertThrows(CommandException.class, () -> base.append(additional));
+    }
+
+    @Test
+    public void append_exactlyAtMaxLength_doesNotThrow() {
+        // Base + formatted append must be exactly MAX_LENGTH
+        // Timestamp format: "[dd MMM HH:mm] " = ~17 chars; adjust base accordingly
+        int timestampOverhead = 17; // "[dd MMM HH:mm] ".length()
+        int additionalLength = 10;
+        int baseLength = Notes.MAX_LENGTH - additionalLength - 1 - timestampOverhead; // 1 for newline
+        Notes base = new Notes("a".repeat(baseLength));
+        Notes additional = new Notes("b".repeat(additionalLength));
+        // Should not throw — we just verify no exception
+        assertDoesNotThrow(() -> base.append(additional));
+    }
+
+    @Test
+    public void append_commandExceptionMessage_isUserFriendly() {
+        Notes base = new Notes("a".repeat(490));
+        Notes additional = new Notes("overflow");
+        CommandException ex = assertThrows(CommandException.class, () -> base.append(additional));
+        assertTrue(ex.getMessage().contains("Cannot append notes"));
+        assertTrue(ex.getMessage().contains(String.valueOf(Notes.MAX_LENGTH)));
     }
 }

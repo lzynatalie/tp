@@ -6,6 +6,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import seedu.address.logic.commands.exceptions.CommandException;
+
 
 
 /**
@@ -37,7 +39,7 @@ public class Notes {
      * @param additionalNotes The new notes to append.
      * @return A new Notes object containing the combined text.
      */
-    public Notes append(Notes additionalNotes) {
+    public Notes append(Notes additionalNotes) throws CommandException {
         // 1. NO-OP GUARD: Safely ignore empty strings
         if (additionalNotes.value.trim().isEmpty()) {
             return this;
@@ -55,8 +57,15 @@ public class Notes {
         }
 
         // 4. Combine existing notes with the new timestamped note
-        // (This will automatically throw an IllegalArgumentException from the constructor if it exceeds MAX_LENGTH)
-        return new Notes(existingText + "\n" + formattedAppend);
+        String combined = existingText + "\n" + formattedAppend;
+
+        // Check before constructing, giving a user-friendly message
+        if (combined.length() > MAX_LENGTH) {
+            throw new CommandException("Cannot append notes: combined length exceeds "
+                    + MAX_LENGTH + " characters.");
+        }
+
+        return new Notes(combined);
     }
 
     /**

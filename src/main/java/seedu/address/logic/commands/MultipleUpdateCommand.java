@@ -76,10 +76,24 @@ public class MultipleUpdateCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+
+        // 1. Check for duplicate indices in the command
+        // Using distinct() to see if the count of unique indices matches the total count
+        long uniqueIndexCount = targetIndices.stream().distinct().count();
+        if (uniqueIndexCount < targetIndices.size()) {
+            throw new CommandException("Duplicate indices detected. "
+                    + "Each index should only be listed once (e.g., 'update 1,2' not 'update 1,1').");
+        }
+
+        // 2. Block unique identity updates in bulk
+        if (targetIndices.size() > 1 && updatePersonDescriptor.getIc().isPresent()) {
+            throw new CommandException("IC is an unique identifier and cannot be updated in bulk. "
+                    + "Please update this field individually using single update.");
+        }
+
         List<Person> lastShownList = model.getFilteredPersonList();
 
-        // 1. Validate indices and capture the exact Person references FIRST
-        // This prevents list-shifting bugs because we grab everyone before making changes.
+        // 3. Validate indices and capture the exact Person references
         List<Person> personsToUpdate = new ArrayList<>();
         for (Index index : targetIndices) {
             if (index.getZeroBased() >= lastShownList.size()) {
@@ -88,20 +102,25 @@ public class MultipleUpdateCommand extends Command {
             personsToUpdate.add(lastShownList.get(index.getZeroBased()));
         }
 
-        // 2. Pre-compute updates and check for duplicates
-        // This guarantees Atomic Execution: if one fails, nothing changes.
+        // 4. Pre-compute updates and check for internal/external duplicates (Atomic Check)
         List<Person> updatedPersons = new ArrayList<>();
         for (Person personToUpdate : personsToUpdate) {
             Person updatedPerson = SingleUpdateCommand.createUpdatedPerson(personToUpdate, updatePersonDescriptor);
 
-            if (!personToUpdate.isSamePerson(updatedPerson) && model.hasPerson(updatedPerson)) {
+            // Check if it conflicts with the existing address book
+            boolean existsInModel = !personToUpdate.isSamePerson(updatedPerson) && model.hasPerson(updatedPerson);
+
+            // Check if it conflicts with someone else we are currently updating in this command
+            boolean existsInCurrentBatch = updatedPersons.stream().anyMatch(p -> p.isSamePerson(updatedPerson));
+
+            if (existsInModel || existsInCurrentBatch) {
                 throw new CommandException(SingleUpdateCommand.MESSAGE_DUPLICATE_PERSON
-                        + " (Conflict at " + personToUpdate.getName().fullName + ")");
+                        + " (Conflict detected for: " + updatedPerson.getName().fullName + ")");
             }
             updatedPersons.add(updatedPerson);
         }
 
-        // 3. Safely apply all updates now that we know no errors will be thrown
+        // 5. Final Execution: Safely apply changes
         StringBuilder updatedNames = new StringBuilder();
         for (int i = 0; i < personsToUpdate.size(); i++) {
             model.setPerson(personsToUpdate.get(i), updatedPersons.get(i));

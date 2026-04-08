@@ -126,7 +126,7 @@ public class Person {
         }
 
         return otherPerson != null
-                && otherPerson.getIc().equals(getIc());
+                && (otherPerson.getIc().equals(getIc()));
     }
 
     /**

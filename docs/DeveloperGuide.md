@@ -14,6 +14,9 @@ pageNav: 3
 
 _{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
 
+* This project is based on the [AddressBook Level-3](https://se-education.org/addressbook-level3) project created by the [SE-EDU initiative](https://se-education.org).
+* Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5).
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Setting up, getting started**
@@ -696,6 +699,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
 2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
 3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+4.  Should be fully operable using only the keyboard, with no mouse interaction required.
+5.  Should gracefully handle a corrupted or missing data file by starting with an empty address book, without crashing. 
+6.  Should not lose any patient data if the application is closed unexpectedly (e.g. power failure), as data is saved after every command.
 
 *{More to be added}*
 
@@ -711,6 +717,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **User**: A user, which can be either a triage coordinator, an expert user or a beginner user.
 * **Address book**: The collection of patient records stored in the app, represented as an `AddressBook` object.
 * **Person/Patient**: A patient record in the address book, represented as a `Person` object. They are used interchangeably, but they refer to the same thing in the context of this app.
+* **Urgency**: A classification of a patient's medical severity. Valid levels are `EXTREME`, `HIGH`, `MODERATE`, and `LOW`, listed from highest to lowest priority.
+* **IC number**: A unique national identification number used to identify a patient (e.g. `T0123456B`). Used as the primary key to prevent duplicate patient records.
+* **Triage priority**: The computed order in which patients are ranked in the list, determined first by urgency level and then by IC number lexicographically as a tie-breaker.
+* **Filtered list**: The subset of patient records currently displayed in the UI after applying search or filter criteria. Does not affect the underlying stored data.
+* **Session**: A single run of the application from launch to close. Command history is session-based and does not persist across sessions.
+* **Next-of-kin**: An emergency contact associated with a patient record, including their name, phone number, and relationship to the patient.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Appendix: Instructions for manual testing**

@@ -245,12 +245,35 @@ Permanently removes patient records from ClinicConnect.
 
 ### Undoing the last command : `undo`
 
-Reverts the most recent command if it changed the data.
+Reverts the most recent command if it changed the data. This allows you to quickly reverse accidentally executed commands.
 
 **Format:** `undo`
 
-* `add`, `update`, and `delete` commands can be undone.
-* `undo` commands cannot be undone (i.e. you cannot redo an undone command).
+**Supported Commands:**
+* `add` - Restores the deleted patient record
+* `delete` - Restores deleted patient records or fields (e.g., symptoms, notes)
+* `update` - Single update only (e.g., `update 1 ...`). Bulk update (e.g., `update 1,2 ...`) cannot be undone
+* `clear` - Restores all cleared patient records
+
+**Important Notes:**
+* Only the **most recent command** can be undone. You cannot undo multiple commands in sequence (e.g., `undo` followed by another `undo` will fail).
+* `undo` reverses **only one command execution**. Subsequent commands after an undo cannot be reversed with another undo.
+* Read-only commands like `list`, `find`, `help`, and `exit` do not modify data and cannot be undone.
+* `undo` commands themselves cannot be undone.
+
+**Error Messages:**
+* `Cannot undo: no recent action to undo, or undo was already used.` - This appears when:
+  - No data-modifying command has been executed yet, OR
+  - You have already used undo on the last command, OR
+  - The last command executed was a read-only command (like `list` or `find`)
+
+**Examples:**
+* `add pn/John ...` followed by `undo` - removes the patient "John" from the address book
+* `delete 1 s/fever` followed by `undo` - restores the "fever" symptom for the 1st patient
+* `clear` followed by `undo` - restores all patient records that were cleared
+* `update 1 u/extreme` followed by `undo` - reverts the urgency level update for the 1st patient
+* `list` followed by `undo` - fails because `list` is read-only and has no effect to undo
+* `undo` followed by `undo` - the second undo fails because the previous undo operation cannot be reversed
 
 ### Clearing all entries : `clear`
 

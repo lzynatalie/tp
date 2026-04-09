@@ -138,6 +138,92 @@ The `Model` component,
 
 </box>
 
+### Undo Feature
+
+The undo feature allows users to reverse the most recent data-modifying command. This is facilitated through the `Command` interface's `undo()` method and `isUndoable()` check.
+
+#### Design
+
+**How Undo Works:**
+1. All commands inherit from the abstract `Command` class
+2. Data-modifying commands (e.g., `AddCommand`, `DeleteCommand`, `UpdateCommand`, `ClearCommand`) override the `isUndoable()` method to return `true`
+3. When a data-modifying command is executed, it stores necessary data to restore the previous state using fields like `wasExecuted` and backup data (e.g., `deletedPerson`, `clearedAddressBook`)
+4. The `UndoCommand` maintains a reference to the most recent command via `setLastCommand()`
+5. When `undo` is executed, it calls the `undo()` method on the stored command to restore the previous state
+
+#### Undoable Commands
+
+The following commands support undo:
+- **`AddCommand`**: Stores the added person and removes it on undo
+- **`SingleDeleteCommand`, `MultipleDeleteCommand`, `RangeDeleteCommand`**: Store deleted persons and re-add them on undo. Also support field deletion (symptoms, notes)
+- **`SingleUpdateCommand`**: Stores the original person and restores it on undo. Note: `MultipleUpdateCommand` does not support undo
+- **`ClearCommand`**: Stores a backup of the entire address book and restores it on undo
+
+#### Implementation Details
+
+**Command Interface:**
+```java
+public abstract class Command {
+    public boolean isUndoable() {
+        return false; // Default: not undoable
+    }
+    
+    public void undo(Model model) throws CommandException {
+        // Default: no-op
+    }
+}
+```
+
+**Example: AddCommand Undo Implementation**
+```java
+public class AddCommand extends Command {
+    private final Person toAdd;
+    private boolean wasExecuted = false;
+    
+    @Override
+    public boolean isUndoable() {
+        return true;
+    }
+    
+    @Override
+    public CommandResult execute(Model model) {
+        model.addPerson(toAdd);
+        wasExecuted = true;
+        return new CommandResult("Person added");
+    }
+    
+    @Override
+    public void undo(Model model) throws CommandException {
+        if (wasExecuted) {
+            model.deletePerson(toAdd);
+        }
+    }
+}
+```
+
+#### Undo Flow
+
+1. User enters a data-modifying command (e.g., `add pn/John ...`)
+2. `LogicManager` executes the command via `execute(model)`
+3. The command modifies the model and stores state for undo
+4. User enters `undo`
+5. `UndoCommand` calls `lastCommand.undo(model)` to restore the previous state
+6. If no previous command exists or the last command was read-only, `UndoCommand` throws an error
+
+#### Limitations
+
+- **Single Undo Only**: Only the most recent command can be undone. Users cannot undo multiple commands in sequence
+- **No Redo**: There is no redo functionality to reverse an undo operation
+- **Read-Only Commands Ignored**: Commands like `list`, `find`, `help`, and `exit` do not modify data and cannot be undone
+- **Bulk Update Not Supported**: `MultipleUpdateCommand` (bulk updates) does not support undo, only `SingleUpdateCommand` does
+
+#### Future Enhancements
+
+Potential improvements to the undo feature:
+- Implement command history to support multiple levels of undo/redo
+- Add support for bulk update undo in `MultipleUpdateCommand`
+- Implement selective field undo for update commands
+
 
 ### Storage component
 

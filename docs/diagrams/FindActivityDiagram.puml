@@ -1,0 +1,23 @@
+@startuml
+skin rose
+skinparam ActivityFontSize 15
+skinparam ArrowFontSize 12
+start
+:User executes find command;
+
+if () then ([no arguments])
+    :Throw ParseException\n(at least one prefix required);
+    stop
+else ([has arguments])
+    :Validate prefixes and reject\nunknown/duplicate/preamble input;
+    :Tokenize allowed prefixes\npn/, ic/, p/, e/, d/;
+    :Validate each provided field value;
+    :Build combined predicate\n(OR across all provided fields);
+    :Create FindCommand\nwith criteria description;
+endif
+
+:FindCommand#execute(model);
+:Model#updateFilteredPersonList(predicate);
+:Return success message\nwith match count and criteria;
+stop
+@enduml

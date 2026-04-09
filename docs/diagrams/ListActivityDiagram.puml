@@ -23,7 +23,7 @@ endif
 
 if () then ([filtered count is 0])
     if () then ([filter criteria was set])
-        :Throw CommandException\n(no matching patients);
+        :Return no-matches message\nwith criteria;
         stop
     else ([show all on empty book])
         :Return empty list message;

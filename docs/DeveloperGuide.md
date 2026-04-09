@@ -208,7 +208,7 @@ When a user executes a command that alters the patient list (like `add` or `upda
 The list mechanism lets users view either **all** patients or a **filtered** subset by **urgency level** (`u/`) and/or **symptoms** (`s/`). It is facilitated by **`ListCommand`** and **`ListCommandParser`**, which implement the following behaviour:
 
 * **`ListCommandParser#parse(String)`** — Tokenizes `u/` and `s/` prefixes via `ArgumentTokenizer`, validates urgency values with `ParserUtil#parseUrgencyLevel` and symptom names with `ParserUtil#parseSymptom`, and builds a **`Predicate<Person>`**. If the user leaves arguments empty, it returns a `ListCommand` that uses `Model#PREDICATE_SHOW_ALL_PERSONS`, mimicking the behaviour of the original List feature.
-* **`ListCommand#execute(Model)`** — Calls **`Model#updateFilteredPersonList(predicate)`**, then formats feedback from the size of **`Model#getFilteredPersonList()`** (success with count, empty book message, or **`CommandException`** when a filter matches no one).
+* **`ListCommand#execute(Model)`** — Calls **`Model#updateFilteredPersonList(predicate)`**, then formats feedback from the size of **`Model#getFilteredPersonList()`** (success with count, empty-book message, or a no-matches message when filters return zero results).
 
 Unprefixed text after `list` (e.g. `list fever`) is **rejected** so that filtering stays explicit and consistent with the rest of the CLI.
 
@@ -226,7 +226,7 @@ Given below is a example usage scenario.
 
 <box type="info" seamless>
 
-**Note:** If the address book is empty, `list` with no filter returns an empty-list message. If filters are provided but **no** person matches, `ListCommand` throws a **`CommandException`** so the user knows the criteria returned no matches rather than the database is empty.
+**Note:** If the address book is empty, `list` with no filter returns an empty-list message. If filters are provided but **no** person matches, `ListCommand` returns a normal success message indicating no matches for the provided criteria.
 
 </box>
 
@@ -257,6 +257,62 @@ The activity diagram below summarizes parsing and execution outcomes:
 * **Alternative 2:** Accept raw keywords (e.g. `list fever`) and guess intent.
     * *Pros:* Faster for casual typing.
     * *Cons:* Ambiguity between urgency labels, symptom names, and future fields; worse error messages.
+
+### Find feature
+
+#### Implementation
+
+The find mechanism lets users search for patients using prefixed identifiers: patient name (`pn/`), IC (`ic/`), phone (`p/`), email (`e/`), and doctor (`d/`). It is facilitated by **`FindCommand`** and **`FindCommandParser`**, which implement the following behaviour:
+
+* **`FindCommandParser#parse(String)`** — Tokenizes supported prefixes with `ArgumentTokenizer`, rejects unknown prefixes, rejects unprefixed preamble text, validates each provided value via `ParserUtil`/model constraints, and combines all provided criteria into a **single OR predicate**.
+* **`FindCommand#execute(Model)`** — Calls **`Model#updateFilteredPersonList(predicate)`** and returns a result message containing the number of matched patients and a description of the criteria used.
+
+**Matching semantics:** Search is case-insensitive. Patients are returned if they match **at least one** provided prefixed criterion (logical **OR** across fields). For keyword-based fields (`pn/`, `e/`, `d/`), matching uses token containment rules implemented by the corresponding predicate classes.
+
+**Input strictness:** At least one supported prefix is required. Unknown prefixes, unprefixed preamble text, and duplicate occurrences of the same prefix are rejected to keep command interpretation unambiguous.
+
+**Data and undo:** Finding does **not** modify stored patient data; it only updates the **filtered view** in the model. `FindCommand` remains **non-undoable**.
+
+Given below is a example usage scenario.
+
+**Step 1.** The user executes `find pn/Alice`. The parser validates the name token(s), creates a `NameContainsKeywordsPredicate`, and `FindCommand` updates the filtered list to matching patients.
+
+**Step 2.** The user executes `find ic/S1234567A e/alice@example.com`. The parser validates both fields and combines predicates using OR semantics. Patients matching either IC or email are shown.
+
+**Step 3.** The user executes `find x/value`. The parser detects an unsupported prefix and rejects the command with a parse error message indicating allowed prefixes.
+
+<box type="info" seamless>
+
+**Note:** `find` never throws a no-matches execution error. If no patient matches the provided criteria, the command still succeeds and reports `Found 0 patient(s) ...`.
+
+</box>
+
+The class diagram below summarizes the main types involved in the find feature:
+
+<puml src="diagrams/FindFeatureClassDiagram.puml" width="500" />
+
+The following sequence diagram shows how a prefixed `find` command flows through the **Logic** component (example: `find pn/Alice`):
+
+<puml src="diagrams/FindSequenceDiagram-Logic.puml" alt="FindSequenceDiagram-Logic" />
+
+How **`Model#updateFilteredPersonList`** updates the view for `find` is shown below (concrete class **`ModelManager`** delegates to JavaFX **`FilteredList`**):
+
+<puml src="diagrams/FindSequenceDiagram-Model.puml" alt="FindSequenceDiagram-Model" />
+
+The activity diagram below summarizes parsing and execution outcomes:
+
+<puml src="diagrams/FindActivityDiagram.puml" width="550" />
+
+#### Design considerations
+
+**Aspect: Strict prefixed input vs permissive free-text search**
+
+* **Alternative 1 (current choice):** Require explicit prefixes (`pn/`, `ic/`, `p/`, `e/`, `d/`) and reject unknown/unprefixed input.
+    * *Pros:* Unambiguous parsing, clearer error messages, and consistent command style with other prefixed commands.
+    * *Cons:* Slightly more typing for users who only want a quick name search.
+* **Alternative 2:** Allow free-text terms (e.g. `find alice`) and infer the intended field.
+    * *Pros:* Faster input for simple searches.
+    * *Cons:* Ambiguous interpretation across fields and weaker validation feedback.
 
 ### Command History Navigation
 

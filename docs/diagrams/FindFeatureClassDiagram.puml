@@ -1,0 +1,29 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor LOGIC_COLOR_T4
+skinparam classBackgroundColor LOGIC_COLOR
+
+Class "{abstract}\nCommand" as Command
+Class FindCommand
+Class "<<interface>>\nParser" as Parser
+Class FindCommandParser
+
+interface "<<interface>>\nModel" as Model {
+    +updateFilteredPersonList(Predicate)
+    +getFilteredPersonList()
+}
+
+FindCommand -up-|> Command
+FindCommandParser .up.|> Parser
+FindCommandParser ..> FindCommand : <<create>>
+FindCommand ..> Model
+
+note right of FindCommand
+  Requires at least one prefixed field:
+  pn/, ic/, p/, e/, d/.
+  Multiple fields are combined with OR
+  semantics across predicates.
+end note
+
+@enduml

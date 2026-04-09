@@ -146,6 +146,7 @@ Displays all patients in the application in a structured list format. You can al
 * You may provide `u/` (urgency level) to match urgency levels.
 * You may provide `s/` (symptoms) to match symptoms.
 * If both `u/` and `s/` are provided, only patients matching **both** criteria are shown.
+* If filters are provided but no patient matches, the command still succeeds and shows a "no matches" message.
 
 **Examples:**
 * `list` (shows everyone)
@@ -181,6 +182,7 @@ Allows triage coordinators to locate specific patient records using various iden
 * At least one identifier must be provided, each using a prefix: `pn/`, `ic/`, `p/`, `e/`, or `d/`. Unprefixed text and other prefixes (e.g. `n/` for notes) are not accepted.
 * The search is case-insensitive.
 * Leading and trailing spaces are ignored/trimmed.
+* Duplicate prefixes are not allowed in a single `find` command (e.g. `find p/91234567 p/98765432`).
 * Only full words will be matched for names (e.g. `Han` will not match `Hans`).
 * Patients matching at least one keyword will be returned (i.e. `OR` search).
 * Phone search (`p/`) must be exactly 8 digits, matching the format for patient phone numbers.

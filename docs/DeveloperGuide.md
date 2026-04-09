@@ -663,8 +663,42 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends. (Note: Since there is an issue with the save file, the use case should end here rather than retrying)
 
+**Use case: UC6 - Update multiple patients' details**
 
-**Use case: UC6 - Search patient records**
+**Preconditions**:
+* The user has launched the app and is at the main window.
+
+**Guarantees**:
+* The patients will be updated only if the user enters the format correctly, the list of patient records is not empty, all provided indices are valid and unique, and there is no error with the save file.
+
+**MSS**
+
+1. The user requests to update specific details for multiple specific patients in the list.
+2. ClinicConnect validates the input and ensures all indices are valid.
+3. ClinicConnect updates the details of all specified patients.
+4. ClinicConnect saves the new data.
+5. ClinicConnect displays a successful message.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. ClinicConnect detects an error with the user’s input (e.g., invalid format, missing update fields, out-of-bounds indices, or duplicated indices).
+    * 2a1. ClinicConnect displays an unsuccessful message. No patients are updated.
+
+      Use case resumes from step 1.
+
+* 2b. ClinicConnect detects that the list is empty.
+    * 2b1. ClinicConnect displays an unsuccessful message.
+
+      Use case ends. (Note: Since the list is empty, the use case should end here rather than retrying)
+
+* 3a. ClinicConnect detects an error with the save file.
+    * 3a1. ClinicConnect displays an unsuccessful message.
+
+      Use case ends. (Note: Since there is an issue with the save file, the use case should end here rather than retrying)
+
+**Use case: UC7 - Search patient records**
 
 **Preconditions**:
 * User has launched the app and is at the main window.
@@ -688,6 +722,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 2a1. ClinicConnects display an unsuccessful message detailing the error.
 
       Use case resumes from step 1.
+
 
 *{More to be added}*
 
@@ -786,16 +821,38 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
 
-    1. Test case: `delete 1`<br>
+    2. Test case: `delete 1`<br>
        Expected: First patient record is deleted from the list. Details of the deleted patient record shown in the status message. Timestamp in the status bar is updated.
 
-    1. Test case: `delete 0`<br>
+    3. Test case: `delete 0`<br>
        Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
 
-    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+    4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
        Expected: Similar to previous.
 
-1. _{ more test cases …​ }_
+2. _{ more test cases …​ }_
+
+### Updating patient(s)
+
+1. Updating a single patient
+    1. Prerequisites: List all patients using the `list` command. Ensure there is at least 1 patient in the list.
+    2. Test case: `update 1 u/high s/Fever`
+        * Expected: The urgency level of the 1st patient is updated to `high`, and their symptoms are replaced with `Fever`. The status message shows a success message confirming the update of the patient.
+    3. Test case: `update 100 u/extreme` (assuming index 100 is out of bounds)
+        * Expected: Command is rejected. Error details shown indicating an invalid patient index.
+    4. Test case: `update 1`
+        * Expected: Command is rejected. Error details shown indicating that at least one field to update must be provided.
+
+2. Updating multiple specific patients
+    1. Prerequisites: List all patients using the `list` command. Ensure there are at least 3 patients in the list.
+    2. Test case: `update 1,3 u/high s/Fever`
+        * Expected: The urgency level of the 1st and 3rd patients is updated to `high`, and their symptoms are replaced with `Fever`. The status message shows a success message confirming the update of both patients.
+    3. Test case: `update 1,1 u/high`
+        * Expected: Command is rejected. Error details shown indicating duplicated indices are not allowed.
+    4. Test case: `update 1,100 u/extreme` (assuming index 100 is out of bounds)
+        * Expected: Command is rejected. Error details shown indicating an invalid patient index. No patients are updated (verifying the all-or-nothing execution).
+
+3. _{ more test cases …​ }_
 
 ### Saving data
 

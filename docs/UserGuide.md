@@ -153,23 +153,35 @@ Displays all patients in the application in a structured list format. You can al
 * `list s/fever s/cough`
 * `list u/high s/fever`
 
-### Updating a patient : `update`
+### Updating patient(s) : `update`
 
-Updates an existing patient's details in ClinicConnect.
+Updates existing patient details in ClinicConnect. You can update a single patient or multiple specific patients at once.
 
-**Format:** `update <INDEX> [pn/<PATIENT_NAME>] [ic/<IC>] [a/<ADDRESS>] [e/<EMAIL>] [p/<PATIENT_PHONE>] [s/<SYMPTOM>] [u/<LEVEL>] [d/<DOCTOR>] [nk/<NEXT_OF_KIN_NAME>] [nkp/<NEXT_OF_KIN_PHONE>] [nkr/<NEXT_OF_KIN_RELATIONSHIP>] [n/<NOTES>]`
+**Format:**
 
-* Edits the patient at the specified `<INDEX>`. The index refers to the index number shown in the displayed patient list. The index **must be a positive integer** (e.g. 1, 2, 3, …).
-* **At least one** of the fields must be provided.
-* Existing values will be overwritten by the input values.
-* When editing symptoms, the existing symptoms will be removed (not cumulative).
+**Single update:** `update <INDEX> [pn/<PATIENT_NAME>] [ic/<IC>] [p/<PATIENT_PHONE>] [a/<ADDRESS>] [e/<EMAIL>] [u/<LEVEL>] [d/<DOCTOR>] [nk/<NEXT_OF_KIN_NAME>] [nkp/<NEXT_OF_KIN_PHONE>] [nkr/<NEXT_OF_KIN_RELATIONSHIP>] [s/<SYMPTOM>]... [n/<NOTES>]`
+* Edits the patient at the specified `<INDEX>`.
+
+**Multiple update:** `update <INDEX>,<INDEX>[,<INDEX>,...] [pn/<PATIENT_NAME>] [ic/<IC>] [p/<PATIENT_PHONE>] [a/<ADDRESS>] [e/<EMAIL>] [u/<LEVEL>] [d/<DOCTOR>] [nk/<NEXT_OF_KIN_NAME>] [nkp/<NEXT_OF_KIN_PHONE>] [nkr/<NEXT_OF_KIN_RELATIONSHIP>] [s/<SYMPTOM>]... [n/<NOTES>]`
+* Edits the patients at the specified indices.
+* Delimiter: Comma (`,`)
+* Duplicated indices (e.g., `update 2,2`) will be rejected.
+
+**Shared rules for updates:**
+* The indices refer to the index numbers shown in the displayed patient list and **must be positive integers**.
+* **At least one** of the optional fields must be provided.
+* Existing values will be overwritten by the input values for all targeted patients.
+* When editing symptoms, the existing symptoms of the patient(s) will be replaced by the newly provided ones (i.e., it is not cumulative).
 * The same argument validation constraints from the `add` command apply here.
+* **All-or-Nothing Execution:** If any of the provided indices are invalid (e.g., larger than the total number of patients currently shown in the list), the entire command will be rejected and **no** patients will be updated.
 
->**Tip**: You can remove all symptoms by typing `s/` without specifying any symptoms after it.
+>**Tip**: You can remove all symptoms for the selected patient(s) by typing `s/` without specifying any symptoms after it. Similarly, you can remove existing notes by typing `n/` without any text.
 
 **Examples:**
 * `update 1 p/91234567` Updates the phone number of the 1st patient to be `91234567`.
-* `update 2 u/extreme s/Cardiac arrest` Updates the urgency level of the 2nd patient to `extreme` and symptoms to `Cardiac arrest`.
+* `update 1,3 u/extreme` Updates the urgency level of the 1st and 3rd patients to `extreme`.
+* `update 2,4,5 d/Dr Sally s/Fever` Updates the doctor to `Dr Sally` and replaces all existing symptoms with `Fever` for the 2nd, 4th, and 5th patients.
+* `update 5 n/` Removes the notes from the 5th patient.
 
 ### Searching for a patient : `find`
 
@@ -315,13 +327,13 @@ Furthermore, certain edits can cause ClinicConnect to behave in unexpected ways 
 
 ## Command Summary
 
-| Action | Format                                                                                                                                                                                               | Examples                                                                   |
-| :--- |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------|
+| Action | Format                                                                                                                                                                                               | Examples                                                                                                                                                                      |
+| :--- |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Add** | `add pn/<PATIENT_NAME> ic/<IC> p/<PATIENT_PHONE> a/<ADDRESS> e/<EMAIL> u/<LEVEL> d/<DOCTOR> nk/<NEXT_OF_KIN_NAME> nkp/<NEXT_OF_KIN_PHONE> nkr/<NEXT_OF_KIN_RELATIONSHIP> [s/<SYMPTOMS>] [n/<NOTES>]` | `add pn/John Doe Jun Kai ic/T0123456B p/12345678 a/21 Serangan Road e/john@doe.com u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 nkr/Mother s/Diabetic n/Admitted at 12pm` |
-| **Update** | `update <INDEX> [prefix/<VALUE>]...`                                                                                                                                                                 | `update 1 u/extreme n/Immediate surgery required`                                     |
-| **Search** | `find [pn/<PATIENT_NAME>] [ic/<IC>] [p/<PATIENT_PHONE>] [e/<EMAIL>] [d/<DOCTOR>]`                                                                                                                    | `find e/johndoe@example.com`, `find d/Dr Sally`, `find ic/S1234567A`                  |
-| **Delete** | `delete <INDEX>` <br> `delete <INDEX>,<INDEX>` <br> `delete <START>-<END>` <br> `delete <INDICES> [s/<SYMPTOM>]... [n/]`                                                                             | `delete 3` <br> `delete 1,4` <br> `delete 2-5` <br> `delete 1 s/fever n/`             |
-| **List**   | `list [u/<LEVEL>]... [s/<SYMPTOM>]...`                                                                                                                                                               | `list` <br> `list u/high` <br> `list s/fever s/cough`                                 |
-| **Undo**   | `undo`                                                                                                                                                                                               | `undo`                                                                                |
-| **Clear**  | `clear`                                                                                                                                                                                              | `clear`                                                                               |
-| **Exit**   | `exit`                                                                                                                                                                                               | `exit`                                                                                |
+| **Update** | `update <INDEX>` <br> `update <INDEX>,<INDEX>` <br> `... [prefix/<VALUE>]...`                                                                                                                        | `update 1 u/extreme` <br> `update 1,3 d/Dr Sally` <br> `update 2,4,5 s/Fever n/`                                                                                              |
+| **Search** | `find [pn/<PATIENT_NAME>] [ic/<IC>] [p/<PATIENT_PHONE>] [e/<EMAIL>] [d/<DOCTOR>]`                                                                                                                    | `find e/johndoe@example.com`, `find d/Dr Sally`, `find ic/S1234567A`                                                                                                          |
+| **Delete** | `delete <INDEX>` <br> `delete <INDEX>,<INDEX>` <br> `delete <START>-<END>` <br> `delete <INDICES> [s/<SYMPTOM>]... [n/]`                                                                             | `delete 3` <br> `delete 1,4` <br> `delete 2-5` <br> `delete 1 s/fever n/`                                                                                                     |
+| **List**   | `list [u/<LEVEL>]... [s/<SYMPTOM>]...`                                                                                                                                                               | `list` <br> `list u/high` <br> `list s/fever s/cough`                                                                                                                         |
+| **Undo**   | `undo`                                                                                                                                                                                               | `undo`                                                                                                                                                                        |
+| **Clear**  | `clear`                                                                                                                                                                                              | `clear`                                                                                                                                                                       |
+| **Exit**   | `exit`                                                                                                                                                                                               | `exit`                                                                                                                                                                        |

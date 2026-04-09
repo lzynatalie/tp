@@ -27,6 +27,7 @@ public class RangeDeleteCommand extends DeleteCommand {
     private final Index endIndex;
     private Person[] deletedPersons;
     private boolean wasExecuted = false;
+    private boolean isFieldDeletion = false;
 
     public RangeDeleteCommand(Index startIndex, Index endIndex) {
         this(startIndex, endIndex, Map.of());
@@ -72,6 +73,7 @@ public class RangeDeleteCommand extends DeleteCommand {
                 model.setPerson(person, updatedPerson);
                 deletedPersonsString.append("\n" + Messages.format(updatedPerson));
             }
+            isFieldDeletion = true;
             wasExecuted = true;
             return new CommandResult(String.format(MESSAGE_DELETE_FIELD_SUCCESS, deletedPersonsString));
         }
@@ -111,8 +113,20 @@ public class RangeDeleteCommand extends DeleteCommand {
     public void undo(Model model) throws CommandException {
         requireNonNull(model);
         if (wasExecuted && deletedPersons != null) {
-            for (Person person : deletedPersons) {
-                model.addPerson(person);
+            if (isFieldDeletion) {
+                for (Person originalPerson : deletedPersons) {
+                    Person currentPerson = model.getFilteredPersonList().stream()
+                            .filter(p -> p.isSamePerson(originalPerson))
+                            .findFirst()
+                            .orElse(null);
+                    if (currentPerson != null) {
+                        model.setPerson(currentPerson, originalPerson);
+                    }
+                }
+            } else {
+                for (Person person : deletedPersons) {
+                    model.addPerson(person);
+                }
             }
         }
     }

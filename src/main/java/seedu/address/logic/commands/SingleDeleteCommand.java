@@ -26,6 +26,7 @@ public class SingleDeleteCommand extends DeleteCommand {
     private final Index targetIndex;
     private Person deletedPerson;
     private boolean wasExecuted = false;
+    private boolean isFieldDeletion = false;
 
     public SingleDeleteCommand(Index targetIndex) {
         this(targetIndex, Map.of());
@@ -69,6 +70,8 @@ public class SingleDeleteCommand extends DeleteCommand {
             assert updatedPerson.isSamePerson(personToDelete)
                     : "Updated person should be have the same identity as original person.";
             model.setPerson(personToDelete, updatedPerson);
+            isFieldDeletion = true;
+            wasExecuted = true;
             return new CommandResult(String.format(MESSAGE_DELETE_FIELD_SUCCESS, Messages.format(updatedPerson)));
         }
 
@@ -81,7 +84,14 @@ public class SingleDeleteCommand extends DeleteCommand {
     public void undo(Model model) throws CommandException {
         requireNonNull(model);
         if (wasExecuted && deletedPerson != null) {
-            model.addPerson(deletedPerson);
+            if (isFieldDeletion) {
+                model.setPerson(model.getFilteredPersonList().stream()
+                        .filter(p -> p.isSamePerson(deletedPerson))
+                        .findFirst()
+                        .orElse(null), deletedPerson);
+            } else {
+                model.addPerson(deletedPerson);
+            }
         }
     }
 

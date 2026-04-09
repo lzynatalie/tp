@@ -15,12 +15,12 @@ import java.util.regex.Pattern;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.DoctorNameContainsKeywordsPredicate;
-import seedu.address.model.person.Email;
 import seedu.address.model.person.EmailContainsKeywordsPredicate;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.DoctorName;
+import seedu.address.model.person.Email;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -123,6 +123,8 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(nameArgs);
+            String normalizedNameArgs = nameArgs.replaceAll("\\s+", " ");
+            ParserUtil.parseName(normalizedNameArgs);
             List<String> nameKeywords = Arrays.asList(nameArgs.split("\\s+"));
             // Validate each keyword
             for (String keyword : nameKeywords) {
@@ -142,10 +144,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(icArg);
-            // Validate IC format
-            if (!Ic.isValidIc(icArg)) {
-                throw new ParseException(Ic.MESSAGE_CONSTRAINTS);
-            }
+            ParserUtil.parseIc(icArg);
             String icToMatch = icArg;
             Predicate<Person> icPredicate = person -> person.getIc().value.equalsIgnoreCase(icToMatch);
             predicate = predicate == null ? icPredicate : predicate.or(icPredicate);
@@ -162,10 +161,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(phoneArg);
-            // Validate phone format
-            if (!Phone.isValidPhone(phoneArg)) {
-                throw new ParseException(Phone.MESSAGE_CONSTRAINTS);
-            }
+            ParserUtil.parsePhone(phoneArg);
             String phoneToMatch = phoneArg;
             Predicate<Person> phonePredicate = person -> person.getPhone().value.equals(phoneToMatch);
             predicate = predicate == null ? phonePredicate : predicate.or(phonePredicate);
@@ -187,6 +183,9 @@ public class FindCommandParser implements Parser<FindCommand> {
                 throw new ParseException(Email.MESSAGE_CONSTRAINTS);
             }
             List<String> emailKeywords = Arrays.asList(emailArg.split("\\s+"));
+            for (String emailKeyword : emailKeywords) {
+                ParserUtil.parseEmail(emailKeyword);
+            }
             Predicate<Person> emailPredicate = new EmailContainsKeywordsPredicate(emailKeywords);
             predicate = predicate == null ? emailPredicate : predicate.or(emailPredicate);
             if (criteriaBuilder.length() > 0) {
@@ -202,6 +201,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(doctorArg);
+            ParserUtil.parseDoctorName(doctorArg);
             List<String> doctorNameKeywords = Arrays.asList(doctorArg.split("\\s+"));
             // Validate each keyword
             for (String keyword : doctorNameKeywords) {

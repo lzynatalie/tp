@@ -8,6 +8,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -17,6 +19,13 @@ import seedu.address.model.person.Person;
  * Parses input arguments and creates a new ListCommand object
  */
 public class ListCommandParser implements Parser<ListCommand> {
+
+    private static final Pattern LIST_ARGUMENT_PREFIX_PATTERN =
+            Pattern.compile("(?:^|\\s)([a-zA-Z][a-zA-Z0-9]*)/");
+
+    private static final String MESSAGE_INVALID_LIST_PREFIX =
+            "Only prefixes \"u/\" (urgency) and \"s/\" (symptoms) are allowed for list.\n"
+            + "Examples: `list u/high` `list s/fever` `list u/high s/fever`.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the ListCommand
@@ -30,13 +39,14 @@ public class ListCommandParser implements Parser<ListCommand> {
             return new ListCommand();
         }
 
+        verifyOnlyAllowedListArgumentPrefixes(args);
+
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_URGENCY, PREFIX_SYMPTOM);
 
         // Disallow any unprefixed input: e.g. `list fever cough` should be rejected.
         String preamble = argMultimap.getPreamble().trim();
         if (!preamble.isEmpty()) {
-            throw new ParseException("Please use prefixes \"u/\" for urgency level, \"s/\" for symptoms\n"
-                + "Examples: `list u/high` `list s/fever` `list u/high s/fever`.");
+            throw new ParseException(MESSAGE_INVALID_LIST_PREFIX);
         }
 
         List<String> rawUrgencies = argMultimap.getAllValues(PREFIX_URGENCY);
@@ -59,6 +69,19 @@ public class ListCommandParser implements Parser<ListCommand> {
 
         String criteriaDescription = buildCriteriaDescription(urgencyMatches, symptomMatches);
         return new ListCommand(predicate, criteriaDescription);
+    }
+
+    /**
+     * Ensures every {@code word/} token in the arguments is only {@code u/} or {@code s/}.
+     */
+    private static void verifyOnlyAllowedListArgumentPrefixes(String args) throws ParseException {
+        Matcher matcher = LIST_ARGUMENT_PREFIX_PATTERN.matcher(args);
+        while (matcher.find()) {
+            String prefix = matcher.group(1).toLowerCase() + "/";
+            if (!prefix.equals(PREFIX_URGENCY.getPrefix()) && !prefix.equals(PREFIX_SYMPTOM.getPrefix())) {
+                throw new ParseException(MESSAGE_INVALID_LIST_PREFIX);
+            }
+        }
     }
 
     private static Set<String> parseUrgencySet(List<String> rawUrgencies) throws ParseException {

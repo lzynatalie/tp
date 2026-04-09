@@ -90,7 +90,7 @@ public class ListCommandParserTest {
     public void parse_unprefixedSymptoms_throwsParseException() {
         ParseException exception = assertThrows(ParseException.class, () ->
                 parser.parse("fever cough"));
-        assertEquals("Please use prefixes \"u/\" for urgency level, \"s/\" for symptoms\n"
+        assertEquals("Only prefixes \"u/\" (urgency) and \"s/\" (symptoms) are allowed for list.\n"
             + "Examples: `list u/high` `list s/fever` `list u/high s/fever`.",
             exception.getMessage());
     }
@@ -136,6 +136,29 @@ public class ListCommandParserTest {
     public void parse_invalidSymptoms_throwsParseException() {
         ParseException exception = assertThrows(ParseException.class, () -> parser.parse(" s/fever!"));
         assertEquals(Symptom.MESSAGE_CONSTRAINTS, exception.getMessage());
+    }
+
+    @Test
+    public void parse_invalidPrefix_throwsParseException() {
+        ParseException exception = assertThrows(ParseException.class, () ->
+                parser.parse(" n/notes u/high"));
+        assertEquals("Only prefixes \"u/\" (urgency) and \"s/\" (symptoms) are allowed for list.\n"
+            + "Examples: `list u/high` `list s/fever` `list u/high s/fever`.",
+            exception.getMessage());
+    }
+
+    @Test
+    public void parse_invalidPrefixAfterValidPrefix_throwsParseException() {
+        assertThrows(ParseException.class, () -> parser.parse(" u/high n/notes"));
+    }
+
+    @Test
+    public void parse_urgencyWithPatientNamePrefix_throwsParseException() {
+        ParseException exception = assertThrows(ParseException.class, () ->
+                parser.parse(" u/high pn/Alice"));
+        assertEquals("Only prefixes \"u/\" (urgency) and \"s/\" (symptoms) are allowed for list.\n"
+            + "Examples: `list u/high` `list s/fever` `list u/high s/fever`.",
+            exception.getMessage());
     }
 }
 

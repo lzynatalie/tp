@@ -969,22 +969,65 @@ testers are expected to do more *exploratory* testing.
       Expected: No patient record is added to the list. An error message is shown.
 
 
-### Deleting a person
+### Deleting patient(s)
 
-1. Deleting a person while all persons are being shown
+1. Deleting a single patient
 
-    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+    1. Prerequisites: List all patients using the `list` command. Ensure there is at least 1 patient in the list for every test case.
 
     2. Test case: `delete 1`<br>
-       Expected: First patient record is deleted from the list. Details of the deleted patient record shown in the status message. Timestamp in the status bar is updated.
+       Expected: First patient record is deleted from the list. Details of the deleted patient record shown in the success status message.
 
-    3. Test case: `delete 0`<br>
-       Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+    3. Test case: `delete`<br>
+       Expected: No patient record is deleted. Error details shown indicating empty index field.
 
-    4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-       Expected: Similar to previous.
+    4. Test case: `delete 0`, `delete a`<br>
+       Expected: No patient record is deleted. Error details shown indicating invalid command format.
 
-2. _{ more test cases …​ }_
+    5. Test case: `delete 100` (assuming index 100 is out of list range)<br>
+       Expected: No patient record is deleted. Error details shown indicating invalid patient index.
+
+2. Deleting multiple patients
+
+    1. Prerequisites: List all patients using the `list` command. Ensure there are at least 3 patients in the list for every test case.
+
+    2. Test case: `delete 1,3`<br>
+       Expected: First and third patient records are deleted from the list. Details of the deleted patient records shown in the success status message.
+
+    3. Test case: `delete 1-3`<br>
+       Expected: First, second and third patient records are deleted from the list. Details of the deleted patient records shown in the success status message.
+
+    4. Test case: `delete 1,1`<br>
+       Expected: No patient records are deleted. Error details shown indicating duplicated indices are not allowed.
+
+    5. Test case: `delete 1,100`, `delete 1-100` (assuming index 100 is out of list range)<br>
+       Expected: No patient records are deleted. Error details shown indicating invalid patient index.
+
+    6. Test case: `delete 3-1`<br>
+       Expected: No patient records are deleted. Error details shown indicating invalid index range.
+
+3. Deleting patients from an empty list
+
+    1. Prerequisites: Delete all patients using the `clear` command. Ensure there are no patients in the list.
+
+    2. Test case: `delete 1`, `delete 1,3`, `delete 1-3`<br>
+       Expected: No patient record is deleted. Error details shown indicating that the list is empty.
+
+4. Deleting patient fields
+
+    1. Prerequisites: List all patients using the `list` command. Ensure there is at least 1 patient in the list for every test case.
+
+    2. Test case: `delete 1 s/`<br>
+       Expected: The symptoms of the first patient are deleted. Details of the target patient record shown in the success status message.
+
+    3. Test case: `delete 1 s/ n/`<br>
+       Expected: The symptoms and notes of the first patient are deleted. Details of the target patient record shown in the success status message.
+
+    4. Test case: `delete 1 ic/`<br>
+       Expected: No field values are deleted. Error details shown indicating invalid field prefix.
+
+    5. Test case: `delete 1 n/notes`<br>
+       Expected: No field values are deleted. Error details shown indicating argument for prefix not allowed.
 
 ### Updating patient(s)
 

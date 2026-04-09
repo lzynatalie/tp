@@ -31,6 +31,8 @@ public class ListCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "There are %d patient record(s).";
     public static final String MESSAGE_SUCCESS_FILTERED = "Found %d patient(s) matching the following criteria: %s";
+    public static final String MESSAGE_NO_MATCHES_FILTERED =
+            "No patient(s) matching the following criteria: \"%s\"";
 
     public static final String MESSAGE_EMPTY_LIST = "Your patient record list is currently empty.";
 
@@ -64,8 +66,7 @@ public class ListCommand extends Command {
 
         if (numberOfPatients == 0) {
             if (criteriaDescription != null) {
-                throw new CommandException("No patient(s) matching the following criteria: \""
-                        + criteriaDescription + "\"");
+                return new CommandResult(String.format(MESSAGE_NO_MATCHES_FILTERED, criteriaDescription));
             }
             return new CommandResult(MESSAGE_EMPTY_LIST);
         }

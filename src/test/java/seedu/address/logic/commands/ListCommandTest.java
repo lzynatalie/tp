@@ -1,7 +1,5 @@
 package seedu.address.logic.commands;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 
 import java.util.function.Predicate;
@@ -9,7 +7,6 @@ import java.util.function.Predicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -121,16 +118,13 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_listNoMatchesWithCriteria_throwsCommandException() {
+    public void execute_listNoMatchesWithCriteria_returnsNoMatchesMessage() {
         Model emptyModel = new ModelManager(new AddressBook(), new UserPrefs());
+        Model expectedModel = new ModelManager(emptyModel.getAddressBook(), new UserPrefs());
         Predicate<Person> predicate = person -> false;
         String criteriaDescription = "Urgency: high";
-        ListCommand listCommand = new ListCommand(predicate, criteriaDescription);
-
-        CommandException exception = assertThrows(CommandException.class, () ->
-                listCommand.execute(emptyModel));
-
-        assertEquals("No patient(s) matching the following criteria: \"" + criteriaDescription + "\"",
-                exception.getMessage());
+        String expectedMessage = String.format(ListCommand.MESSAGE_NO_MATCHES_FILTERED, criteriaDescription);
+        assertCommandSuccess(new ListCommand(predicate, criteriaDescription), emptyModel, expectedMessage,
+                expectedModel);
     }
 }

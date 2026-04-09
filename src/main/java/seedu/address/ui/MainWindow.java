@@ -180,11 +180,7 @@ public class MainWindow extends UiPart<Stage> {
             String feedbackToUser = commandResult.getFeedbackToUser();
             logger.info("Result: " + feedbackToUser);
 
-            if (feedbackToUser.startsWith("Found 0 patient(s)")) {
-                resultDisplay.setStyle("no-patients-found");
-            } else {
-                resultDisplay.setStyle("success");
-            }
+            resultDisplay.setStyle("success");
 
             resultDisplay.setFeedbackToUser(feedbackToUser);
 

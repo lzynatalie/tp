@@ -176,7 +176,7 @@ This feature is facilitated by the `Urgency` and `Ic` classes, and is integrated
 #### Class Diagram
 The following class diagram shows how the `Comparable` interface is implemented across the domain models:
 
-<img src="images/TriageSortingClassDiagram.png" width="450" />
+<puml src="diagrams/TriageSortingClassDiagram.puml" width="450" />
 
 #### Sequence of Events
 When a user executes a command that alters the patient list (like `add` or `update`), the internal list must re-sort itself.
@@ -189,7 +189,7 @@ When a user executes a command that alters the patient list (like `add` or `upda
 
 **Aspect: How to maintain the sorted order of the patient list.**
 
-* **Alternative 1 (Current Implementation):** Implement `Comparable` in `Person` and enforce sorting at the `UniquePersonList` level or UI `SortedList` level automatically upon any modification.
+* **Alternative 1 (Current Implementation):** Implement `Comparable` in `Model` and enforce sorting at the `UniquePersonList` level or UI `SortedList` level automatically upon any modification.
     * *Pros:* The UI and internal data are always inherently synchronized. No explicit `sort` command needs to be called by the user, fitting the fast-paced triage environment.
     * *Cons:* Slight performance overhead since sorting occurs on every single addition or update (O(n log n) time complexity per modification).
 * **Alternative 2:** Do not sort automatically. Create a separate `sort` command that the user must type manually.

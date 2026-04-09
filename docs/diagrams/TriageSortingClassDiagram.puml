@@ -1,0 +1,41 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+
+' Define Classes and Interfaces
+class Person {
+    + compareTo(other: Person): int
+}
+class UrgencyLevel {
+    + compareTo(other: UrgencyLevel): int
+}
+class Ic {
+    + compareTo(other: Ic): int
+}
+
+interface "Comparable" as Comparable <<interface>> {
+    + compareTo(other: T): int
+}
+
+' Realization: Dashed lines with hollow triangles
+Person .up.|> Comparable
+UrgencyLevel .up.|> Comparable
+Ic .up.|> Comparable
+
+' Composition: Solid lines with filled diamonds
+Person *--> "1" UrgencyLevel
+Person *--> "1" Ic
+
+' Layout alignment (Keeps them horizontal)
+UrgencyLevel -[hidden]right-> Person
+Person -[hidden]right-> Ic
+
+note bottom of Person
+  **Triage Priority Logic:**
+  1. Primary: UrgencyLevel
+  2. Tie-breaker: Ic (Lexicographical)
+end note
+
+@enduml

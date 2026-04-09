@@ -27,7 +27,9 @@ public class MultipleDeleteCommand extends DeleteCommand {
 
     private final Index[] targetIndices;
     private Person[] deletedPersons;
+    private Person[] updatedPersons;
     private boolean wasExecuted = false;
+    private boolean isFieldDeletion = false;
 
     public MultipleDeleteCommand(Index... targetIndices) {
         this(targetIndices, Map.of());
@@ -64,13 +66,17 @@ public class MultipleDeleteCommand extends DeleteCommand {
         StringBuilder deletedPersonsString = new StringBuilder();
 
         if (!getPrefixes().isEmpty()) {
-            Person[] updatedPersons = getUpdatedPersons(personsToDelete);
+            Person[] updated = getUpdatedPersons(personsToDelete);
+            this.updatedPersons = updated;
             for (int i = 0; i < personsToDelete.length; i++) {
                 Person person = personsToDelete[i];
-                Person updatedPerson = updatedPersons[i];
+                Person updatedPerson = updated[i];
                 model.setPerson(person, updatedPerson);
                 deletedPersonsString.append("\n" + Messages.format(updatedPerson));
             }
+            this.deletedPersons = personsToDelete;
+            isFieldDeletion = true;
+            wasExecuted = true;
             return new CommandResult(String.format(MESSAGE_DELETE_FIELD_SUCCESS, deletedPersonsString));
         }
 
@@ -88,8 +94,21 @@ public class MultipleDeleteCommand extends DeleteCommand {
     public void undo(Model model) throws CommandException {
         requireNonNull(model);
         if (wasExecuted && deletedPersons != null) {
-            for (Person person : deletedPersons) {
-                model.addPerson(person);
+            if (isFieldDeletion) {
+                for (int i = 0; i < deletedPersons.length; i++) {
+                    Person originalPerson = deletedPersons[i];
+                    Person currentPerson = model.getFilteredPersonList().stream()
+                            .filter(p -> p.isSamePerson(originalPerson))
+                            .findFirst()
+                            .orElse(null);
+                    if (currentPerson != null) {
+                        model.setPerson(currentPerson, originalPerson);
+                    }
+                }
+            } else {
+                for (Person person : deletedPersons) {
+                    model.addPerson(person);
+                }
             }
         }
     }

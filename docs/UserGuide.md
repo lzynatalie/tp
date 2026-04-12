@@ -165,7 +165,7 @@ Updates existing patient details in ClinicConnect. You can update a single patie
 
 **Multiple update:** `update <INDEX>,<INDEX>[,<INDEX>,...] [pn/<PATIENT_NAME>] [p/<PATIENT_PHONE>] [a/<ADDRESS>] [e/<EMAIL>] [u/<LEVEL>] [d/<DOCTOR>] [nk/<NEXT_OF_KIN_NAME>] [nkp/<NEXT_OF_KIN_PHONE>] [nkr/<NEXT_OF_KIN_RELATIONSHIP>] [s/<SYMPTOM>][n/<NOTES>] [an/<APPEND_NOTES>]...`
 * Edits the patients at the specified indices.
-* Delimiter: Comma (`,`)
+* Delimiter: Comma (`,`). No spaces are allowed between the indices and commas (e.g., update 1, 2 will be rejected as an invalid format).
 * Duplicated indices (e.g., `update 2,2`) will be rejected.
 
 **Shared rules for updates:**
@@ -176,6 +176,7 @@ Updates existing patient details in ClinicConnect. You can update a single patie
 * **Symptoms Replacement:** When editing symptoms (`s/`), the existing symptoms of the patient(s) will be replaced by the newly provided ones (i.e., it is not cumulative).
 * **Note Handling (Overwrite vs Append):** * Using `n/` will overwrite the existing note entirely.
     * Using `an/` will append the text to the bottom of the existing note on a new line, **automatically prefixing it with the current timestamp** (e.g., `[09 Apr 20:00]`).
+    * **Mutually Exclusive:** You **cannot** use both `n/` (overwrite) and `an/` (append) in the same command. If both prefixes are provided, the command will be rejected.
     * *Note constraint:* The total combined length of the notes cannot exceed 500 characters.
 * **All-or-Nothing Execution:** If any of the provided indices are invalid (e.g., larger than the total number of patients currently shown in the list), the entire command will be rejected and **no** patients will be updated.
 * **Duplicate Conflict:** If updating a patient causes them to have the exact same IC as an already existing patient in the database, the command will be rejected.
@@ -297,7 +298,7 @@ Exits the application and saves all data to the hard disk.
 
 ClinicConnect automatically sorts the patient list to prioritize critical cases:
 1.  **Urgency Level:** Patients are ranked `EXTREME` > `HIGH` > `MODERATE` > `LOW`.
-2.  **Tie-Breaker:** If two patients have the exact same urgency level, they are sorted deterministically by their **IC Number**.
+2.  **Tie-Breaker:** If two patients have the exact same urgency level, they are sorted alphabetically by their **IC number**. This comparison is case-insensitive (e.g., s1234567a and S1234567A are treated as identical for sorting purposes).
 
 --------------------------------------------------------------------------------------------------------------------
 

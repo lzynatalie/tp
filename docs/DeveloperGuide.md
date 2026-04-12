@@ -260,7 +260,7 @@ This feature is facilitated by the `Urgency` and `Ic` classes, and is integrated
 
 #### Sorting Logic Flow
 1. **Primary Sort (Urgency):** The `Urgency` class implements `Comparable<Urgency>`. It assigns internal weightages to its valid states (`EXTREME` = 4, `HIGH` = 3, `MODERATE` = 2, `LOW` = 1). When two patients are compared, the one with the higher urgency weight is placed higher in the list.
-2. **Secondary Sort (Tie-Breaker):** If two patients have the exact same `Urgency`, the `Person#compareTo()` method falls back to comparing their `Ic` objects. The `Ic` class implements `Comparable<Ic>` and uses standard lexicographical string comparison to ensure a consistent, deterministic order.
+2. **Secondary Sort (Tie-Breaker):** If two patients have the exact same `Urgency`, the sorting logic falls back to comparing their `Ic` values. To prevent mixed-case inputs (e.g., `s1234567a` vs `S1234567A`) from causing non-deterministic sorting in the UI, this tie-breaker uses **case-insensitive lexicographical string comparison** (via `String.CASE_INSENSITIVE_ORDER`).
 
 #### Class Diagram
 The following class diagram shows how the `Comparable` interface is implemented across the domain models:

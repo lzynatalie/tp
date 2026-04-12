@@ -211,22 +211,22 @@ Allows triage coordinators to locate specific patient records using various iden
 * `find e/johndoe@example.com` returns the patient(s) with that email.
 * `find d/Dr Sally` returns the patient(s) with that doctor name.
 
-### Deleting a patient : `delete`
+### Deleting patient(s) : `delete`
 
 Permanently removes patient records from ClinicConnect.
 
 **Format:**
 
 **Single deletion:** `delete <INDEX>`
-* Edits the patient at the specified `<INDEX>`. The index refers to the index number shown in the displayed patient list. The index **must be a positive integer**.
+* Deletes the patient at the specified `<INDEX>`. The index refers to the index number shown in the displayed patient list. The index **must be a positive integer**.
 
 **Multiple deletion:** `delete <INDEX>,<INDEX>[,<INDEX>,...]`
-* Edits the patients at the specified indices. The indices refer to the index numbers shown in the displayed patient list. The indices **must be positive integers**.
+* Deletes the patients at the specified indices. The indices refer to the index numbers shown in the displayed patient list. The indices **must be positive integers**.
 * Delimiter: Comma (`,`)
 * Duplicated indices (e.g. `delete 2,2`) will be rejected.
 
 **Range deletion:** `delete <START_INDEX>-<END_INDEX>`
-* Edits the patients in the range of the specified indices. The indices refer to the index numbers shown in the displayed patient list. The indices **must be positive integers**.
+* Deletes the patients in the range of the specified indices. The indices refer to the index numbers shown in the displayed patient list. The indices **must be positive integers**.
 * Delimiter: Hyphen (`-`)
 * The start index must be less than or equal to the end index.
 

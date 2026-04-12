@@ -94,15 +94,10 @@ public abstract class DeleteCommand extends Command {
             throw new CommandException(MESSAGE_SYMPTOM_NOT_FOUND);
         }
 
-        List<Symptom> symptomsToDelete;
-        try {
-            symptomsToDelete = prefixMap.getOrDefault(PREFIX_SYMPTOM, List.of()).stream()
-                    .filter(s -> !s.isEmpty())
-                    .map(Symptom::new)
-                    .toList();
-        } catch (IllegalArgumentException e) {
-            throw new CommandException(e.getMessage());
-        }
+        List<Symptom> symptomsToDelete = prefixMap.getOrDefault(PREFIX_SYMPTOM, List.of()).stream()
+                .filter(s -> !s.isEmpty())
+                .map(Symptom::new)
+                .toList();
         Set<Symptom> updatedSymptoms = new HashSet<>(personToDelete.getSymptoms()); // instantiate with all symptoms
         if (prefixMap.containsKey(PREFIX_SYMPTOM) && symptomsToDelete.isEmpty()) { // delete all symptoms
             updatedSymptoms.clear();

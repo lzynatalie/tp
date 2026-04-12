@@ -11,7 +11,7 @@ public class Phone {
 
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Patient phone numbers may contain digits, spaces, hyphens, and an optional '+' only at the start.\n"
+            "Patient phone numbers may contain digits, spaces, hyphens, and one optional '+' only at the start.\n"
                     + "If '+' is not used, the phone number must start with a digit.\n"
                     + "If '+' is used, it must be followed by a digit.\n"
                     + "The phone number must be contained in the range of 3 and 15 digits and cannot be blank.\n";

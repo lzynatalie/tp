@@ -12,11 +12,11 @@ public class Ic {
     public static final String MESSAGE_CONSTRAINTS =
             "IC should only contain 1 character at the start, followed by 7 digits, and end with 1 character. "
                     + "It should not be blank.\n"
-                    + "The first character should be S, T, F or G.\n"
+                    + "The first character should be S, T, F, G or M.\n"
                     + "The 7 digits in the middle should be between 0000000 and 9999999.\n"
                     + "The last character can be any letter from A to Z.";
 
-    public static final String VALIDATION_REGEX = "(?i)^[STFGstfg]\\d{7}[A-Za-z]$";
+    public static final String VALIDATION_REGEX = "(?i)^[STFGMstfgm]\\d{7}[A-Za-z]$";
 
     public final String value;
 

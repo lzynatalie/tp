@@ -13,6 +13,7 @@ public class ClearCommand extends Command {
 
     public static final String COMMAND_WORD = "clear";
     public static final String MESSAGE_SUCCESS = "Address book has been cleared!";
+    public static final String MESSAGE_EXTRA_PARAMETERS = "There should not be extra parameters.\nUsage: clear";
 
     private AddressBook clearedAddressBook;
     private boolean wasExecuted = false;
@@ -37,5 +38,10 @@ public class ClearCommand extends Command {
         if (wasExecuted && clearedAddressBook != null) {
             model.setAddressBook(new AddressBook(clearedAddressBook));
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other == this || other instanceof ClearCommand;
     }
 }

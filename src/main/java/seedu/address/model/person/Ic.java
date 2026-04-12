@@ -10,9 +10,9 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Ic {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "IC should only contain 1 character at the start, followed by 7 digits, and end with 1 character. "
+            "IC should only contain 1 character at the start, followed by 7 digits, and end with 1 letter. "
                     + "It should not be blank.\n"
-                    + "The first character should be S, T, F or G.\n"
+                    + "The first character should be S, T, F, G or M.\n"
                     + "The 7 digits in the middle should be between 0000000 and 9999999.\n"
                     + "The last character can be any letter from A to Z.";
 
@@ -29,7 +29,7 @@ public class Ic {
         requireNonNull(ic);
         String trimmedIc = ic.trim();
         checkArgument(isValidIc(trimmedIc), MESSAGE_CONSTRAINTS);
-        this.value = trimmedIc;
+        this.value = trimmedIc.toUpperCase();
     }
 
     public static boolean isValidIc(String test) {

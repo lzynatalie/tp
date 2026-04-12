@@ -34,7 +34,7 @@ public class AddCommand extends Command {
             + PREFIX_ADDRESS + "<ADDRESS> "
             + PREFIX_DOCTOR + "<DOCTOR> "
             + PREFIX_IC + "<IC> "
-            + PREFIX_URGENCY + "<LEVEL>"
+            + PREFIX_URGENCY + "<LEVEL> "
             + PREFIX_NEXT_OF_KIN + "<NEXT_OF_KIN_NAME> "
             + PREFIX_NEXT_OF_KIN_PHONE + "<NEXT_OF_KIN_PHONE> "
             + PREFIX_NEXT_OF_KIN_RELATIONSHIP + "<NEXT_OF_KIN_RELATIONSHIP> "

@@ -16,7 +16,7 @@ public class Ic {
                     + "The 7 digits in the middle should be between 0000000 and 9999999.\n"
                     + "The last letter can be any letter from A to Z.";
 
-    public static final String VALIDATION_REGEX = "(?i)^[STFGstfg]\\d{7}[A-Za-z]$";
+    public static final String VALIDATION_REGEX = "(?i)^[STFGMstfgm]\\d{7}[A-Za-z]$";
 
     public final String value;
 
@@ -58,6 +58,6 @@ public class Ic {
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return value.toLowerCase().hashCode();
     }
 }

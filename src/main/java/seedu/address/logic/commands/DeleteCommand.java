@@ -56,8 +56,10 @@ public abstract class DeleteCommand extends Command {
     public static final String MESSAGE_VALUE_NOT_ALLOWED =
             "Values are not allowed for the following prefix: %1$s\n"
                     + "Please specify only the prefix without any value.";
-    public static final String MESSAGE_VALUE_NOT_FOUND =
-            "One or more specified person(s) do not have the required value(s) for the specified prefix(es).";
+    public static final String MESSAGE_NOTES_NOT_FOUND =
+            "One or more specified person(s) do not have any notes to delete.\n";
+    public static final String MESSAGE_SYMPTOM_NOT_FOUND =
+            "One or more specified person(s) do not have the required symptom(s) to delete.\n";
 
     private final Map<Prefix, List<String>> prefixMap;
 
@@ -85,22 +87,24 @@ public abstract class DeleteCommand extends Command {
         requireNonNull(personToDelete);
         assert !prefixMap.isEmpty() : "There are no specified fields to delete.";
 
-        if (prefixMap.containsKey(PREFIX_SYMPTOM) && personToDelete.getSymptoms().isEmpty()
-                || prefixMap.containsKey(PREFIX_NOTES) && personToDelete.getNotes().getValue().isEmpty()) {
-            throw new CommandException(MESSAGE_VALUE_NOT_FOUND);
+        if (prefixMap.containsKey(PREFIX_NOTES) && personToDelete.getNotes().getValue().isEmpty()) {
+            throw new CommandException(MESSAGE_NOTES_NOT_FOUND);
+        }
+        if (prefixMap.containsKey(PREFIX_SYMPTOM) && personToDelete.getSymptoms().isEmpty()) {
+            throw new CommandException(MESSAGE_SYMPTOM_NOT_FOUND);
         }
 
-        List<Symptom> symptomsToDelete = prefixMap.getOrDefault(PREFIX_SYMPTOM, List.of()).stream()
+        Set<Symptom> symptomsToDelete = prefixMap.getOrDefault(PREFIX_SYMPTOM, List.of()).stream()
                 .filter(s -> !s.isEmpty())
                 .map(Symptom::new)
-                .toList();
+                .collect(Collectors.toSet());
         Set<Symptom> updatedSymptoms = new HashSet<>(personToDelete.getSymptoms()); // instantiate with all symptoms
         if (prefixMap.containsKey(PREFIX_SYMPTOM) && symptomsToDelete.isEmpty()) { // delete all symptoms
             updatedSymptoms.clear();
         } else if (prefixMap.containsKey(PREFIX_SYMPTOM)) { // delete specific symptoms
             for (Symptom symptom : symptomsToDelete) {
                 if (!updatedSymptoms.contains(symptom)) {
-                    throw new CommandException(MESSAGE_VALUE_NOT_FOUND);
+                    throw new CommandException(MESSAGE_SYMPTOM_NOT_FOUND);
                 }
                 updatedSymptoms.remove(symptom);
             }

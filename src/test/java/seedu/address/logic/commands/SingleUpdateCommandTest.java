@@ -43,7 +43,7 @@ public class SingleUpdateCommandTest {
         SingleUpdateCommand updateCommand = new SingleUpdateCommand(INDEX_FIRST_PERSON, descriptor);
 
         String expectedMessage = String.format(SingleUpdateCommand
-                .MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson));
+                .MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson), descriptor.getModifiedFields());
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(model.getFilteredPersonList().get(0), editedPerson);
@@ -65,7 +65,7 @@ public class SingleUpdateCommandTest {
         SingleUpdateCommand updateCommand = new SingleUpdateCommand(indexLastPerson, descriptor);
 
         String expectedMessage = String.format(SingleUpdateCommand
-                .MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson));
+                .MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson), descriptor.getModifiedFields());
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(lastPerson, editedPerson);
@@ -75,11 +75,12 @@ public class SingleUpdateCommandTest {
 
     @Test
     public void execute_noFieldSpecifiedUnfilteredList_success() {
-        SingleUpdateCommand updateCommand = new SingleUpdateCommand(INDEX_FIRST_PERSON, new UpdatePersonDescriptor());
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptor();
+        SingleUpdateCommand updateCommand = new SingleUpdateCommand(INDEX_FIRST_PERSON, descriptor);
         Person editedPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
 
         String expectedMessage = String.format(SingleUpdateCommand
-                .MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson));
+                .MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson), descriptor.getModifiedFields());
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
 
@@ -92,11 +93,12 @@ public class SingleUpdateCommandTest {
 
         Person personInFilteredList = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Person editedPerson = new PersonBuilder(personInFilteredList).withName(VALID_NAME_BOB).build();
-        SingleUpdateCommand updateCommand = new SingleUpdateCommand(INDEX_FIRST_PERSON,
-                new UpdatePersonDescriptorBuilder().withName(VALID_NAME_BOB).build());
+
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptorBuilder().withName(VALID_NAME_BOB).build();
+        SingleUpdateCommand updateCommand = new SingleUpdateCommand(INDEX_FIRST_PERSON, descriptor);
 
         String expectedMessage = String.format(SingleUpdateCommand
-                .MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson));
+                .MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson), descriptor.getModifiedFields());
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(model.getFilteredPersonList().get(0), editedPerson);
@@ -168,7 +170,7 @@ public class SingleUpdateCommandTest {
         Person editedPerson = new PersonBuilder(personToUpdate)
                 .withNotes(expectedNoteText).build();
         String expectedMessage = String.format(SingleUpdateCommand
-                .MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson));
+                .MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(editedPerson), descriptor.getModifiedFields());
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(personToUpdate, editedPerson);

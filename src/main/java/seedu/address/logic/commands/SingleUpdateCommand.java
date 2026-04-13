@@ -70,7 +70,7 @@ public class SingleUpdateCommand extends Command {
             + PREFIX_PATIENT_PHONE + "91234567 "
             + PREFIX_EMAIL + "johndoe@example.com";
 
-    public static final String MESSAGE_UPDATE_PERSON_SUCCESS = "Updated Person: %1$s";
+    public static final String MESSAGE_UPDATE_PERSON_SUCCESS = "Updated Person: %1$s\nFields updated: %2$s";
     public static final String MESSAGE_NOT_UPDATED = "At least one field to update must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
 
@@ -118,7 +118,8 @@ public class SingleUpdateCommand extends Command {
         model.setPerson(personToUpdate, updatedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         wasExecuted = true;
-        return new CommandResult(String.format(MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(updatedPerson)));
+        return new CommandResult(String.format(MESSAGE_UPDATE_PERSON_SUCCESS,
+                Messages.format(updatedPerson), updatePersonDescriptor.getModifiedFields()));
     }
 
     @Override
@@ -173,6 +174,7 @@ public class SingleUpdateCommand extends Command {
                 updatedIc, updatedUrgencyLevel, updatedNextOfKinPhone, updatedDoctorName,
                 updatedNextOfKin, updatedNextOfKinRelationship, updatedNotes);
     }
+
 
     @Override
     public boolean equals(Object other) {
@@ -346,6 +348,30 @@ public class SingleUpdateCommand extends Command {
 
         public Optional<NextOfKinPhone> getNextOfKinPhone() {
             return Optional.ofNullable(nextOfKinPhone);
+        }
+
+        /** Returns a formatted string of the fields updated. */
+        public String getModifiedFields() {
+            java.util.List<String> f = new java.util.ArrayList<>();
+
+            getName().ifPresent(val -> f.add("Name"));
+            getPhone().ifPresent(val -> f.add("Phone"));
+            getEmail().ifPresent(val -> f.add("Email"));
+            getAddress().ifPresent(val -> f.add("Address"));
+            getIc().ifPresent(val -> f.add("IC"));
+            getUrgencyLevel().ifPresent(val -> f.add("Urgency"));
+            getNextOfKin().ifPresent(val -> f.add("NOK Name"));
+            getNextOfKinPhone().ifPresent(val -> f.add("NOK Phone"));
+            getNextOfKinRelationship().ifPresent(val -> f.add("NOK Relationship"));
+            getDoctorName().ifPresent(val -> f.add("Doctor"));
+            getSymptoms().ifPresent(val -> f.add("Symptoms"));
+
+            // Notes combines two optionals, so we keep one clean if-block here
+            if (getNotes().isPresent() || getNotesToAppend().isPresent()) {
+                f.add("Notes");
+            }
+
+            return String.join(", ", f);
         }
 
         @Override

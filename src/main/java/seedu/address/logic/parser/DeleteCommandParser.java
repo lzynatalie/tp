@@ -30,6 +30,7 @@ import seedu.address.logic.commands.MultipleDeleteCommand;
 import seedu.address.logic.commands.RangeDeleteCommand;
 import seedu.address.logic.commands.SingleDeleteCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.symptom.Symptom;
 
 /**
  * Parses input arguments and creates a new DeleteCommand object
@@ -63,7 +64,8 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
 
         if (indicesString.contains(MULTIPLE_INDICES_DELIMITER)) {
             return parseMultipleIndices(indicesString, prefixMap);
-        } else if (indicesString.contains(RANGE_INDICES_DELIMITER)) {
+        } else if (indicesString.contains(RANGE_INDICES_DELIMITER)
+                && !indicesString.startsWith(RANGE_INDICES_DELIMITER)) {
             return parseRangeIndices(indicesString, prefixMap);
         } else {
             return parseSingleIndex(indicesString, prefixMap);
@@ -176,6 +178,12 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         }
 
         List<String> symptomValues = argMultimap.getAllValues(PREFIX_SYMPTOM);
+        boolean areSymptomsValid = symptomValues.stream()
+                .filter(s -> !s.isEmpty())
+                .allMatch(Symptom::isValidSymptomName);
+        if (!areSymptomsValid) {
+            throw new ParseException(Symptom.MESSAGE_CONSTRAINTS);
+        }
         List<String> nonEmptySymptomValues = symptomValues.stream()
                 .filter(s -> !s.isEmpty())
                 .toList();

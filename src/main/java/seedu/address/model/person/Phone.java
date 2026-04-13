@@ -11,10 +11,12 @@ public class Phone {
 
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Patient phone numbers should only contain numbers, and it should only be 8 digits long.\n"
-                    + "Patient phone number cannot be left blank.\n";
+            "Patient phone numbers may contain digits, spaces, hyphens, and one optional '+' only at the start.\n"
+                    + "If '+' is not used, the phone number must start with a digit.\n"
+                    + "If '+' is used, it must be followed by a digit.\n"
+                    + "The phone number must be contained in the range of 3 and 15 digits and cannot be blank.\n";
 
-    public static final String VALIDATION_REGEX = "\\d{8}";
+    public static final String VALIDATION_REGEX = "^(\\+)?(?=(?:[ -]*[0-9]){3,15}$)[0-9][0-9 -]*$";
     public final String value;
 
     /**

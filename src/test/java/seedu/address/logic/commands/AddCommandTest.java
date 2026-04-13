@@ -49,7 +49,9 @@ public class AddCommandTest {
         AddCommand addCommand = new AddCommand(validPerson);
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+        String expectedMessage = AddCommand.MESSAGE_DUPLICATE_PERSON + " (" + validPerson.getIc() + ").";
+
+        assertThrows(CommandException.class, expectedMessage, () -> addCommand.execute(modelStub));
     }
 
     @Test

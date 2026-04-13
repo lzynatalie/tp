@@ -118,7 +118,7 @@ public class SingleDeleteCommandTest {
         DeleteCommand deleteCommand =
                 new SingleDeleteCommand(INDEX_FIRST_PERSON, Map.of(PREFIX_SYMPTOM, List.of("cough")));
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_VALUE_NOT_FOUND);
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_SYMPTOM_NOT_FOUND);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class SingleDeleteCommandTest {
         DeleteCommand deleteCommand = new SingleDeleteCommand(INDEX_FIRST_PERSON,
                 Map.of(PREFIX_SYMPTOM, List.of(), PREFIX_NOTES, List.of()));
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_VALUE_NOT_FOUND);
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_SYMPTOM_NOT_FOUND);
     }
 
     @Test
@@ -168,7 +168,7 @@ public class SingleDeleteCommandTest {
         // delete notes of the target person but notes field has no value to delete
         DeleteCommand deleteCommand = new SingleDeleteCommand(INDEX_FIRST_PERSON, Map.of(PREFIX_NOTES, List.of()));
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_VALUE_NOT_FOUND);
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_NOTES_NOT_FOUND);
     }
 
     @Test

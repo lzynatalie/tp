@@ -56,7 +56,7 @@ public class MultipleUpdateCommand extends Command {
 
     public static final String MESSAGE_NOT_UPDATED = "At least one field to update must be provided.";
 
-    public static final String MESSAGE_UPDATE_MULTIPLE_SUCCESS = "Successfully updated: %1$s";
+    public static final String MESSAGE_UPDATE_MULTIPLE_SUCCESS = "Successfully updated: %1$s\nFields updated: %2$s";
 
     private final List<Index> targetIndices;
     private final UpdatePersonDescriptor updatePersonDescriptor;
@@ -130,7 +130,8 @@ public class MultipleUpdateCommand extends Command {
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
 
         String finalNames = updatedNames.substring(0, updatedNames.length() - 2);
-        return new CommandResult(String.format(MESSAGE_UPDATE_MULTIPLE_SUCCESS, finalNames));
+        return new CommandResult(String.format(MESSAGE_UPDATE_MULTIPLE_SUCCESS,
+                finalNames, updatePersonDescriptor.getModifiedFields()));
     }
 
     @Override

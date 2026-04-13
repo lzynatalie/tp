@@ -54,18 +54,12 @@ public class ListCommandParser implements Parser<ListCommand> {
 
         Set<String> urgencyMatches = parseUrgencySet(rawUrgencies);
         Set<String> symptomMatches = parseSymptomSet(rawSymptoms);
-
-        // Intersection semantics: if both urgency and symptoms are provided,
-        // only include persons matching both filters.
-        Predicate<Person> predicate = person -> true;
-        if (!urgencyMatches.isEmpty()) {
-            predicate = predicate.and(person ->
-                    urgencyMatches.contains(person.getUrgencyLevel().toString().toLowerCase()));
-        }
-        if (!symptomMatches.isEmpty()) {
-            predicate = predicate.and(person -> person.getSymptoms().stream()
-                    .anyMatch(symptom -> symptomMatches.contains(symptom.symptomName.toLowerCase())));
-        }
+        boolean hasUrgency = !urgencyMatches.isEmpty();
+        boolean hasSymptoms = !symptomMatches.isEmpty();
+        Predicate<Person> predicate = person -> !hasUrgency && !hasSymptoms
+                || hasUrgency && urgencyMatches.contains(person.getUrgencyLevel().toString().toLowerCase())
+                || hasSymptoms && person.getSymptoms().stream()
+                        .anyMatch(s -> symptomMatches.contains(s.symptomName.toLowerCase()));
 
         String criteriaDescription = buildCriteriaDescription(urgencyMatches, symptomMatches);
         return new ListCommand(predicate, criteriaDescription);
@@ -118,8 +112,8 @@ public class ListCommandParser implements Parser<ListCommand> {
             builder.append("Urgency: ").append(String.join(", ", urgencyMatches));
         }
         if (hasSymptoms) {
-            if (builder.length() > 0) {
-                builder.append(", ");
+            if (hasUrgency) {
+                builder.append(" or ");
             }
             builder.append("Symptoms: ").append(String.join(", ", symptomMatches));
         }

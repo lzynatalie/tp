@@ -44,20 +44,46 @@ public class NextOfKinPhoneTest {
         assertThrows(NullPointerException.class, () -> NextOfKinPhone.isValidNextOfKinPhone(null));
 
         // invalid phone numbers
-        assertFalse(Phone.isValidPhone("")); // empty string
-        assertFalse(Phone.isValidPhone(" ")); // spaces only
-        assertFalse(Phone.isValidPhone("1")); // 1 digit
-        assertFalse(Phone.isValidPhone("1234567")); // less than 8 numbers
-        assertFalse(Phone.isValidPhone("phone")); // non-numeric
-        assertFalse(Phone.isValidPhone("9011p041")); // alphabets within digits
-        assertFalse(Phone.isValidPhone("9312 1534")); // spaces within digits
-        assertFalse(Phone.isValidPhone("123456789")); // more than 8 numbers;
-        assertFalse(Phone.isValidPhone(" 12345678")); // leading white space
-        assertFalse(Phone.isValidPhone("12345678 ")); // trailing white space
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone(" ")); // spaces only
 
+        // testing boundary values
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("")); // 0 digits
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("+")); // just a plus
+
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("12")); // 2 digit
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("1234567890123456")); // 16 digit
+
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("+1234567890123456")); // has optional plus
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("+12345-67890-12345-6")); // has hyphen added
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("+12 34 5-6 78 90 -1 23 45 -6")); // has space added
+
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("phone 93121534")); // has alphabets
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("9312/1534")); // has slash
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("9312.1534")); // has period
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("9312_1534")); // has underscore
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("(9312)1534")); // has brackets
+
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("9312+1534")); // plus not at the start
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("++93121534")); // multiple plus
+        // optional plus followed by a hyphen(not a digit)
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("+-93121534"));
+        // optional plus followed by a space (not a digit)
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("+ 93121534"));
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone("-93121534")); // starts with hyphen (not a digit)
+        assertFalse(NextOfKinPhone.isValidNextOfKinPhone(" 93121534")); // starts with space (not a digit)
 
         // valid phone numbers
-        assertTrue(Phone.isValidPhone("93121534")); // exactly 8 numbers
+        assertTrue(NextOfKinPhone.isValidNextOfKinPhone("93121534")); // just digits
+        assertTrue(NextOfKinPhone.isValidNextOfKinPhone("+93121534")); // with optional '+'
+
+        // testing boundary values
+        assertTrue(NextOfKinPhone.isValidNextOfKinPhone("123")); // 3 digits
+        assertTrue(NextOfKinPhone.isValidNextOfKinPhone("123456789012345")); // 15 digits
+
+        // shows that optional '+', hyphens and spaces are not counted as digits
+        assertTrue(NextOfKinPhone.isValidNextOfKinPhone("+123456789012345")); // 15 digits with optional '+'
+        assertTrue(NextOfKinPhone.isValidNextOfKinPhone("+12345-67890-12345")); // still is 15 digits with hyphens
+        assertTrue(NextOfKinPhone.isValidNextOfKinPhone("+12 345-67 890-12 345")); // still is 15 digits with spaces
     }
 
     @Test

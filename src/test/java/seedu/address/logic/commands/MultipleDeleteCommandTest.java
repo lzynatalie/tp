@@ -153,7 +153,7 @@ public class MultipleDeleteCommandTest {
         DeleteCommand deleteCommand = new MultipleDeleteCommand(
                 new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON }, Map.of(PREFIX_SYMPTOM, List.of("fever")));
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_VALUE_NOT_FOUND);
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_SYMPTOM_NOT_FOUND);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class MultipleDeleteCommandTest {
         DeleteCommand deleteCommand = new MultipleDeleteCommand(
                 new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON }, Map.of(PREFIX_NOTES, List.of()));
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_VALUE_NOT_FOUND);
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_NOTES_NOT_FOUND);
     }
 
     @Test
@@ -213,7 +213,7 @@ public class MultipleDeleteCommandTest {
         DeleteCommand deleteCommand = new MultipleDeleteCommand(
                 new Index[]{ INDEX_FIRST_PERSON, INDEX_SECOND_PERSON }, Map.of(PREFIX_SYMPTOM, List.of()));
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_VALUE_NOT_FOUND);
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_SYMPTOM_NOT_FOUND);
     }
 
     @Test

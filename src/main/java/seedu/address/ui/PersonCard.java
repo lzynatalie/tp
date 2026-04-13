@@ -70,7 +70,7 @@ public class PersonCard extends UiPart<Region> {
         nextOfKinPhone.setText("NOK phone: " + person.getNextOfKinPhone().toString());
         doctorName.setText("Doctor: " + person.getDoctorName().toString());
         nextOfKin.setText("NOK: " + person.getNextOfKin().toString());
-        nextOfKinRelationship.setText("NextOfKin Relationship: " + person.getNextOfKinRelationship().toString());
+        nextOfKinRelationship.setText("NOK Relationship: " + person.getNextOfKinRelationship().toString());
 
         // Map the new medical fields to the UI
         ic.setText("NRIC: " + person.getIc().value);

@@ -188,7 +188,7 @@ public class RangeDeleteCommandTest {
         DeleteCommand deleteCommand =
                 new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON, Map.of(PREFIX_SYMPTOM, List.of()));
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_VALUE_NOT_FOUND);
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_SYMPTOM_NOT_FOUND);
     }
 
     @Test
@@ -238,7 +238,7 @@ public class RangeDeleteCommandTest {
         DeleteCommand deleteCommand =
                 new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON, Map.of(PREFIX_NOTES, List.of()));
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_VALUE_NOT_FOUND);
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_NOTES_NOT_FOUND);
     }
 
     @Test

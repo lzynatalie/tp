@@ -53,7 +53,7 @@ public class ModelManager implements Model {
 
             // Tie-breaker: Use IC value (case-insensitive to handle different user inputs)
             // FIXED: Using compareToIgnoreCase instead of compareTo
-            return p1.getIc().value.compareToIgnoreCase(p2.getIc().value);
+            return String.CASE_INSENSITIVE_ORDER.compare(p1.getIc().value, p2.getIc().value);
         });
     }
 

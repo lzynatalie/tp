@@ -54,12 +54,13 @@ public class FindCommandParserTest {
 
     @Test
     public void parse_unprefixedName_throwsParseException() {
-        assertParseFailure(parser, "Alice Bob",
-                "Find requires at least one search prefix. Only pn/, ic/, p/, e/, and d/ are allowed.\n"
-                        + FindCommand.MESSAGE_USAGE);
-        assertParseFailure(parser, " \n Alice \n \t Bob  \t",
-                "Find requires at least one search prefix. Only pn/, ic/, p/, e/, and d/ are allowed.\n"
-                        + FindCommand.MESSAGE_USAGE);
+        String requiresPrefix = "Find requires at least one search prefix. Only pn/, ic/, p/, e/, and d/ are allowed.\n"
+                + FindCommand.MESSAGE_USAGE;
+        assertParseFailure(parser, "Alice Bob", requiresPrefix);
+        assertParseFailure(parser, " \n Alice \n \t Bob  \t", requiresPrefix);
+        assertParseFailure(parser, "@", requiresPrefix);
+        assertParseFailure(parser, "John123", requiresPrefix);
+        assertParseFailure(parser, "Alice @Bob", requiresPrefix);
     }
 
     @Test
@@ -135,25 +136,18 @@ public class FindCommandParserTest {
     }
 
     @Test
-    public void parse_invalidLegacyPatientName_throwsParseException() {
-        assertParseFailure(parser, "@", Name.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "John123", Name.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "Alice @Bob", Name.MESSAGE_CONSTRAINTS);
-    }
-
-    @Test
     public void parse_validPhonePrefix_doesNotThrow() {
         assertDoesNotThrow(() -> parser.parse(" p/91234567"));
     }
 
     @Test
     public void parse_invalidPhoneTooShort_throwsParseException() {
-        assertParseFailure(parser, " p/1234567", Phone.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " p/12", Phone.MESSAGE_CONSTRAINTS);
     }
 
     @Test
     public void parse_invalidPhoneTooLong_throwsParseException() {
-        assertParseFailure(parser, " p/123456789", Phone.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " p/1234567890123456", Phone.MESSAGE_CONSTRAINTS);
     }
 
     @Test

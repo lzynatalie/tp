@@ -22,6 +22,7 @@ import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.MultipleDeleteCommand;
 import seedu.address.logic.commands.RangeDeleteCommand;
 import seedu.address.logic.commands.SingleDeleteCommand;
+import seedu.address.model.symptom.Symptom;
 
 /**
  * As we are only doing white-box testing, our test cases do not cover path variations
@@ -59,6 +60,12 @@ public class DeleteCommandParserTest {
     @Test
     public void parse_invalidArgsSingleIndexZero_throwsParseException() {
         assertParseFailure(parser, "0", String.format(
+                MESSAGE_INVALID_COMMAND_FORMAT, SingleDeleteCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_invalidArgsNegativeIndex_throwsParseException() {
+        assertParseFailure(parser, "-1", String.format(
                 MESSAGE_INVALID_COMMAND_FORMAT, SingleDeleteCommand.MESSAGE_USAGE));
     }
 
@@ -156,6 +163,11 @@ public class DeleteCommandParserTest {
     public void parse_validArgsSymptomsPrefixWithValue_returnsDeleteCommand() {
         assertParseSuccess(parser, "1 s/symptom",
                 new SingleDeleteCommand(INDEX_FIRST_PERSON, Map.of(new Prefix("s/"), List.of("symptom"))));
+    }
+
+    @Test
+    public void parse_invalidArgsSymptomsPrefixWithInvalidValue_throwsParseException() {
+        assertParseFailure(parser, "1 s/#symptom", Symptom.MESSAGE_CONSTRAINTS);
     }
 
     @Test

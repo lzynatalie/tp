@@ -57,7 +57,8 @@ public class MultipleUpdateCommandTest {
         Person updatedSecondPerson = new PersonBuilder(secondPerson).withAddress(newAddress).build();
 
         String expectedNames = updatedFirstPerson.getName() + ", " + updatedSecondPerson.getName();
-        String expectedMessage = String.format(MultipleUpdateCommand.MESSAGE_UPDATE_MULTIPLE_SUCCESS, expectedNames);
+        String expectedMessage = String.format(MultipleUpdateCommand.MESSAGE_UPDATE_MULTIPLE_SUCCESS,
+                expectedNames, descriptor.getModifiedFields());
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(firstPerson, updatedFirstPerson);
@@ -151,7 +152,7 @@ public class MultipleUpdateCommandTest {
         Person updatedFirstPerson = new PersonBuilder(firstPerson).withIc(newIc).build();
 
         String expectedMessage = String.format(MultipleUpdateCommand.MESSAGE_UPDATE_MULTIPLE_SUCCESS,
-                updatedFirstPerson.getName().fullName);
+                updatedFirstPerson.getName().fullName, descriptor.getModifiedFields());
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(firstPerson, updatedFirstPerson);
@@ -175,7 +176,8 @@ public class MultipleUpdateCommandTest {
         Person updatedSecondPerson = new PersonBuilder(secondPerson).withAddress(newAddress).build();
 
         String expectedNames = updatedFirstPerson.getName() + ", " + updatedSecondPerson.getName();
-        String expectedMessage = String.format(MultipleUpdateCommand.MESSAGE_UPDATE_MULTIPLE_SUCCESS, expectedNames);
+        String expectedMessage = String.format(MultipleUpdateCommand.MESSAGE_UPDATE_MULTIPLE_SUCCESS, expectedNames,
+                descriptor.getModifiedFields());
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(firstPerson, updatedFirstPerson);

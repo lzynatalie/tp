@@ -14,7 +14,13 @@ pageNav: 3
 
 * This project is based on the [AddressBook Level-3](https://se-education.org/addressbook-level3) project created by the [SE-EDU initiative](https://se-education.org).
 * Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5).
-
+* AI was used in this following manner:
+  * Randy
+    * Used Co-pilot for auto-completion.
+    * Used ChatGPT to assist in generating regex pattern for user input validation.
+  * Nigel
+    * Used Gemini to assist with debugging logic errors in command execution and parser architecture.
+    * Used Gemini to assist in generating test cases for bulk updates
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Setting up, getting started**
@@ -127,6 +133,19 @@ The `Model` component,
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
+
+In ClinicConnect, the Person model has been extended beyond the original AB3 design to support the polyclinic triage workflow. Besides standard contact details, each Person includes additional patient-related fields such as Ic, Doctor, UrgencyLevel, NextOfKin, NextOfKinPhone, Symptom, and Notes.
+
+Some key ClinicConnect-specific model classes are:
+
+* `Ic`: represents the patient’s identification number. It is a core field used to uniquely identify patients and is used in duplicate detection.
+* `UrgencyLevel`: represents the patient’s triage priority. It is used to classify cases into levels such as low, moderate, high, and extreme, which supports prioritization during patient coordination.
+* `Symptom`: represents a symptom tagged to a patient. A patient may have multiple symptoms recorded to support filtering and viewing of medical conditions.
+* `Doctor`: represents the doctor currently assigned to the patient.
+* `NextOfKin`, `NextOfKinRelationship` and `NextOfKinPhone`: represent the patient’s emergency contact details. These classes capture the contact’s name, relationship to the patient, and phone number respectively, allowing the system to store structured next-of-kin information for coordination and emergency communication.
+* `Notes`: stores additional remarks relevant to the patient’s case.
+
+These domain classes are central to ClinicConnect because they adapt the original AB3 contact-management model into a patient coordination system suitable for triage operations in public polyclinics.
 
 <box type="info" seamless>
 
@@ -258,7 +277,7 @@ This feature is facilitated by the `Urgency` and `Ic` classes, and is integrated
 
 #### Sorting Logic Flow
 1. **Primary Sort (Urgency):** The `Urgency` class implements `Comparable<Urgency>`. It assigns internal weightages to its valid states (`EXTREME` = 4, `HIGH` = 3, `MODERATE` = 2, `LOW` = 1). When two patients are compared, the one with the higher urgency weight is placed higher in the list.
-2. **Secondary Sort (Tie-Breaker):** If two patients have the exact same `Urgency`, the `Person#compareTo()` method falls back to comparing their `Ic` objects. The `Ic` class implements `Comparable<Ic>` and uses standard lexicographical string comparison to ensure a consistent, deterministic order.
+2. **Secondary Sort (Tie-Breaker):** If two patients have the exact same `Urgency`, the sorting logic falls back to comparing their `Ic` values. To prevent mixed-case inputs (e.g., `s1234567a` vs `S1234567A`) from causing non-deterministic sorting in the UI, this tie-breaker uses **case-insensitive lexicographical string comparison** (via `String.CASE_INSENSITIVE_ORDER`).
 
 #### Class Diagram
 The following class diagram shows how the `Comparable` interface is implemented across the domain models:
@@ -296,7 +315,7 @@ The list mechanism lets users view either **all** patients or a **filtered** sub
 
 Unprefixed text after `list` (e.g. `list fever`) is **rejected** so that filtering stays explicit and consistent with the rest of the CLI.
 
-**Combining filters:** When both urgency and symptom criteria are present, a person must match **both** dimensions (logical **AND**). Multiple `u/` or `s/` repetitions are normalized to sets; within each set, a match on **any** listed urgency (respectively symptom) is enough.
+**Combining filters:** When both urgency and symptom criteria are present, a person matches if they satisfy **either** dimension (logical **OR**). Multiple `u/` or `s/` repetitions are normalized to sets; within each set, a match on **any** listed urgency (respectively symptom) is enough.
 
 **Data and undo:** Listing does **not** change stored patient data; it only updates the **filtered view** in the model. `ListCommand` does not override `Command#isUndoable()`, so it remains **non-undoable**, like `find`.
 
@@ -306,7 +325,7 @@ Given below is a example usage scenario.
 
 **Step 2.** The user executes `list u/high` to focus on high-urgency patients. The parser builds a predicate that keeps only persons whose urgency string matches `high`; `Model#updateFilteredPersonList` updates the `FilteredList`.
 
-**Step 3.** The user executes `list u/high s/fever`. The parser combines predicates so that only persons who are **both** high urgency **and** have a fever symptom (case-insensitive) remain visible.
+**Step 3.** The user executes `list u/high s/fever`. The parser builds a predicate so that persons who are **either** high urgency **or** have a fever symptom (case-insensitive) remain visible.
 
 <box type="info" seamless>
 
@@ -402,7 +421,7 @@ The activity diagram below summarizes parsing and execution outcomes:
 
 #### Implementation
 
-The command history navigation feature allows users to cycle through previously successfully executed commands using the up/down arrow keys. The command history is kept so that no duplicated commands. This is implemented in the `CommandHistory` class, which maintains a list of previously executed commands strings that are trimmed to remove leading and trailing whitespaces, a pointer to the current position in that history, and the current user input being typed. The command history is session-based, meaning that the command history is cleared when the app is closed and does not persist across sessions.
+The command history navigation feature allows users to cycle through previously successfully executed commands using the up/down arrow keys. The command history is kept so that there are no duplicated commands. This is implemented in the `CommandHistory` class, which maintains a list of previously executed commands strings that are trimmed to remove leading and trailing whitespaces, a pointer to the current position in that history, and the current user input being typed. The command history is session-based, meaning that the command history is cleared when the app is closed and does not persist across sessions.
 
 The `CommandHistory` class provides the following methods:
 * `CommandHistory#add(String command)` — Adds a new command to the history and resets the pointer to the end of the list.
@@ -460,98 +479,6 @@ The following activity diagram summarizes the behavior of the command history na
 
 <puml src="diagrams/CommandHistoryActivityDiagram-Enter.puml" width="600" />
 
-### \[Proposed\] Undo/redo feature
-
-#### Proposed Implementation
-
-The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the following operations:
-
-* `VersionedAddressBook#commit()` — Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` — Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` — Restores a previously undone address book state from its history.
-
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
-
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
-
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
-
-<puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
-
-Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
-
-<puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
-
-Step 3. The user executes `add pn/David …​` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
-
-<puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
-
-<box type="info" seamless>
-
-**Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
-
-</box>
-
-Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
-
-<puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
-
-
-<box type="info" seamless>
-
-**Note:** If the `currentStatePointer` is at index 0, pointing to the initial AddressBook state, then there are no previous AddressBook states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather
-than attempting to perform the undo.
-
-</box>
-
-The following sequence diagram shows how an undo operation goes through the `Logic` component:
-
-<puml src="diagrams/UndoSequenceDiagram-Logic.puml" alt="UndoSequenceDiagram-Logic" />
-
-<box type="info" seamless>
-
-**Note:** The lifeline for `UndoCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
-
-</box>
-
-Similarly, how an undo operation goes through the `Model` component is shown below:
-
-<puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="UndoSequenceDiagram-Model" />
-
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
-
-<box type="info" seamless>
-
-**Note:** If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone AddressBook states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
-
-</box>
-
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
-
-<puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
-
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add pn/David …​` command. This is the behavior that most modern desktop applications follow.
-
-<puml src="diagrams/UndoRedoState5.puml" alt="UndoRedoState5" />
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-<puml src="diagrams/CommitActivityDiagram.puml" width="250" />
-
-#### Design considerations:
-
-**Aspect: How undo & redo executes:**
-
-* **Alternative 1 (current choice):** Saves the entire address book.
-    * Pros: Easy to implement.
-    * Cons: May have performance issues in terms of memory usage.
-
-* **Alternative 2:** Individual command knows how to undo/redo by
-  itself.
-    * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
-    * Cons: We must ensure that the implementation of each individual command are correct.
-
-
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Documentation, logging, testing, configuration, dev-ops**
@@ -585,41 +512,41 @@ accurate prioritisation in fast-paced, high-workload clinical environments.
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​            | I want to …​                                                                                 | So that I can…​                                                                                                                              |
-|----------|--------------------|----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| `* * *`  | beginner user      | list all patients in the system                                                              | verify that the data I just entered was saved correctly.                                                                                     |
-| `* * *`  | beginner user      | exit the app safely                                                                          | be assured that the data entered into the app is saved when I end my shift.                                                                  |                                                                    |
-| `* * *`  | user               | add patient details                                                                          | start tracking those patients.                                                                                                               |
-| `* * *`  | triage coordinator | update specific details of a patient (such as their urgency level, symptoms, or notes)       | quickly keep records current as the patient moves through the triage process and their medical condition changes.                            |
-| `* * *`  | user               | remove patients                                                                              | remove duplicates or wrongly created records to keep it accurate.                                                                            |
-| `* *`    | triage coordinator | search for patient records using different criteria (like Name, IC, Phone, or Urgency Level) | easily locate a specific patient in an emergency or find specific groups of patients without manually scrolling through the entire database. |
-| `* *`    | expert user        | use my up/down keyboard keys                                                                 | conveniently access previously entered commands in my history to execute again.                                                              |
-| `* *`    | expert user        | archive old patient records                                                                  | focus on the relevant patient records.                                                                                                       |
-| `* *`    | beginner user      | see a confirmation message after adding a patient                                            | be assured that a patient has been added to my list .                                                                                        |
-| `* *`    | beginner user      | use a help command                                                                           | easily understand the capabilities of ClinicConnect.                                                                                         |
-| `* *`    | beginner user      | reset the app to its initial state                                                           | safely experiment with the app.                                                                                                              |
-| `* *`    | beginner user      | see instructions to help me correct my mistakes                                              | easily correct mistakes.                                                                                                                     |
-| `* *`    | user               | sort patients based on their urgency level                                                   | quickly identify which patient requires immediate care.                                                                                      |
-| `* *`    | expert user        | chain commands together in a single line (e.g., add … && list)                               | execute multiple actions without waiting for intermediate prompts.                                                                           |
-| `* *`    | user               | attach notes to patient records                                                              | capture contextual information.                                                                                                              |
-| `* *`    | triage coordinator | perform batch edits or deletions                                                             | manage multiple patients efficiently.                                                                                                        |
-| `* *`    | user               | use shorter prefixes                                                                         | get things done quickly.                                                                                                                     |
-| `* *`    | user               | add an urgency level to each patient                                                         | know which patient requires immediate attention first.                                                                                       |
-| `* *`    | expert user        | use a one-line command format (e.g., add n/ p/ ic/ cond/)                                    | enter a patient's full clinical profile quickly in seconds.                                                                                  |
-| `*`      | beginner user      | undo a mistaken deletion from an entered command                                             | recover accidentally deleted data without re-entering everything.                                                                            |
-| `*`      | beginner user      | skip onboarding steps                                                                        | explore the application freely.                                                                                                              |
-| `*`      | beginner user      | see the app populated with sample data                                                       | easily see how the app will look when it is in use.                                                                                          |
-| `*`      | beginner user      | cancel an action midway                                                                      | stay in control.                                                                                                                             |
-| `*`      | beginner user      | view a brief onboarding walkthrough                                                          | know what the app can do.                                                                                                                    |
-| `*`      | beginner user      | search for a patient by name or identifier                                                   | quickly find an existing patient record.                                                                                                     |
-| `*`      | beginner user      | undo recent actions                                                                          | feel safe exploring the app.                                                                                                                 |
-| `*`      | expert user        | organize patients using symptoms                                                             | categorise patients based on clinical priority or special needs.                                                                             |
-| `*`      | beginner user      | view what actions I have recently made                                                       | understand the current state of the database more accurately.                                                                                |
-| `*`      | expert user        | use command shortcuts or aliases when entering patient details                               | maximize my efficiency in typing during peak hours.                                                                                          |
-| `*`      | expert user        | customise views or defaults                                                                  | the app matches my working habits.                                                                                                           |
-| `*`      | user               | manually save my data at any point                                                           | be assured that I saved my data.                                                                                                             |
+| Priority | As a/an …​          | I want to …​                                                                                 | So that I can…​                                                                                                                              |
+|----------|---------------------|----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `* * *`  | beginner user       | list all patients in the system                                                              | verify that the data I just entered was saved correctly.                                                                                     |
+| `* * *`  | beginner user       | exit the app safely                                                                          | be assured that the data entered into the app is saved when I end my shift.                                                                  |
+| `* * *`  | user                | add patient details                                                                          | start tracking those patients.                                                                                                               |
+| `* * *`  | triage coordinator  | update specific details of a patient (such as their urgency level, symptoms, or notes)       | quickly keep records current as the patient moves through the triage process and their medical condition changes.                            |
+| `* * *`  | user                | remove patients                                                                              | remove duplicates or wrongly created records to keep it accurate.                                                                            |
+| `* *`    | triage coordinator  | search for patient records using different criteria (like Name, IC, Phone, or Urgency Level) | easily locate a specific patient in an emergency or find specific groups of patients without manually scrolling through the entire database. |
+| `* *`    | expert user         | use my up/down keyboard keys                                                                 | conveniently access previously entered commands in my history to execute again.                                                              |
+| `* *`    | expert user         | archive old patient records                                                                  | focus on the relevant patient records.                                                                                                       |
+| `* *`    | beginner user       | see a confirmation message after adding a patient                                            | be assured that a patient has been added to my list .                                                                                        |
+| `* *`    | beginner user       | use a help command                                                                           | easily understand the capabilities of ClinicConnect.                                                                                         |
+| `* *`    | beginner user       | reset the app to its initial state                                                           | safely experiment with the app.                                                                                                              |
+| `* *`    | beginner user       | see instructions to help me correct my mistakes                                              | easily correct mistakes.                                                                                                                     |
+| `* *`    | user                | sort patients based on their urgency level                                                   | quickly identify which patient requires immediate care.                                                                                      |
+| `* *`    | user                | attach notes to patient records                                                              | capture contextual information.                                                                                                              |
+| `* *`    | triage coordinator  | perform batch edits or deletions                                                             | manage multiple patients efficiently.                                                                                                        |
+| `* *`    | user                | use shorter prefixes                                                                         | get things done quickly.                                                                                                                     |
+| `* *`    | user                | add an urgency level to each patient                                                         | know which patient requires immediate attention first.                                                                                       |
+| `* *`    | expert user         | use a one-line command format (e.g., add n/ p/ ic/ cond/)                                    | enter a patient's full clinical profile quickly in seconds.                                                                                  |
+| `* *`    | expert user         | filter patients using symptoms                                                               | categorise patients based on clinical priority or special needs.                                                                             |
+| `* *`    | beginner user       | undo a mistaken deletion from an entered command                                             | recover accidentally deleted data without re-entering everything.                                                                            |
+| `* *`    | beginner user       | see the app populated with sample data                                                       | easily see how the app will look when it is in use.                                                                                          |
+| `* *`    | beginner user       | search for a patient by their name, ic, doctor assigned and phone                            | quickly find an existing patient record.                                                                                                     |
+| `* *`    | beginner user       | undo recent actions                                                                          | feel safe exploring the app.                                                                                                                 |
+| `* *`    | triage coordinator  | perform batch edits or deletions                                                             | manage multiple patients efficiently                                                                                                         |
+| `* *`    | user                | filter patients by urgency level                                                             | prioritise higher urgency level                                                                                                              |
+| `*`      | beginner user       | skip onboarding steps                                                                        | explore the application freely.                                                                                                              |
+| `*`      | beginner user       | view a brief onboarding walkthrough                                                          | know what the app can do.                                                                                                                    |
+| `*`      | beginner user       | view what actions I have recently made                                                       | understand the current state of the database more accurately.                                                                                |
+| `*`      | expert user         | use command shortcuts or aliases when entering patient details                               | maximize my efficiency in typing during peak hours.                                                                                          |
+| `*`      | expert user         | customize views or defaults                                                                  | the app matches my working habits.                                                                                                           |
+| `*`      | user                | manually save my data at any point                                                           | be assured that I saved my data.                                                                                                             |
+| `*`      | expert user         | chain commands together in a single line (e.g., add … && list)                               | execute multiple actions without waiting for intermediate prompts.                                                                           |
 
-*Use this [link](https://docs.google.com/spreadsheets/d/1rFhnT22PNdGMJaEn7YMBqhdyV8b7M9sdSiOgtJ5c6J8/edit?gid=1121925862#gid=1121925862) for the most updated user stories.*
 
 ### Use cases
 

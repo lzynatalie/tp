@@ -39,18 +39,8 @@ import static seedu.address.logic.commands.CommandTestUtil.SYMPTOM_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.SYMPTOM_DESC_HUSBAND;
 import static seedu.address.logic.commands.CommandTestUtil.URGENCY_LEVEL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.URGENCY_LEVEL_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_DOCTOR_NAME_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_IC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_PHONE_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_RS_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_HUSBAND;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_URGENCY_LEVEL_BOB;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
@@ -314,78 +304,6 @@ public class AddCommandParserTest {
     }
 
     @Test
-    public void parse_compulsoryFieldMissing_failure() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE);
-
-        // missing name prefix
-        assertParseFailure(parser, VALID_NAME_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_PHONE_DESC_AMY,
-                expectedMessage);
-
-        // missing phone prefix
-        assertParseFailure(parser, NAME_DESC_BOB + VALID_PHONE_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                expectedMessage);
-
-        // missing email prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + VALID_EMAIL_BOB + ADDRESS_DESC_BOB
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                expectedMessage);
-
-        // missing address prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + VALID_ADDRESS_BOB
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                expectedMessage);
-
-        // missing ic prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + VALID_IC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                expectedMessage);
-
-        // missing urgency level prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + IC_DESC_BOB + VALID_URGENCY_LEVEL_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                expectedMessage);
-
-        // missing nok phone prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + VALID_NEXT_OF_KIN_PHONE_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
-                expectedMessage);
-
-        // missing doctor name prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + VALID_DOCTOR_NAME_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                expectedMessage);
-
-        // missing nok prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + VALID_NEXT_OF_KIN_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                expectedMessage);
-
-        // missing nok relationship prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
-                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + VALID_NEXT_OF_KIN_RS_BOB,
-                expectedMessage);
-
-
-        // all prefixes missing
-        assertParseFailure(parser, VALID_NAME_BOB + VALID_PHONE_BOB + VALID_EMAIL_BOB + VALID_ADDRESS_BOB
-                        + VALID_IC_BOB + VALID_URGENCY_LEVEL_BOB + VALID_DOCTOR_NAME_BOB
-                        + VALID_NEXT_OF_KIN_PHONE_BOB + VALID_NEXT_OF_KIN_BOB + VALID_NEXT_OF_KIN_RS_BOB,
-                expectedMessage);
-    }
-
-    @Test
     public void parse_invalidValue_failure() {
         // invalid name
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB
@@ -511,5 +429,91 @@ public class AddCommandParserTest {
                         + IC_DESC_BOB + DOCTOR_NAME_DESC_BOB + NEXT_OF_KIN_PHONE_DESC_BOB
                         + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_compulsoryFieldMissing_failure() {
+        // missing name prefix
+        assertParseFailure(parser, PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_PATIENT_NAME);
+
+        // missing phone prefix
+        assertParseFailure(parser, NAME_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_PATIENT_PHONE);
+
+        // missing email prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + ADDRESS_DESC_BOB
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_EMAIL);
+
+        // missing address prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_ADDRESS);
+
+        // missing ic prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_IC);
+
+        // missing urgency prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + IC_DESC_BOB + DOCTOR_NAME_DESC_BOB
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_URGENCY);
+
+        // missing next-of-kin prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_NEXT_OF_KIN);
+
+        // missing next-of-kin phone prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
+                        + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_NEXT_OF_KIN_PHONE);
+
+        // missing next-of-kin relationship prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_NEXT_OF_KIN_RELATIONSHIP);
+
+        // missing doctor prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB
+                        + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_DOCTOR);
+
+        // multiple missing prefixes
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB,
+                "Missing required parameter(s): " + PREFIX_ADDRESS + " "
+                        + PREFIX_IC + " "
+                        + PREFIX_URGENCY + " "
+                        + PREFIX_NEXT_OF_KIN + " "
+                        + PREFIX_NEXT_OF_KIN_PHONE + " "
+                        + PREFIX_NEXT_OF_KIN_RELATIONSHIP + " "
+                        + PREFIX_DOCTOR);
+
+        // all prefixes missing
+        assertParseFailure(parser, " ",
+                "Missing required parameter(s): " + PREFIX_PATIENT_NAME + " "
+                        + PREFIX_PATIENT_PHONE + " "
+                        + PREFIX_EMAIL + " "
+                        + PREFIX_ADDRESS + " "
+                        + PREFIX_IC + " "
+                        + PREFIX_URGENCY + " "
+                        + PREFIX_NEXT_OF_KIN + " "
+                        + PREFIX_NEXT_OF_KIN_PHONE + " "
+                        + PREFIX_NEXT_OF_KIN_RELATIONSHIP + " "
+                        + PREFIX_DOCTOR);
     }
 }

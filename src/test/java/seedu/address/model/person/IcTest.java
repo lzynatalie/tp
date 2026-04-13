@@ -104,23 +104,34 @@ public class IcTest {
         assertFalse(Ic.isValidIc("SS123456A")); // letter in the start of 6 digits
         assertFalse(Ic.isValidIc("S1234A56AA")); // letter in the end of 6 digits
 
+        assertFalse(Ic.isValidIc("S-1234567A")); // tries negative number
+
+
         // valid Ic
         assertTrue(Ic.isValidIc("S1234567A"));
-        assertTrue(Ic.isValidIc("s9999999A")); // case-insensitive
-        assertTrue(Ic.isValidIc("S9999999a")); // case-insensitive
-        assertTrue(Ic.isValidIc("s9999999a")); // case-insensitive
-        assertTrue(Ic.isValidIc("T7654321Z"));
-        assertTrue(Ic.isValidIc("t7654321Z")); // case-insensitive
-        assertTrue(Ic.isValidIc("T7654321z")); // case-insensitive
-        assertTrue(Ic.isValidIc("t7654321t")); // case-insensitive
-        assertTrue(Ic.isValidIc("F0000000B"));
-        assertTrue(Ic.isValidIc("f0000000B")); // case-insensitive
-        assertTrue(Ic.isValidIc("F0000000b")); // case-insensitive
-        assertTrue(Ic.isValidIc("f0000000b")); // case-insensitive
-        assertTrue(Ic.isValidIc("G9999999Y"));
-        assertTrue(Ic.isValidIc("g9999999Y")); // case-insensitive
-        assertTrue(Ic.isValidIc("G9999999y")); // case-insensitive
-        assertTrue(Ic.isValidIc("g9999999y")); // case-insensitive
+        assertTrue(Ic.isValidIc("s1234567A")); // case-insensitive
+        assertTrue(Ic.isValidIc("S1234567a")); // case-insensitive
+        assertTrue(Ic.isValidIc("s1234567a")); // case-insensitive
+
+        assertTrue(Ic.isValidIc("T1234567A"));
+        assertTrue(Ic.isValidIc("t1234567A")); // case-insensitive
+        assertTrue(Ic.isValidIc("T1234567a")); // case-insensitive
+        assertTrue(Ic.isValidIc("t1234567a")); // case-insensitive
+
+        assertTrue(Ic.isValidIc("F1234567A"));
+        assertTrue(Ic.isValidIc("f1234567A")); // case-insensitive
+        assertTrue(Ic.isValidIc("F1234567a")); // case-insensitive
+        assertTrue(Ic.isValidIc("f1234567a")); // case-insensitive
+
+        assertTrue(Ic.isValidIc("G1234567A"));
+        assertTrue(Ic.isValidIc("g1234567A")); // case-insensitive
+        assertTrue(Ic.isValidIc("G1234567a")); // case-insensitive
+        assertTrue(Ic.isValidIc("g1234567a")); // case-insensitive
+
+
+        assertTrue(Ic.isValidIc("g9999999a")); // highest number
+        assertTrue(Ic.isValidIc("g0000000a")); // lowest number
+
 
     }
 

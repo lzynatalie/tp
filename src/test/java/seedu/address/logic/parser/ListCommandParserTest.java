@@ -33,6 +33,14 @@ public class ListCommandParserTest {
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
     }
 
+    @Test
+    public void parse_emptyArgs_listsAllPatients() throws Exception {
+        ListCommand command = parser.parse("");
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
+                model.getFilteredPersonList().size());
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+    }
+
     private AddressBook getMedicalAddressBook() {
         AddressBook ab = new AddressBook();
         ab.addPerson(new PersonBuilder()
@@ -96,15 +104,15 @@ public class ListCommandParserTest {
     }
 
     @Test
-    public void parse_validPrefixedUrgencyAndSymptoms_intersection() throws Exception {
+    public void parse_validPrefixedUrgencyAndSymptoms_union() throws Exception {
         ListCommand command = parser.parse(" u/high s/fever");
 
         Predicate<Person> predicate = person -> person.getUrgencyLevel().toString()
                 .equalsIgnoreCase("high")
-                && person.getSymptoms().stream()
+                || person.getSymptoms().stream()
                 .anyMatch(symptom -> symptom.symptomName.equalsIgnoreCase("fever"));
 
-        String criteriaDescription = "Urgency: high, Symptoms: fever";
+        String criteriaDescription = "Urgency: high or Symptoms: fever";
 
         expectedModel.updateFilteredPersonList(predicate);
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS_FILTERED,

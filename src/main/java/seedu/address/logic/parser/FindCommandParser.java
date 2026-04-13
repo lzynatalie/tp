@@ -83,28 +83,8 @@ public class FindCommandParser implements Parser<FindCommand> {
         boolean hasAnySearchField = hasName || hasIc || hasPhone || hasEmail || hasDoctor;
         String preamble = argMultimap.getPreamble().trim();
 
-        // Handle legacy format: if no recognized prefixes, treat preamble as legacy patient name
         if (!hasAnySearchField) {
-            if (preamble.isEmpty()) {
-                throw new ParseException(MESSAGE_REQUIRES_PREFIX);
-            }
-            // Check if preamble contains valid patient names
-            List<String> nameKeywords = Arrays.asList(preamble.split("\\s+"));
-            boolean allValid = true;
-            for (String keyword : nameKeywords) {
-                if (!Name.isValidName(keyword)) {
-                    allValid = false;
-                    break;
-                }
-            }
-
-            // If all keywords are valid, it's valid legacy format but requires prefix
-            if (allValid) {
-                throw new ParseException(MESSAGE_REQUIRES_PREFIX);
-            }
-
-            // If any keyword is invalid, throw NAME validation error
-            throw new ParseException(Name.MESSAGE_CONSTRAINTS);
+            throw new ParseException(MESSAGE_REQUIRES_PREFIX);
         }
 
         if (!preamble.isEmpty()) {

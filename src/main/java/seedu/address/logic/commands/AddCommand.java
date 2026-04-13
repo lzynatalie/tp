@@ -34,7 +34,7 @@ public class AddCommand extends Command {
             + PREFIX_ADDRESS + "<ADDRESS> "
             + PREFIX_DOCTOR + "<DOCTOR> "
             + PREFIX_IC + "<IC> "
-            + PREFIX_URGENCY + "<LEVEL>"
+            + PREFIX_URGENCY + "<LEVEL> "
             + PREFIX_NEXT_OF_KIN + "<NEXT_OF_KIN_NAME> "
             + PREFIX_NEXT_OF_KIN_PHONE + "<NEXT_OF_KIN_PHONE> "
             + PREFIX_NEXT_OF_KIN_RELATIONSHIP + "<NEXT_OF_KIN_RELATIONSHIP> "
@@ -45,7 +45,7 @@ public class AddCommand extends Command {
             + PREFIX_PATIENT_PHONE + "98765432 "
             + PREFIX_EMAIL + "johnd@example.com "
             + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 "
-            + PREFIX_IC + "S1234567A "
+            + PREFIX_IC + "T1234567A "
             + PREFIX_URGENCY + "high "
             + PREFIX_NEXT_OF_KIN + "John "
             + PREFIX_NEXT_OF_KIN_PHONE + "91234567 "
@@ -79,7 +79,7 @@ public class AddCommand extends Command {
         requireNonNull(model);
 
         if (model.hasPerson(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+            throw new CommandException(MESSAGE_DUPLICATE_PERSON + " (" + toAdd.getIc() + ").");
         }
 
         model.addPerson(toAdd);

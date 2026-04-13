@@ -16,7 +16,10 @@ _{ list here sources of all reused/adapted ideas, code, documentation, and third
 
 * This project is based on the [AddressBook Level-3](https://se-education.org/addressbook-level3) project created by the [SE-EDU initiative](https://se-education.org).
 * Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5).
-
+* AI was used in this following manner:
+  * Randy
+    * Used Co-pilot for auto-completion.
+    * Used ChatGPT to assist in generating regex pattern for user input validation.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Setting up, getting started**

@@ -149,29 +149,58 @@ Records comprehensive patient information, add it to the address book and saves 
 <br>
 
 <details>
-<summary> <strong>Why is '/' not allowed in names or next-of-kin relationship?</strong></summary>
+
+<summary><strong>Why is '/' not allowed in names and certain fields?</strong></summary> 
 
 <br>
 
-The `/` character is reserved for prefix parsing (e.g., `pn/`, `ic/`).  
-Allowing `/` in names may cause parts of the input to be misinterpreted as command prefixes.
+The `/` character is reserved for prefix parsing (e.g., `pn/`, `ic/`, `d/`).
+Allowing `/` in structured fields such as patient name (`pn/`), next-of-kin name (`nk/`), doctor name (`d/`), and next-of-kin relationship (`nkr/`) may cause parts of the input to be misinterpreted as command prefixes.
+
+This happens when a substring resembling a valid prefix (e.g., `s/`, `d/`, `u/`) appears after whitespace.
 
 ### Examples
 
-| Input Example | What Happens | Result |
-|--------------|-------------|--------|
-| `pn/Raj s/o Kumar` | `s/` is interpreted as the symptom prefix | `o Kumar` treated as a symptom |
-| `pn/Ali d/o Hassan` | `d/` is interpreted as the doctor prefix | Parsing error |
+| Input Example        | What Happens | Result                                                             |
+|----------------------|-------------|--------------------------------------------------------------------|
+| `pn/Raj s/o Kumar`   | `s/` is interpreted as the symptom prefix | `o Kumar` treated as a symptom                                     |
+| `pn/Ali d/o Hassan`  | `d/` is interpreted as the doctor prefix | May result in a duplicate prefix error or unintended doctor value  |
 
-To ensure reliable parsing and avoid ambiguity, `/` is disallowed in name-like fields.
-
-<br>
+To ensure reliable parsing and avoid ambiguity, `/` is disallowed in those fields.
 
 **Suggested workaround:**  
 Use alternatives such as:
 - `Raj s o Kumar`
 - `Raj son of Kumar`
 - `Raj s-o Kumar`
+
+</details>
+
+<br>
+
+<details>
+
+<summary><strong>Why is '/' still allowed address or notes?</strong></summary> 
+
+<br>
+
+The `/` character is allowed in free-text fields such as address (`a/`) and notes (`n/`) because it appears in realistic inputs (e.g., `Blk 123/125`, `120/80`).
+
+However, if `/` appears as part of a substring that resembles a valid prefix (e.g., `s/`, `d/`, `u/`) and is preceded by whitespace, the parser may interpret it as a new field.
+
+### Examples
+
+| Input Example                       | What Happens | Result                                                             |
+|-------------------------------------|-------------|--------------------------------------------------------------------|
+| `n/Patient reports pain s/severe`   | `s/` is interpreted as the symptom prefix | `severe` treated as a symptom                                     |
+| `a/Blk 123 Bedok Ave d/near clinic` | `d/` is interpreted as the doctor prefix | May result in a duplicate prefix error or unintended doctor value  |
+
+This behavior is due to the prefix-based command format.
+
+In particular, `s/` is more prone to this issue because it is a repeatable prefix and may not trigger duplicate-prefix validation.
+
+>**Tip**:
+Avoid including prefix-like patterns such as `s/`, `d/`, or `u/` in free-text fields. Rephrase them where possible.
 
 </details>
 

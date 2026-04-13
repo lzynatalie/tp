@@ -437,61 +437,71 @@ public class AddCommandParserTest {
         assertParseFailure(parser, PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
                         + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                "Missing required parameter(s): " + PREFIX_PATIENT_NAME);
+                "Missing required parameter(s): " + PREFIX_PATIENT_NAME
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // missing phone prefix
         assertParseFailure(parser, NAME_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
                         + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                "Missing required parameter(s): " + PREFIX_PATIENT_PHONE);
+                "Missing required parameter(s): " + PREFIX_PATIENT_PHONE
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // missing email prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + ADDRESS_DESC_BOB
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
                         + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                "Missing required parameter(s): " + PREFIX_EMAIL);
+                "Missing required parameter(s): " + PREFIX_EMAIL
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // missing address prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
                         + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                "Missing required parameter(s): " + PREFIX_ADDRESS);
+                "Missing required parameter(s): " + PREFIX_ADDRESS
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // missing ic prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
                         + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                "Missing required parameter(s): " + PREFIX_IC);
+                "Missing required parameter(s): " + PREFIX_IC
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // missing urgency prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + IC_DESC_BOB + DOCTOR_NAME_DESC_BOB
                         + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                "Missing required parameter(s): " + PREFIX_URGENCY);
+                "Missing required parameter(s): " + PREFIX_URGENCY
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // missing next-of-kin prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
                         + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                "Missing required parameter(s): " + PREFIX_NEXT_OF_KIN);
+                "Missing required parameter(s): " + PREFIX_NEXT_OF_KIN
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // missing next-of-kin phone prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
                         + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                "Missing required parameter(s): " + PREFIX_NEXT_OF_KIN_PHONE);
+                "Missing required parameter(s): " + PREFIX_NEXT_OF_KIN_PHONE
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // missing next-of-kin relationship prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + DOCTOR_NAME_DESC_BOB
                         + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB,
-                "Missing required parameter(s): " + PREFIX_NEXT_OF_KIN_RELATIONSHIP);
+                "Missing required parameter(s): " + PREFIX_NEXT_OF_KIN_RELATIONSHIP
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // missing doctor prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB
                         + NEXT_OF_KIN_PHONE_DESC_BOB + NEXT_OF_KIN_DESC_BOB + NEXT_OF_KIN_RS_DESC_BOB,
-                "Missing required parameter(s): " + PREFIX_DOCTOR);
+                "Missing required parameter(s): " + PREFIX_DOCTOR
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // multiple missing prefixes
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB,
@@ -501,7 +511,8 @@ public class AddCommandParserTest {
                         + PREFIX_NEXT_OF_KIN + " "
                         + PREFIX_NEXT_OF_KIN_PHONE + " "
                         + PREFIX_NEXT_OF_KIN_RELATIONSHIP + " "
-                        + PREFIX_DOCTOR);
+                        + PREFIX_DOCTOR
+                        + "\n" + AddCommand.MESSAGE_USAGE);
 
         // all prefixes missing
         assertParseFailure(parser, " ",
@@ -514,6 +525,7 @@ public class AddCommandParserTest {
                         + PREFIX_NEXT_OF_KIN + " "
                         + PREFIX_NEXT_OF_KIN_PHONE + " "
                         + PREFIX_NEXT_OF_KIN_RELATIONSHIP + " "
-                        + PREFIX_DOCTOR);
+                        + PREFIX_DOCTOR
+                        + "\n" + AddCommand.MESSAGE_USAGE);
     }
 }

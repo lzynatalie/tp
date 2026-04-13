@@ -60,9 +60,20 @@ public class UpdateCommandParserTest {
 
     @Test
     public void parse_missingParts_failure() {
-        assertParseFailure(parser, VALID_NAME_AMY, MESSAGE_INVALID_FORMAT);
+        String expectedMissingIndexMessage = "Missing index! Please provide an index.\n"
+                + SingleUpdateCommand.MESSAGE_USAGE;
+
+        // 1. Missing index, but a valid field is provided (e.g., " n/Amy Bee") -> Preamble is empty
+        assertParseFailure(parser, NAME_DESC_AMY, expectedMissingIndexMessage);
+
+        // 2. No fields specified
         assertParseFailure(parser, "1", SingleUpdateCommand.MESSAGE_NOT_UPDATED);
-        assertParseFailure(parser, "", MESSAGE_INVALID_FORMAT);
+
+        // 3. Completely empty command
+        assertParseFailure(parser, "", expectedMissingIndexMessage);
+
+        // 4. Invalid index provided (e.g., typing raw text "Amy Bee" instead of a number)
+        assertParseFailure(parser, VALID_NAME_AMY, MESSAGE_INVALID_FORMAT);
     }
 
     @Test

@@ -73,8 +73,7 @@ public class UpdateCommandParser implements Parser<Command> {
                 : SingleUpdateCommand.MESSAGE_NOT_UPDATED;
 
         if (trimmedPreamble.isEmpty()) {
-            // FIXED 2: Replaced SingleUpdateCommand with expectedMessageUsage
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, expectedMessageUsage));
+            throw new ParseException("Missing index! Please provide an index.\n" + expectedMessageUsage);
         }
 
         // STRICT RULE: Check the TRIMMED preamble for spaces.

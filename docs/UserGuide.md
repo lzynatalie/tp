@@ -42,7 +42,7 @@ ClinicConnect is a **desktop app for triage coordinators to manage patient recor
 
 **Notes about the command format:**<br>
 
-* Words in `UPPER_CASE` and enclosed in angle brackets `<>` describes parameters to be supplied by the user.<br/>
+* Words in `UPPER_CASE` and enclosed in angle brackets `<>` describe parameters to be supplied by the user.<br/>
   e.g. in `add pn/<PATIENT_NAME>`, `<PATIENT_NAME>` is a parameter which can be used as `add pn/John Doe`.
 * Items in square brackets are optional.<br/>
   e.g. `[n/<NOTES>]` can be used as `n/Patient has history of asthma` or simply left out.
@@ -51,6 +51,7 @@ ClinicConnect is a **desktop app for triage coordinators to manage patient recor
 * All commands and prefixes are case-insensitive.
 * Leading and trailing spaces are ignored/trimmed automatically.
 * Internal spaces within a command (i.e. `d ele te 1`) or prefix (i.e. `p  n/`) are not allowed and will be rejected.
+* Spaces are not allowed before or after the delimiters (i.e. `,` and `-`) in index-based commands (e.g. `update 1 , 2` will be rejected).
 
 </box>
     
@@ -124,6 +125,7 @@ Records comprehensive patient information, add it to the address book and saves 
 * If the prefix is declared then there must be a non-blank symptom after it (e.g., `s/` without any symptoms will be rejected).
 * If the prefix is not declared at all, it will be treated as if the patient has no symptoms.
 * Symptoms are compared case-insensitively to prevent duplicated entries. However, differences in internal spacing (e.g., "runny nose" vs "runnynose") are treated as distinct symptoms.
+* Duplicate symptoms are treated as a single symptom (e.g., `s/fever s/FEVER` will be treated as one symptom "fever").
 
 **Notes (`n/`):**
 * Additional notes about the patient.
@@ -212,32 +214,36 @@ Allows triage coordinators to locate specific patient records using various iden
 * `find e/johndoe@example.com` returns the patient(s) with that email.
 * `find d/Dr Sally` returns the patient(s) with that doctor name.
 
-### Deleting a patient : `delete`
+### Deleting patient(s) : `delete`
 
 Permanently removes patient records from ClinicConnect.
 
 **Format:**
 
 **Single deletion:** `delete <INDEX>`
-* Edits the patient at the specified `<INDEX>`. The index refers to the index number shown in the displayed patient list. The index **must be a positive integer**.
+* Deletes the patient at the specified `<INDEX>`. The index refers to the index number shown in the displayed patient list. The index **must be a positive integer**.
 
 **Multiple deletion:** `delete <INDEX>,<INDEX>[,<INDEX>,...]`
-* Edits the patients at the specified indices. The indices refer to the index numbers shown in the displayed patient list. The indices **must be positive integers**.
+* Deletes the patients at the specified indices. The indices refer to the index numbers shown in the displayed patient list. The indices **must be positive integers**.
 * Delimiter: Comma (`,`)
 * Duplicated indices (e.g. `delete 2,2`) will be rejected.
 
 **Range deletion:** `delete <START_INDEX>-<END_INDEX>`
-* Edits the patients in the range of the specified indices. The indices refer to the index numbers shown in the displayed patient list. The indices **must be positive integers**.
+* Deletes the patients in the range of the specified indices. The indices refer to the index numbers shown in the displayed patient list. The indices **must be positive integers**.
 * Delimiter: Hyphen (`-`)
 * The start index must be less than or equal to the end index.
 
 **Optional fields deletion:** `delete <INDICES> [s/] [n/]`
 * Deletes all the symptoms (`s/`) and/or notes (`n/`) of the patients at the specified indices. `<INDICES>` refers to any of the above index formats.
 * Prefixes must be provided without any parameters (e.g. `n/notes` will be rejected).
+* The patients at the specified indices must have at least 1 value in each of the fields to be deleted.
 
 **Specific values deletion:** `delete <INDICES> [s/<SYMPTOM>]...`
 * Deletes the specified symptoms of the patients at the specified indices. `<INDICES>` refers to any of the above index formats.
 * All prefixes must be provided with parameters (e.g. `s/fever s/` will be rejected).
+* The patients at the specified indices must have all the specified symptoms to be deleted.
+
+>**Tip:** Optional fields deletion for notes and specific values deletion for symptoms can be used together.
 
 **Examples:**
 * `delete 2` deletes the 2nd patient in the list.
@@ -245,6 +251,7 @@ Permanently removes patient records from ClinicConnect.
 * `delete 1-4` deletes the 1st through 4th patients.
 * `delete 1,3 s/ n/` deletes all the symptoms and notes of the 1st and 3rd patients.
 * `delete 2 s/fever s/cough` deletes the symptoms "fever" and "cough" of the 2nd patient.
+* `delete 2,4 s/fever n/` deletes the symptom "fever" and all notes of the 2nd and 4th patients.
 
 ### Undoing the last command : `undo`
 
@@ -355,6 +362,7 @@ Furthermore, certain edits can cause ClinicConnect to behave in unexpected ways 
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
+3. **For update and delete commands**, when inputting an index more than `2,147,483,647`, the error message will show invalid command format instead of invalid index. However, this does not affect the functionality of the command.
 
 --------------------------------------------------------------------------------------------------------------------
 

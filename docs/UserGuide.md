@@ -221,7 +221,7 @@ Displays all patients in the application in a structured list format. You can al
 
 * You may provide `u/` (urgency level) to match urgency levels.
 * You may provide `s/` (symptoms) to match symptoms.
-* If both `u/` and `s/` are provided, only patients matching **both** criteria are shown.
+* If both `u/` and `s/` are provided, patients matching **either** criterion are shown (logical **OR**). Multiple values with the same prefix are also combined with **OR** (e.g. `list u/high u/low` lists high- or low-urgency patients).
 * If filters are provided but no patient matches, the command still succeeds and shows a "no matches" message.
 
 **Examples:**

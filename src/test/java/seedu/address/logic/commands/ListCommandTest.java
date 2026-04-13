@@ -94,12 +94,12 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_listFilteredByUrgencyAndSymptoms_showsIntersectionOfMatches() {
+    public void execute_listFilteredByUrgencyAndSymptoms_showsUnionOfMatches() {
         Predicate<Person> predicate = person -> person.getUrgencyLevel().toString()
                 .equalsIgnoreCase("high")
-                && person.getSymptoms().stream()
+                || person.getSymptoms().stream()
                 .anyMatch(symptom -> symptom.symptomName.equalsIgnoreCase("fever"));
-        String criteriaDescription = "Urgency: high, Symptoms: fever";
+        String criteriaDescription = "Urgency: high or Symptoms: fever";
 
         expectedModel.updateFilteredPersonList(predicate);
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS_FILTERED,

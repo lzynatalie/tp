@@ -317,7 +317,7 @@ The list mechanism lets users view either **all** patients or a **filtered** sub
 
 Unprefixed text after `list` (e.g. `list fever`) is **rejected** so that filtering stays explicit and consistent with the rest of the CLI.
 
-**Combining filters:** When both urgency and symptom criteria are present, a person must match **both** dimensions (logical **AND**). Multiple `u/` or `s/` repetitions are normalized to sets; within each set, a match on **any** listed urgency (respectively symptom) is enough.
+**Combining filters:** When both urgency and symptom criteria are present, a person matches if they satisfy **either** dimension (logical **OR**). Multiple `u/` or `s/` repetitions are normalized to sets; within each set, a match on **any** listed urgency (respectively symptom) is enough.
 
 **Data and undo:** Listing does **not** change stored patient data; it only updates the **filtered view** in the model. `ListCommand` does not override `Command#isUndoable()`, so it remains **non-undoable**, like `find`.
 
@@ -327,7 +327,7 @@ Given below is a example usage scenario.
 
 **Step 2.** The user executes `list u/high` to focus on high-urgency patients. The parser builds a predicate that keeps only persons whose urgency string matches `high`; `Model#updateFilteredPersonList` updates the `FilteredList`.
 
-**Step 3.** The user executes `list u/high s/fever`. The parser combines predicates so that only persons who are **both** high urgency **and** have a fever symptom (case-insensitive) remain visible.
+**Step 3.** The user executes `list u/high s/fever`. The parser builds a predicate so that persons who are **either** high urgency **or** have a fever symptom (case-insensitive) remain visible.
 
 <box type="info" seamless>
 

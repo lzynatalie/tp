@@ -60,19 +60,13 @@ public class AddCommandParser implements Parser<AddCommand> {
                         PREFIX_NOTES
                 );
 
-        if (!arePrefixesPresent(argMultimap,
-                PREFIX_PATIENT_NAME,
-                PREFIX_ADDRESS,
-                PREFIX_PATIENT_PHONE,
-                PREFIX_EMAIL,
-                PREFIX_IC,
-                PREFIX_URGENCY,
-                PREFIX_NEXT_OF_KIN,
-                PREFIX_NEXT_OF_KIN_PHONE,
-                PREFIX_NEXT_OF_KIN_RELATIONSHIP,
-                PREFIX_DOCTOR)
-                || !argMultimap.getPreamble().isEmpty()) {
+        if (!argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
+        }
+
+        String missingPrefixes = getMissingPrefixes(argMultimap);
+        if (!missingPrefixes.isEmpty()) {
+            throw new ParseException("Missing required parameter(s): " + missingPrefixes);
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_PATIENT_NAME,
@@ -118,4 +112,30 @@ public class AddCommandParser implements Parser<AddCommand> {
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
     }
 
+    private String getMissingPrefixes(ArgumentMultimap argMultimap) {
+        StringBuilder sb = new StringBuilder();
+
+        appendIfMissing(sb, argMultimap, PREFIX_PATIENT_NAME);
+        appendIfMissing(sb, argMultimap, PREFIX_PATIENT_PHONE);
+        appendIfMissing(sb, argMultimap, PREFIX_EMAIL);
+        appendIfMissing(sb, argMultimap, PREFIX_ADDRESS);
+        appendIfMissing(sb, argMultimap, PREFIX_IC);
+        appendIfMissing(sb, argMultimap, PREFIX_URGENCY);
+        appendIfMissing(sb, argMultimap, PREFIX_NEXT_OF_KIN);
+        appendIfMissing(sb, argMultimap, PREFIX_NEXT_OF_KIN_PHONE);
+        appendIfMissing(sb, argMultimap, PREFIX_NEXT_OF_KIN_RELATIONSHIP);
+        appendIfMissing(sb, argMultimap, PREFIX_DOCTOR);
+
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1); // remove last space
+        }
+
+        return sb.toString();
+    }
+
+    private void appendIfMissing(StringBuilder sb, ArgumentMultimap argMultimap, Prefix prefix) {
+        if (!argMultimap.getValue(prefix).isPresent()) {
+            sb.append(prefix).append(" ");
+        }
+    }
 }

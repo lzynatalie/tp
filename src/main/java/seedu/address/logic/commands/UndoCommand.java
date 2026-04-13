@@ -13,7 +13,8 @@ public class UndoCommand extends Command {
     public static final String COMMAND_WORD = "undo";
 
     public static final String MESSAGE_SUCCESS = "Undo successful: reversed the previous command.";
-    public static final String MESSAGE_FAILURE = "Cannot undo: recent command was a bulk update, no recent action to undo, or undo was already used.";
+    public static final String MESSAGE_FAILURE = "Cannot undo: recent command was a bulk update, "
+            + "no recent action to undo, or undo was already used.";
     public static final String MESSAGE_USAGE = "Usage: undo";
     public static final String MESSAGE_EXTRA_PARAMETERS = "There should not be extra parameters.\nUsage: undo";
 

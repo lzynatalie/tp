@@ -15,9 +15,9 @@ ClinicConnect is a **desktop app for triage coordinators to manage patient recor
 ## Quick Start
 
 1. Ensure you have Java `17` or above installed in your Computer.
-2. Download the latest `ClinicConnect.jar` file from our [releases](https://github.com/AY2526S2-CS2103-F11-4/tp/releases/) page.
+2. Download the latest `clinicconnect.jar` file from our [releases](https://github.com/AY2526S2-CS2103-F11-4/tp/releases/) page.
 3. Copy the file to the folder you want to use as the home folder for your clinic's database.
-4. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar ClinicConnect.jar` command to run the application.<br>
+4. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar clinicconnect.jar` command to run the application.<br>
    A GUI should appear in a few seconds. Note how the app contains some sample triage data.<br>
    ![Ui](images/Ui.png)
 
@@ -65,30 +65,32 @@ Shows a message explaining how to access the help page.
 
 Records comprehensive patient information, add it to the address book and saves it to the hard disk.
 
-**Format:** `add pn/<PATIENT_NAME> ic/<IC> p/<PATIENT_PHONE> a/<ADDRESS> e/<EMAIL> u/<LEVEL> d/<DOCTOR> nk/<NEXT_OF_KIN_NAME> nkp/<NEXT_OF_KIN_PHONE> nkr/<NEXT_OF_KIN_RELATIONSHIP> [s/<SYMPTOM>] [n/<NOTES>]`
+**Format:** `add pn/<PATIENT_NAME> p/<PATIENT_PHONE> e/<EMAIL> a/<ADDRESS> ic/<IC> u/<LEVEL> nk/<NEXT_OF_KIN_NAME> nkp/<NEXT_OF_KIN_PHONE> nkr/<NEXT_OF_KIN_RELATIONSHIP> d/<DOCTOR> [s/<SYMPTOM>] [n/<NOTES>]`
 * The prefixes `pn/`, `ic/`, `p/`, `a/`, `e/`, `u/`, `d/`, `nk/`, `nkp/`, and `nkr/` are **compulsory** and **must not be blank**.
 * The prefixes `s/` and `n/` are **optional**.
-* The same prefix cannot be provided more than once **except** for `s/` (symptoms).
+* The same prefix **cannot** be provided more than once **except** for `s/` (symptoms).
 * All parameters have their leading and trailing spaces ignored/trimmed automatically.
 
 **Patient Name (`pn/`):**
 * The patient's name.
-* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
-* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank names that only contain spaces.
+* Can contain letters (`A-Z, a-z`), spaces, commas (`,`), hyphens (`-`), apostrophes (`'`), and periods (`.`).
+* It is enforced that the first character must be a letter (`A-Z, a-z`) to prevent blank names that only contain spaces.
 
 **IC Number (`ic/`):**
 * The patient's IC number.
 * Must follow the format: `[S/T/F/G/M]` + 7 digits + 1 letter (total 9 characters). For example, `S1234567A` is a valid IC number.
-* Duplicates are **not allowed** (i.e., two patients cannot have the same IC number).
+* Duplicates are **not allowed** (i.e., two patients **cannot** have the same IC number).
 * Case-insensitivity (e.g., `s1234567a` is treated the same as `S1234567A`).
 
 **Patient Phone Number (`p/`):**
 * The patient's phone number.
-* Must contain exactly 8 digits and contain only `0-9`. For example, `98765432` is a valid phone number.
+* Can contain digits, spaces, and hyphens (`-`), with **an optional** leading plus (`+`).
+* Must start with a digit. If `+` is used, it must appear only once at the start and be immediately followed by a digit.
+* Must contain between 3 and 15 digits (excluding spaces and hyphens).
 
 **Address (`a/`):**
 * The patient's address.
-* Can contain any characters (including spaces).
+* Can contain any value. However, the first character **cannot** be a whitespace.
 
 **Email Address (`e/`):**
 * The patient's email address.
@@ -101,31 +103,35 @@ Records comprehensive patient information, add it to the address book and saves 
 
 **Doctor Name (`d/`):**
 * The name of the doctor assigned to the patient.
-* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
-* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank doctor names that only contain spaces.
+* Can contain letters (`A-Z, a-z`), spaces, commas (`,`), hyphens (`-`), apostrophes (`'`), and periods (`.`).
+* It is enforced that the first character must be a letter (`A-Z, a-z`) to prevent blank doctor names that only contain spaces.
 
 **Next-of-Kin Name (`nk/`):**
 * The name of the patient's next of kin.
-* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
-* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank next-of-kin names that only contain spaces.
+* Can contain letters (`A-Z, a-z`), spaces, commas (`,`), hyphens (`-`), apostrophes (`'`), and periods (`.`).
+* It is enforced that the first character must be a letter (`A-Z, a-z`) to prevent blank next-of-kin names that only contain spaces.
 
 **Next-of-Kin Phone Number (`nkp/`):**
 * The phone number of the patient's next of kin.
-* Must contain exactly 8 digits and contain only `0-9`. For example, `87654321` is a valid next-of-kin phone number.
+* Can contain digits, spaces, and hyphens (`-`), with **an optional** leading (`+`).
+* Must start with a digit. If `+` is used, it must appear only once at the start and be immediately followed by a digit.
+* Must contain between 3 and 15 digits (excluding spaces and hyphens).
 
 **Next-of-Kin Relationship (`nkr/`):**
 * The relationship of the next of kin to the patient (e.g., "Mother", "Brother", "Friend").
-* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
-* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank relationships that only contain spaces.
+* Can contain letters (`A-Z, a-z`), spaces, commas (`,`), hyphens (`-`), apostrophes (`'`), and periods (`.`).
+* It is enforced that the first character must be a letter (`A-Z, a-z`) to prevent blank relationships that only contain spaces.
 
 **Symptoms (`s/`):**
 * The symptoms that the patient is experiencing.
-* Can contain alphanumeric characters and whitespace only (i.e., no special characters).
+* Can contain alphanumeric characters and spaces only (i.e., no special characters).
 * A patient can have any number of symptoms (including 0). To specify multiple symptoms, use multiple `s/` prefixes (e.g., `s/fever s/cough`).
 * If the prefix is declared then there must be a non-blank symptom after it (e.g., `s/` without any symptoms will be rejected).
 * If the prefix is not declared at all, it will be treated as if the patient has no symptoms.
 * Symptoms are compared case-insensitively to prevent duplicated entries. However, differences in internal spacing (e.g., "runny nose" vs "runnynose") are treated as distinct symptoms.
 * Duplicate symptoms are treated as a single symptom (e.g., `s/fever s/FEVER` will be treated as one symptom "fever").
+
+>**Tip:** A patient can have any number of symptoms (including 0).
 
 **Notes (`n/`):**
 * Additional notes about the patient.
@@ -134,10 +140,42 @@ Records comprehensive patient information, add it to the address book and saves 
 * If the prefix is declared with a blank note (e.g., `n/` without any notes), it will be treated as an empty note (i.e., the patient will have no notes).
 * If the prefix is not declared at all, it will be treated as if the patient has no notes as well.
 
->**Tip:** A patient can have any number of symptoms (including 0).
+**Example:**
+* `add pn/John Doe Jun Kai ic/M0123456B p/12345678 a/21 Serangan Road e/john@doe.com u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 nkr/Mother s/Diabetic n/Admitted at 12pm`
+  * Expected output: `You have added John Doe Jun Kai who has an urgency level of HIGH.`
+  * ![AddCommandSuccessfulExecution.png](images/AddCommandSuccessfulExecution.png)
 
-**Examples:**
-* `add pn/John Doe Jun Kai ic/T0123456B p/12345678 a/21 Serangan Road e/john@doe.com u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 nkr/Mother s/Diabetic n/Admitted at 12pm`
+
+<br>
+
+<details>
+<summary> <strong>Why is '/' not allowed in names or next-of-kin relationship?</strong></summary>
+
+<br>
+
+The `/` character is reserved for prefix parsing (e.g., `pn/`, `ic/`).  
+Allowing `/` in names may cause parts of the input to be misinterpreted as command prefixes.
+
+### Examples
+
+| Input Example | What Happens | Result |
+|--------------|-------------|--------|
+| `pn/Raj s/o Kumar` | `s/` is interpreted as the symptom prefix | `o Kumar` treated as a symptom |
+| `pn/Ali d/o Hassan` | `d/` is interpreted as the doctor prefix | Parsing error |
+
+To ensure reliable parsing and avoid ambiguity, `/` is disallowed in name-like fields.
+
+<br>
+
+**Suggested workaround:**  
+Use alternatives such as:
+- `Raj s o Kumar`
+- `Raj son of Kumar`
+- `Raj s-o Kumar`
+
+</details>
+
+<br>
 
 ### Listing all patients : `list`
 
@@ -301,7 +339,7 @@ Exits the application and saves all data to the hard disk.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Automatic Triage Sorting
+### Automatic Triage Sorting
 
 ClinicConnect automatically sorts the patient list to prioritize critical cases:
 1.  **Urgency Level:** Patients are ranked `EXTREME` > `HIGH` > `MODERATE` > `LOW`.
@@ -309,11 +347,11 @@ ClinicConnect automatically sorts the patient list to prioritize critical cases:
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Command History navigation using the Up/Down arrow keys
+### Command History navigation using the Up/Down arrow keys
 
 ClinicConnect allows you to navigate through your command history using the `Up` and `Down` arrow keys when the command box is focused (_i.e. when there is a blinking vertical line in the command box_). This feature enables you to quickly recall and reuse previous commands without retyping them.
 
-Only the commands that were successfully executed (_i.e. the command box does not light up red after you press the `enter` key_) are stored in the command history. Those commands will have their trailing and leading whitespaces trimmed before storing in the command history. When you press the `Up` arrow key, you will see the most recent command you entered. Pressing it again will take you further back in your command history. Conversely, pressing the `Down` arrow key will move you forward through the command history.
+Only the commands that were successfully executed (_i.e. the font color of your input does not turn red after pressing the `enter` key_) are stored in the command history. Those commands will have their trailing and leading whitespaces trimmed before storing in the command history. When you press the `Up` arrow key, you will see the most recent command you entered. Pressing it again will take you further back in your command history. Conversely, pressing the `Down` arrow key will move you forward through the command history.
 
 The command history is session-based, meaning that it is cleared when you exit the application. Therefore, only commands entered during the current session will be available for navigation using the Up and Down arrow keys.
 
@@ -321,23 +359,23 @@ The command history removes duplicated commands, so if you enter the same comman
 
 Examples of how duplicated commands are handled in the command history:
 
-| Commands about to enter                                   | Command in command history | Is it considered a duplicate? | Why?                                                                                                                                            |
-|-----------------------------------------------------------|----------------------------|-----|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| Commands about to enter                                   | Command in command history | Is it considered a duplicate? | Why?                                                                                                                                           |
+|-----------------------------------------------------------|----------------------------|-----|------------------------------------------------------------------------------------------------------------------------------------------------|
 | `LEADING_WHITESPACES delete 1 s/ n/ TRAILING_WHITESPACES` | `delete 1 s/ n/`           | Yes | After trimming leading and trailing whitespaces, the command is identical to the existing command in the history (case-insensitive comparison). |
-| `DELETE 1 S/ N/`                                          | `delete 1 s/ n/`           | Yes | Case-insensitive comparison, the command is identical to the existing command in the history.                                                   |
-| `delete 1 n/ s/`                                          | `delete 1 s/ n/`           | No  | Althought the both commands are functionally the same, they are not be treated as duplicates as they are not identical                          |
+| `DELETE 1 S/ N/`                                          | `delete 1 s/ n/`           | Yes | Case-insensitive comparison, the command is identical to the existing command in the history.                                                  |
+| `delete 1 n/ s/`                                          | `delete 1 s/ n/`           | No  | Although the both commands are functionally the same, they are not be treated as duplicates as they are not identical                          |
 
 The command history navigation feature enhances your efficiency by allowing you to quickly access and reuse previously entered commands, saving you time and effort in managing patient records with ClinicConnect.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Data Management
+### Data Management
 
-### Saving the data
+#### Saving the data
 
 ClinicConnect data is saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
 
-### Editing the data file
+#### Editing the data file
 
 ClinicConnect data is saved automatically as a JSON file `[JAR file location]/data/clinicconnect.json`. Advanced users are welcome to update data directly by editing that data file.
 

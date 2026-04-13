@@ -130,6 +130,19 @@ The `Model` component,
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
+In ClinicConnect, the Person model has been extended beyond the original AB3 design to support the polyclinic triage workflow. Besides standard contact details, each Person includes additional patient-related fields such as Ic, Doctor, UrgencyLevel, NextOfKin, NextOfKinPhone, Symptom, and Notes.
+
+Some key ClinicConnect-specific model classes are:
+
+* `Ic`: represents the patient’s identification number. It is a core field used to uniquely identify patients and is used in duplicate detection.
+* `UrgencyLevel`: represents the patient’s triage priority. It is used to classify cases into levels such as low, moderate, high, and extreme, which supports prioritization during patient coordination.
+* `Symptom`: represents a symptom tagged to a patient. A patient may have multiple symptoms recorded to support filtering and viewing of medical conditions.
+* `Doctor`: represents the doctor currently assigned to the patient.
+* `NextOfKin`, `NextOfKinRelationship` and `NextOfKinPhone`: represent the patient’s emergency contact details. These classes capture the contact’s name, relationship to the patient, and phone number respectively, allowing the system to store structured next-of-kin information for coordination and emergency communication.
+* `Notes`: stores additional remarks relevant to the patient’s case.
+
+These domain classes are central to ClinicConnect because they adapt the original AB3 contact-management model into a patient coordination system suitable for triage operations in public polyclinics.
+
 <box type="info" seamless>
 
 **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Symptom` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Symptom` object per unique symptom, instead of each `Person` needing their own `Symptom` objects.<br>
@@ -404,7 +417,7 @@ The activity diagram below summarizes parsing and execution outcomes:
 
 #### Implementation
 
-The command history navigation feature allows users to cycle through previously successfully executed commands using the up/down arrow keys. The command history is kept so that no duplicated commands. This is implemented in the `CommandHistory` class, which maintains a list of previously executed commands strings that are trimmed to remove leading and trailing whitespaces, a pointer to the current position in that history, and the current user input being typed. The command history is session-based, meaning that the command history is cleared when the app is closed and does not persist across sessions.
+The command history navigation feature allows users to cycle through previously successfully executed commands using the up/down arrow keys. The command history is kept so that there are no duplicated commands. This is implemented in the `CommandHistory` class, which maintains a list of previously executed commands strings that are trimmed to remove leading and trailing whitespaces, a pointer to the current position in that history, and the current user input being typed. The command history is session-based, meaning that the command history is cleared when the app is closed and does not persist across sessions.
 
 The `CommandHistory` class provides the following methods:
 * `CommandHistory#add(String command)` — Adds a new command to the history and resets the pointer to the end of the list.

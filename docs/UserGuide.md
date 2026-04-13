@@ -177,23 +177,6 @@ Use alternatives such as:
 
 <br>
 
-### Listing all patients : `list`
-
-Displays all patients in the application in a structured list format. You can also filter the list by urgency level and/or symptoms.
-
-**Format:** `list [u/<LEVEL>]... [s/<SYMPTOM>]...`
-
-* You may provide `u/` (urgency level) to match urgency levels.
-* You may provide `s/` (symptoms) to match symptoms.
-* If both `u/` and `s/` are provided, only patients matching **both** criteria are shown.
-* If filters are provided but no patient matches, the command still succeeds and shows a "no matches" message.
-
-**Examples:**
-* `list` (shows everyone)
-* `list u/high`
-* `list s/fever s/cough`
-* `list u/high s/fever`
-
 ### Updating patient(s) : `update`
 
 Updates existing patient details in ClinicConnect. You can update a single patient or multiple specific patients at once.
@@ -229,6 +212,27 @@ Updates existing patient details in ClinicConnect. You can update a single patie
 * `update 2,4,5 d/Dr Sally s/Fever` Updates the doctor to `Dr Sally` and replaces all existing symptoms with `Fever` for the 2nd, 4th, and 5th patients.
 * `update 1 an/Patient requested a callback` Appends the text to the 1st patient's existing notes, automatically formatted on a new line as `[09 Apr 20:00] Patient requested a callback`.
 * `update 5 n/` Removes the notes from the 5th patient.
+
+### Listing all patients : `list`
+
+Displays all patients in the application in a structured list format. You can also filter the list by urgency level and/or symptoms.
+
+**Format:** `list [u/<LEVEL>]... [s/<SYMPTOM>]...`
+
+* You may provide `u/` (urgency level) to match urgency levels.
+* You may provide `s/` (symptoms) to match symptoms.
+* If both `u/` and `s/` are provided, only patients matching **both** criteria are shown.
+* If filters are provided but no patient matches, the command still succeeds and shows a "no matches" message.
+
+**Examples:**
+* `list` (shows everyone)
+* `list u/high`
+* `list s/fever s/cough`
+* `list u/high s/fever`
+
+The `list` command and `find` command are intentionally kept separate because of the difference in use cases they satisfy.
+`list` functions more as a filter for users to find patients that match the given keywords.
+`find` functions more as a search for a specific user.
 
 ### Searching for a patient : `find`
 

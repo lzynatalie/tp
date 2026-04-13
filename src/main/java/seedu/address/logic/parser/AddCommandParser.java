@@ -66,7 +66,8 @@ public class AddCommandParser implements Parser<AddCommand> {
 
         String missingPrefixes = getMissingPrefixes(argMultimap);
         if (!missingPrefixes.isEmpty()) {
-            throw new ParseException("Missing required parameter(s): " + missingPrefixes);
+            throw new ParseException("Missing required parameter(s): " + missingPrefixes
+                    + "\n" + String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_PATIENT_NAME,

@@ -551,8 +551,6 @@ The following activity diagram summarizes what happens when a user executes a ne
     * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
     * Cons: We must ensure that the implementation of each individual command are correct.
 
-_{more aspects and alternatives to be added}_
-
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -866,9 +864,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes from step 1.
 
-
-*{More to be added}*
-
 ### Non-Functional Requirements
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
@@ -877,8 +872,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 4.  Should be fully operable using only the keyboard, with no mouse interaction required.
 5.  Should gracefully handle a corrupted or missing data file by starting with an empty address book, without crashing. 
 6.  Should not lose any patient data if the application is closed unexpectedly (e.g. power failure), as data is saved after every command.
-
-*{More to be added}*
 
 ### Glossary
 
@@ -925,8 +918,6 @@ testers are expected to do more *exploratory* testing.
 
     1. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
-
-1. _{ more test cases …​ }_
 
 ### Adding a person
 
@@ -1046,8 +1037,6 @@ testers are expected to do more *exploratory* testing.
         * Expected: Command is rejected. Error details shown indicating duplicated indices are not allowed.
     4. Test case: `update 1,100 u/extreme` (assuming index 100 is out of bounds)
         * Expected: Command is rejected. Error details shown indicating an invalid patient index. No patients are updated (verifying the all-or-nothing execution).
-
-3. _{ more test cases …​ }_
 
 ### Saving data
 

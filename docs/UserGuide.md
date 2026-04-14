@@ -50,7 +50,7 @@ ClinicConnect is a **desktop app for triage coordinators to manage patient recor
   e.g. if the command specifies `pn/<PATIENT_NAME> p/<PATIENT_PHONE>`, `p/<PATIENT_PHONE> pn/<PATIENT_NAME>` is also acceptable.
 * All commands and prefixes are case-insensitive.
 * Leading and trailing spaces are ignored/trimmed automatically.
-* Internal spaces within a command (i.e. `d ele te 1`) or prefix (i.e. `p  n/`) are not allowed and will be rejected.
+* Internal spaces within a command (e.g. `d ele te 1`) or prefix (e.g. `p  n/`) are not allowed and will be rejected.
 * Spaces are not allowed before or after the delimiters (i.e. `,` and `-`) in index-based commands (e.g. `update 1 , 2` will be rejected).
 
 </box>
